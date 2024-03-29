@@ -6,6 +6,8 @@ import com.example.library.domain.heart.domain.dto.HeartResponseDto;
 import com.example.library.domain.heart.domain.dto.QHeartResponseDto_Response;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.HeartBookNotFoundException;
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,15 +29,28 @@ public class HeartRepositoryImpl implements HeartRepository {
     private final SpringDataJpaHeartRepository springDataJpaHeartRepository;
 
     @Override
-    public List<HeartResponseDto.Response> findHeartsByUserNo(Long userNo) {
+    public List<HeartResponseDto.Response> findHeartsByUserNo(Long heartNo,Long userNo,int pageSize) {
         List<HeartResponseDto.Response> result = jpaQueryFactory.select(new QHeartResponseDto_Response(heart.heartNo,heart.userNo,heart.bookNo,bookEntity.bookName,heart.createdTm, heart.createdTm, bookEntity.bookAuthor,bookEntity.bookPublisher,bookEntity.bookImage))
                 .from(heart)
-                .where(heart.userNo.eq(userNo))
+                .where(
+                        heart.userNo.eq(userNo),
+                        ltHeartNo(heartNo)
+                )
                 .innerJoin(bookEntity)
                 .on(heart.bookNo.eq(bookEntity.bookCode))
+                .orderBy(heart.heartNo.desc())
+                .limit(pageSize)
                 .fetch()
                 ;
+
         return result;
+    }
+
+    private BooleanExpression ltHeartNo(Long heartNo){
+        if(heartNo==null){
+            return null;
+        }
+        return heart.heartNo.lt(heartNo);
     }
 
     @Override

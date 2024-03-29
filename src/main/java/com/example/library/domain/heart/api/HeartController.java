@@ -16,8 +16,8 @@ public class HeartController {
     private final HeartService heartService;
 
     @GetMapping("/hearts/{userNo}")
-    public ApiResponseDto getMyHeartList(@PathVariable Long userNo){
-        UserSelectHeartResDto userSelectHeartResDto = heartService.getMyHeartList(userNo);
+    public ApiResponseDto getMyHeartList(@PathVariable Long userNo,@RequestParam(required = false) Long heartNo, @RequestParam int pageSize){
+        UserSelectHeartResDto userSelectHeartResDto = heartService.getMyHeartList(heartNo,userNo,pageSize);
         return ApiResponseDto.createRes(ErrorCode.SUC, userSelectHeartResDto);
     }
 

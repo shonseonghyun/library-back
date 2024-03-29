@@ -25,9 +25,9 @@ public class HeartServiceImpl implements HeartService{
 
     @Override
     @Transactional(readOnly = true)
-    public UserSelectHeartResDto getMyHeartList(Long userNo) {
+    public UserSelectHeartResDto getMyHeartList(Long heartNo, Long userNo,int pageSize) {
         Events.raise(new CheckUserExistEvent(userNo));
-        List<HeartResponseDto.Response> heartResponseDtoList = heartRepository.findHeartsByUserNo(userNo);
+        List<HeartResponseDto.Response> heartResponseDtoList = heartRepository.findHeartsByUserNo(heartNo,userNo,pageSize);
 
         return UserSelectHeartResDto.builder()
                 .userNo(userNo)
