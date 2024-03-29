@@ -1,10 +1,8 @@
 package com.example.library.domain.rent.api;
 
 import com.example.library.domain.RestDocsSupport;
-import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.application.RentService;
-import com.example.library.domain.rent.application.dto.UserRentStatusResDto;
-import com.example.library.domain.rent.domain.RentHistory;
+import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -12,7 +10,6 @@ import org.springframework.security.test.context.support.WithMockUser;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.mockito.Mockito.when;
 import static org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders.get;
@@ -30,15 +27,12 @@ class RentControllerTest extends RestDocsSupport {
     void 유저_대여현황_가져오기() throws Exception {
         //given
         Long userNo=1L;
-        RentHistory rentHistory1 = new RentHistory(1L,1L,1L,1L,"20230301",null,"20230311",true, RentState.ON_RENT);
-        RentHistory rentHistory2 = new RentHistory(2L,1L,1L,2L,"20230301",null,"20230311",true, RentState.ON_RENT);
-        List<RentHistory> list = Arrays.asList(rentHistory1,rentHistory2);
-        List<UserRentStatusResDto> userRentStatusResDtos = list.stream()
-                        .map(rentHistory -> UserRentStatusResDto.from(rentHistory))
-                        .collect(Collectors.toList());
+        RentStatusResponseDto.Response response1 = new RentStatusResponseDto.Response(1L,"test1","20240329","20240401",true);
+        RentStatusResponseDto.Response response2 = new RentStatusResponseDto.Response(2L,"test1","20240329","20240401",true);
+        List<RentStatusResponseDto.Response> list = Arrays.asList(response1,response2);
 
         //when
-        when(rentService.getCurrentRentStatus(userNo)).thenReturn(userRentStatusResDtos);
+        when(rentService.getCurrentRentStatus(userNo)).thenReturn(list);
 
         //then
         mockMvc.perform(get("/rent/currentRentStatus/user/1")

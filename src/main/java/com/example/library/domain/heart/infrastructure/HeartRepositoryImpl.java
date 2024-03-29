@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import static com.example.library.domain.book.domain.QBookEntity.bookEntity;
 import static com.example.library.domain.heart.domain.QHeart.heart;
@@ -42,6 +43,10 @@ public class HeartRepositoryImpl implements HeartRepository {
         Heart entity = springDataJpaHeartRepository.findByUserNoAndBookNo(userNo,bookNo)
                 .orElseThrow(() -> new HeartBookNotFoundException(ErrorCode.HEARTNO_NOT_FOUND));
         return entity;
+    }
+
+    public Optional<Heart> getByUserNoAndBookNo(Long userNo, Long bookNo) {
+        return springDataJpaHeartRepository.findByUserNoAndBookNo(userNo,bookNo);
     }
 
     @Override

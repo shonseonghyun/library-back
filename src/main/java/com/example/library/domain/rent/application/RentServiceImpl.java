@@ -1,12 +1,11 @@
 package com.example.library.domain.rent.application;
 
-import com.example.library.domain.rent.application.dto.UserRentStatusResDto;
 import com.example.library.domain.rent.application.event.CheckedRentBookAvailableEvent;
 import com.example.library.domain.rent.application.event.RentedBookEvent;
 import com.example.library.domain.rent.application.event.ReturnedBookEvent;
-import com.example.library.domain.rent.domain.RentHistory;
 import com.example.library.domain.rent.domain.RentManager;
 import com.example.library.domain.rent.domain.RentRepository;
+import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import com.example.library.global.Events;
 import com.example.library.global.eventListener.SendedMailEvent;
 import com.example.library.global.mail.enums.MailType;
@@ -17,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -72,13 +70,9 @@ public class RentServiceImpl implements RentService{
         Events.raise(new SendedMailEvent(new MailDto(userNo,MailType.MAIL_EXTEND)));
     }
 
-    public List<UserRentStatusResDto> getCurrentRentStatus(Long userNo){
-        List<RentHistory> rentHistoryList = rentRepository.findUserRentStatus(userNo);
-        //★★★도서 제목 가져오는게 구현이 안되어있음
-        List<UserRentStatusResDto> userRentStatusResDtos = rentHistoryList.stream()
-                .map(rentHistory -> UserRentStatusResDto.from(rentHistory))
-                .collect(Collectors.toList());
-        return userRentStatusResDtos;
+    public List<RentStatusResponseDto.Response> getCurrentRentStatus(Long userNo){
+        List<RentStatusResponseDto.Response> rentStatusResponseDtoList = rentRepository.findUserRentStatus(userNo);
+        return rentStatusResponseDtoList;
     }
 
 }

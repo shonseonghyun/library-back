@@ -21,13 +21,13 @@ public class HeartController {
         return ApiResponseDto.createRes(ErrorCode.SUC, userSelectHeartResDto);
     }
 
-    @PostMapping("/user/{userNo}/heart/{bookNo}")
+    @PostMapping("/heart/{userNo}/book/{bookNo}")
     public ApiResponseDto heartBook(@PathVariable Long userNo,@PathVariable Long bookNo){
         heartService.registerHeartBook(userNo,bookNo);
         return ApiResponseDto.createRes(ErrorCode.SUC);
     }
 
-    @DeleteMapping("/user/{userNo}/heart/{bookNo}")
+    @DeleteMapping("/heart/{userNo}/book/{bookNo}")
     public ApiResponseDto removeHeartBook(@PathVariable Long userNo,@PathVariable Long bookNo) {
         heartService.removeHeartBook(userNo,bookNo);
         return ApiResponseDto.createRes(ErrorCode.SUC);

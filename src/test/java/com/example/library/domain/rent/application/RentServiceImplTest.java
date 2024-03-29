@@ -1,9 +1,7 @@
 package com.example.library.domain.rent.application;
 
-import com.example.library.domain.rent.enums.RentState;
-import com.example.library.domain.rent.application.dto.UserRentStatusResDto;
-import com.example.library.domain.rent.domain.RentHistory;
 import com.example.library.domain.rent.domain.RentRepository;
+import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -28,17 +26,17 @@ class RentServiceImplTest {
 
     @Test
     void 유저_대여현황_가져오기(){
-        RentHistory rentHistory1 = new RentHistory(1L,1L,1L,1L,"20230301",null,"20230311",true, RentState.ON_RENT);
-        RentHistory rentHistory2 = new RentHistory(2L,1L,1L,2L,"20230301",null,"20230311",true, RentState.ON_RENT);
-        List<RentHistory> list = Arrays.asList(rentHistory1,rentHistory2);
+        RentStatusResponseDto.Response response1 = new RentStatusResponseDto.Response(1L,"test1","20240329","20240401",true);
+        RentStatusResponseDto.Response response2 = new RentStatusResponseDto.Response(1L,"test1","20240329","20240401",true);
+        List<RentStatusResponseDto.Response> list = Arrays.asList(response1,response2);
 
         //given
         when(rentRepository.findUserRentStatus(1L)).thenReturn(list);
 
-        List<UserRentStatusResDto> userRentStatusResDtos = rentService.getCurrentRentStatus(1L);
-        System.out.println(userRentStatusResDtos.get(0));
-        System.out.println(userRentStatusResDtos.get(1));
-        Assertions.assertEquals(userRentStatusResDtos.size(),2);
+        List<RentStatusResponseDto.Response> selectedList = rentService.getCurrentRentStatus(1L);
+        System.out.println(list.get(0));
+        System.out.println(list.get(1));
+        Assertions.assertEquals(selectedList.size(),2);
 
     }
 }

@@ -1,24 +1,30 @@
 package com.example.library.domain.rent.infrastructure.repository;
 
-import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.domain.RentHistory;
 import com.example.library.domain.rent.domain.RentManager;
 import com.example.library.domain.rent.domain.RentRepository;
+import com.example.library.domain.rent.domain.dto.QRentStatusResponseDto_Response;
+import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
+import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.BookOnRentException;
 import com.example.library.exception.exceptions.RentManagerNotFoudException;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
-@Component
+import static com.example.library.domain.book.domain.QBookEntity.bookEntity;
+import static com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity.rentHistoryEntity;
+
+@Repository
 @RequiredArgsConstructor
 public class RentRepositoryImpl implements RentRepository {
 
+    private final JPAQueryFactory jpaQueryFactory;
     private final SpringDataJpaRentManagerRepository rentManagerRepository;
     private final SpringDataJpaRentHistoryRepository rentHistoryRepository;
 
@@ -54,12 +60,16 @@ public class RentRepositoryImpl implements RentRepository {
     }
 
     @Override
-    public List<RentHistory> findUserRentStatus(Long userNo) {
-        List<RentHistoryEntity> historyEntityList = rentHistoryRepository.findByUserNoAndRentState(userNo,RentState.ON_RENT);
-        List<RentHistory> historyDomains = historyEntityList.stream()
-                                            .map(historyEntity-> convert(historyEntity))
-                                            .collect(Collectors.toList());
-        return historyDomains;
+    public List<RentStatusResponseDto.Response> findUserRentStatus(Long userNo) {
+        List<RentStatusResponseDto.Response> result = jpaQueryFactory.select(new QRentStatusResponseDto_Response(rentHistoryEntity.bookNo,bookEntity.bookName,rentHistoryEntity.rentDt,rentHistoryEntity.haveToReturnDt,rentHistoryEntity.extensionFlg))
+                .from(rentHistoryEntity)
+                .where(rentHistoryEntity.userNo.eq(userNo))
+                .where(rentHistoryEntity.rentState.eq(RentState.ON_RENT))
+                .innerJoin(bookEntity)
+                .on(rentHistoryEntity.bookNo.eq(bookEntity.bookCode))
+                .fetch()
+                ;
+        return result;
     }
 
     private RentManager convert(RentManagerEntity entity){

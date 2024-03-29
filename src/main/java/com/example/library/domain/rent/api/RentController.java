@@ -1,7 +1,7 @@
 package com.example.library.domain.rent.api;
 
 import com.example.library.domain.rent.application.RentService;
-import com.example.library.domain.rent.application.dto.UserRentStatusResDto;
+import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import com.example.library.exception.ErrorCode;
 import com.example.library.global.response.ApiResponseDto;
 import lombok.RequiredArgsConstructor;
@@ -37,7 +37,7 @@ public class RentController {
 
     @GetMapping("/rent/currentRentStatus/user/{userNo}")
     public ApiResponseDto getCurrentRentStatus(@PathVariable Long userNo){
-        List<UserRentStatusResDto> lists = rentService.getCurrentRentStatus(userNo);
+        List<RentStatusResponseDto.Response> lists = rentService.getCurrentRentStatus(userNo);
         return ApiResponseDto.createRes(ErrorCode.SUC,lists);
     }
 

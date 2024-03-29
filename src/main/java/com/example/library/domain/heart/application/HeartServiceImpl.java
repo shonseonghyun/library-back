@@ -62,9 +62,9 @@ public class HeartServiceImpl implements HeartService{
     }
 
     private void checkAlreadyHeartBook(Long userNo, Long bookNo){
-       Heart heart = heartRepository.findByUserNoAndBookNo(userNo, bookNo);
-        if(heart != null){
-                    throw new HeartBookAlreadyException(ErrorCode.HEARTBOOK_ALREADY);
-        }
+       heartRepository.getByUserNoAndBookNo(userNo, bookNo)
+               .ifPresent(a->{
+                   throw new HeartBookAlreadyException(ErrorCode.HEARTBOOK_ALREADY);
+               });
     }
 }
