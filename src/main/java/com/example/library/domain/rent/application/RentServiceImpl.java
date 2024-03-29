@@ -1,14 +1,16 @@
 package com.example.library.domain.rent.application;
 
-import com.example.library.domain.book.domain.BookEntity;
-import com.example.library.domain.book.service.BookService;
 import com.example.library.domain.rent.application.dto.UserRentStatusResDto;
-import com.example.library.domain.rent.domain.*;
+import com.example.library.domain.rent.application.event.CheckedRentBookAvailableEvent;
+import com.example.library.domain.rent.application.event.RentedBookEvent;
+import com.example.library.domain.rent.application.event.ReturnedBookEvent;
+import com.example.library.domain.rent.domain.RentHistory;
+import com.example.library.domain.rent.domain.RentManager;
+import com.example.library.domain.rent.domain.RentRepository;
 import com.example.library.global.Events;
 import com.example.library.global.eventListener.SendedMailEvent;
 import com.example.library.global.mail.enums.MailType;
 import com.example.library.global.mail.mailHistory.MailDto;
-import com.example.library.global.mail.mailHistory.MailService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -22,9 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class RentServiceImpl implements RentService{
 
-    private final BookService bookService;   //도서도메인 외부API라고 가정
     private final RentRepository rentRepository;
-    private final MailService mailService;
 
     public void createRentManager(Long userNo){
         log.info(String.format("[createRentManager] rent Manager 생성: 유저번호[%s]",userNo.toString()));
@@ -42,10 +42,10 @@ public class RentServiceImpl implements RentService{
     @Override
     @Transactional
     public void rentBook(Long userNo,Long bookNo) {
-        BookEntity book = bookService.inquiryBook(bookNo);
         RentManager rentManager = rentRepository.findRentManagerByUserNo(userNo);
-        book.checkRentAvailable();
-        bookService.rentSuc(book.getBookCode());
+        //동시성은 어떻게 처리할까?
+        Events.raise(new CheckedRentBookAvailableEvent(bookNo)); //해당 메소드와 동일한 트랜잭션을 물고 잇다.
+        Events.raise(new RentedBookEvent(bookNo));
         rentManager.rentBook(bookNo);
         rentRepository.save(rentManager);
         Events.raise(new SendedMailEvent(new MailDto(userNo, MailType.MAIL_RENT)));
@@ -56,7 +56,7 @@ public class RentServiceImpl implements RentService{
     public void returnBook(Long userNo, Long bookNo) {
         RentManager rentManager = rentRepository.findRentManagerWithRentedBookHistory(userNo,bookNo);
         rentManager.returnBook();
-        bookService.returnSuc(bookNo);
+        Events.raise(new ReturnedBookEvent(bookNo));
         rentRepository.save(rentManager);
         Events.raise(new SendedMailEvent(new MailDto(userNo,MailType.MAIL_RETURN)));
     }
@@ -74,6 +74,7 @@ public class RentServiceImpl implements RentService{
 
     public List<UserRentStatusResDto> getCurrentRentStatus(Long userNo){
         List<RentHistory> rentHistoryList = rentRepository.findUserRentStatus(userNo);
+        //★★★도서 제목 가져오는게 구현이 안되어있음
         List<UserRentStatusResDto> userRentStatusResDtos = rentHistoryList.stream()
                 .map(rentHistory -> UserRentStatusResDto.from(rentHistory))
                 .collect(Collectors.toList());

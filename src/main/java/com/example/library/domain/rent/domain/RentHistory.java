@@ -1,6 +1,6 @@
 package com.example.library.domain.rent.domain;
 
-import com.example.library.domain.rent.RentState;
+import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
 import com.example.library.global.utils.DateUtil;
 import lombok.AllArgsConstructor;

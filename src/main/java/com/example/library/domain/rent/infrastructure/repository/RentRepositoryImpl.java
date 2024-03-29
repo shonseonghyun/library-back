@@ -1,6 +1,6 @@
 package com.example.library.domain.rent.infrastructure.repository;
 
-import com.example.library.domain.rent.RentState;
+import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.domain.RentHistory;
 import com.example.library.domain.rent.domain.RentManager;
 import com.example.library.domain.rent.domain.RentRepository;
@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
 
 @Component
 @RequiredArgsConstructor
-public class RentRepositoryAdapter implements RentRepository {
+public class RentRepositoryImpl implements RentRepository {
 
     private final SpringDataJpaRentManagerRepository rentManagerRepository;
     private final SpringDataJpaRentHistoryRepository rentHistoryRepository;

@@ -1,11 +1,8 @@
-package com.example.library.domain.rent.infrastructure;
+package com.example.library.domain.rent.application.infrastructure;
 
-import com.example.library.domain.rent.RentState;
-import com.example.library.domain.rent.domain.RentHistory;
-import com.example.library.domain.rent.domain.RentRepository;
+import com.example.library.config.QuerydslConfig;
+import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
-import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
-import com.example.library.domain.rent.infrastructure.repository.RentRepositoryAdapter;
 import com.example.library.domain.rent.infrastructure.repository.SpringDataJpaRentHistoryRepository;
 import com.example.library.domain.rent.infrastructure.repository.SpringDataJpaRentManagerRepository;
 import org.junit.jupiter.api.Assertions;
@@ -14,14 +11,13 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
-import org.springframework.stereotype.Repository;
+import org.springframework.context.annotation.Import;
 
 import java.util.List;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) //내 데이터베이스 쓰기
+@Import({ QuerydslConfig.class})
 class RentHistoryRepositoryTest {
 
     @Autowired

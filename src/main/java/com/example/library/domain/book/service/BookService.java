@@ -16,8 +16,4 @@ public interface BookService {
 
     //특정 도서 정보 조회
     BookEntity inquiryBook(Long bookCode);
-
-    void rentSuc(Long bookNo);
-
-    void returnSuc(Long bookNo);
 }

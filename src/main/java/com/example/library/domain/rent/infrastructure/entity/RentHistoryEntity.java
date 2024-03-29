@@ -1,6 +1,6 @@
 package com.example.library.domain.rent.infrastructure.entity;
 
-import com.example.library.domain.rent.RentState;
+import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.infrastructure.entity.converter.RentStateConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;

@@ -1,23 +1,24 @@
 package com.example.library.domain.user.service.Impl;
 
-import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.book.service.BookService;
+import com.example.library.domain.heart.domain.HeartRepository;
+import com.example.library.domain.heart.application.event.CheckUserExistEvent;
 import com.example.library.domain.rent.application.RentService;
 import com.example.library.domain.review.entity.ReviewEntity;
 import com.example.library.domain.review.repository.ReviewRepository;
 import com.example.library.domain.user.dto.*;
-import com.example.library.domain.user.entity.Heart;
 import com.example.library.domain.user.entity.UserEntity;
 import com.example.library.domain.user.enums.SocialLoginType;
 import com.example.library.domain.user.enums.UserGrade;
-import com.example.library.domain.user.repository.HeartRepository;
 import com.example.library.domain.user.repository.UserOpenFeignClient;
 import com.example.library.domain.user.repository.UserRepository;
 import com.example.library.domain.user.service.UserService;
-import com.example.library.domain.user.service.dto.HeartResponseDto;
 import com.example.library.domain.user.service.dto.UserRentStatusResDto;
 import com.example.library.exception.ErrorCode;
-import com.example.library.exception.exceptions.*;
+import com.example.library.exception.exceptions.PasswordDifferentException;
+import com.example.library.exception.exceptions.UserIdDuplicateException;
+import com.example.library.exception.exceptions.UserMailNotFoundException;
+import com.example.library.exception.exceptions.UserNotFoundException;
 import com.example.library.global.Events;
 import com.example.library.global.eventListener.SendedMailEvent;
 import com.example.library.global.mail.enums.MailType;
@@ -30,6 +31,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -153,11 +155,11 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     public void delete(String userId) {
         List<ReviewEntity> review = reviewRepository.findAllByUserUserId(userId);
         Long userNo = userRepository.findByUserId(userId).get().getUserNo();
-        List<Heart> heartList = heartRepository.findAllByUserUserNo(userNo);
-        entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
-        heartList.forEach((h) -> {
-            heartRepository.deleteByUserUserNo(userNo);
-        });
+//        List<Heart> heartList = heartRepository.findHeartsByUserNo(userNo);
+//        entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
+//        heartList.forEach((h) -> {
+//            heartRepository.deleteByUserUserNo(userNo);
+//        });
         review.forEach((r) -> {
             if (r.getUser().getUserId().equals(userId)) {
                 reviewRepository.update(userId, "unknown");
@@ -232,76 +234,7 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
         }
     }
 
-    @Override
-    @Transactional(readOnly = true)
-    public UserSelectHeartResDto getMyHeartList(Long userNo) {
-        //1. 유저번호로 유저 조회
-        UserEntity selectedUser = getUserByUserNoMethod(userNo);
-        List<Heart> heartList = selectedUser.getHeartList();
 
-        //2. 조회된 유저엔티티 내 연관매핑된 Heart엔티티들 dto로 변환 작업
-        List<HeartResponseDto> heartResponseDtoList = heartList.stream()
-                .map(HeartResponseDto::from)
-                .collect(Collectors.toList())
-            ;
-
-        log.info("유저번호["+userNo +"] / 찜도서 갯수["+heartResponseDtoList.size()+"권] 조회 성공");
-        return UserSelectHeartResDto.builder()
-                .userNo(userNo)
-                .heartList(heartResponseDtoList)
-                .build()
-                ;
-    }
-
-    @Override
-    @Transactional
-    public void registerHeartBook(Long userNo,Long bookNo) {
-        //1. 유저번호로 유저 조회
-        UserEntity selectedUser = getUserByUserNoMethod(userNo);
-        //2. 도서 존재 여부 조회
-        BookEntity selectedBook = bookService.inquiryBook(bookNo);
-        //3. 유저 도서 중복 찜 체크
-        checkAlreadyHeartBook(selectedUser,selectedBook);
-        //4. 하트 엔티티 생성
-        Heart heart = Heart.builder()
-                    .book(selectedBook)
-                    .user(selectedUser)
-                    .build()
-                ;
-        selectedUser.heartBook(heart);   // 해당 객체의 heartList에 새로운 heart엔티티가 추가되지 않는 문제.. 즉, 정합성 문제 발생
-        heartRepository.save(heart);
-        log.info("유저번호["+userNo +"] / 도서번호["+bookNo+"] 찜 성공");
-    }
-
-    @Override
-    @Transactional
-    public void removeHeartBook(Long userNo,Long bookNo) {
-        //1. 유저번호로 유저 조회
-        UserEntity selectedUser = getUserByUserNoMethod(userNo);
-        //2. 도서 존재 여부 조회
-        BookEntity selectedBook = bookService.inquiryBook(bookNo);
-
-        //2. 찜번호로 찜 엔티티 조회
-        Heart selectedHeart = heartRepository.findByUserAndBook(selectedUser,selectedBook)
-                .orElseThrow(() -> new HeartBookNotFoundException(ErrorCode.HEARTNO_NOT_FOUND));
-
-        heartRepository.deleteById(selectedHeart.getHeartNo());
-        log.info("유저번호[" + userNo + "] / 찜번호[" + selectedHeart.getHeartNo() + "] 찜 해제 성공");
-    }
-
-    /**
-     * 유저 특정 책 중복찜 체크
-     * @param user
-     * @param book
-     * @return throw HeartBookAlreadyException
-     */
-    private void checkAlreadyHeartBook(UserEntity user, BookEntity book){
-        heartRepository.findByUserAndBook(user, book)
-                .ifPresent(heart -> {
-                    throw new HeartBookAlreadyException(ErrorCode.HEARTBOOK_ALREADY);
-                })
-        ;
-    }
 
     /**
      * 유저번호로 유저엔티티 조회
@@ -317,5 +250,10 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
         UserEntity selectedUser = getUserByUserNoMethod(userNo);
         ApiResponseDto<List<UserRentStatusResDto>> response = userOpenFeignClient.getCurrentRentStatus(userNo);
         return response.getData();
+    }
+
+    @EventListener
+    public void checkUserExist(CheckUserExistEvent evt){
+        getUserByUserNoMethod(evt.getUserNo());
     }
 }

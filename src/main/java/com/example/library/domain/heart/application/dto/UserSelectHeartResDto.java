@@ -1,6 +1,5 @@
-package com.example.library.domain.user.dto;
+package com.example.library.domain.heart.application.dto;
 
-import com.example.library.domain.user.service.dto.HeartResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -12,6 +11,5 @@ import java.util.List;
 @Builder
 public class UserSelectHeartResDto {
     private Long userNo;
-
-    List<HeartResponseDto> heartList;
+    List<HeartResponseDto.Response> heartList;
 }

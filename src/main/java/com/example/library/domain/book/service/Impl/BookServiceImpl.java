@@ -6,10 +6,13 @@ import com.example.library.domain.book.enums.BookState;
 import com.example.library.domain.book.service.BookService;
 import com.example.library.domain.book.service.dto.BookAddDto;
 import com.example.library.domain.book.service.dto.BookDto;
+import com.example.library.domain.rent.application.event.CheckedRentBookAvailableEvent;
+import com.example.library.domain.rent.application.event.RentedBookEvent;
 import com.example.library.domain.review.repository.ReviewRepository;
-import com.example.library.domain.user.repository.HeartRepository;
+import com.example.library.domain.heart.domain.HeartRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -106,20 +109,31 @@ public class BookServiceImpl implements BookService {
         return bookRepository.findByBookNo(bookNo);
     }
 
-    @Override
-//    @Transactional //RentServiceImpl.rentBook 에서 트랜잭션 잡고 있으므로 패스
-    public void rentSuc(Long bookNo){
-        BookEntity selectedBook = inquiryBook(bookNo);
+//    @Transactional(propagation = Propagation.REQUIRES_NEW) //해당 메소드 내에서 더티체킹이 되지 않는다. 이걸 해주기 위해 해당 트랜잭션 Requries_new를 세팅한다.
+//    @TransactionalEventListener(value =  RentedSuccessEvent.class
+//            ,phase = TransactionPhase.AFTER_COMMIT
+//    ) //AfterComiit은 해당 메소드를 호출한 메소드의 트랜잭션이 완료된 이후 비동기로 해당 메소드를 진행한다
+    @EventListener
+    public void rentSuc(RentedBookEvent evt){
+        BookEntity selectedBook = inquiryBook(evt.getBookNo());
         selectedBook.rentSuc();
-        log.info("도서 상태 변경 완료");
     }
 
+    @EventListener
+    public void checkRentBookAvailable(CheckedRentBookAvailableEvent evt){
+        BookEntity selectedBook = inquiryBook(evt.getBookNo());
+        selectedBook.checkRentAvailable();
+    }
 
-    @Override
-    public void returnSuc(Long bookNo){
-        BookEntity selectedBook = inquiryBook(bookNo);
+    @EventListener
+    public void returnSuc(CheckedRentBookAvailableEvent evt){
+        BookEntity selectedBook = inquiryBook(evt.getBookNo());
         selectedBook.returnSuc();
-        log.info("도서 상태 변경 완료");
+    }
+
+    @EventListener
+    public void checkBookExist(Long bookNo){
+        inquiryBook(bookNo);
     }
 
 }

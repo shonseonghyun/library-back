@@ -1,6 +1,6 @@
 package com.example.library.domain.rent.infrastructure.repository;
 
-import com.example.library.domain.rent.RentState;
+import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 

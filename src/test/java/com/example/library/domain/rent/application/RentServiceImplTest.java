@@ -1,6 +1,6 @@
 package com.example.library.domain.rent.application;
 
-import com.example.library.domain.rent.RentState;
+import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.application.dto.UserRentStatusResDto;
 import com.example.library.domain.rent.domain.RentHistory;
 import com.example.library.domain.rent.domain.RentRepository;

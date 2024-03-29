@@ -1,4 +1,4 @@
-package com.example.library.domain.rent.domain;
+package com.example.library.domain.rent.application.event;
 
 import com.example.library.domain.book.service.BookService;
 import lombok.Getter;
@@ -22,11 +22,11 @@ public class RentedSuccessEventHandler {
 //    @EventListener(RentedSuccessEvent.class)
     @Async //즉 트랜잭션은 하나의 스레드에서만 관리(생성, 종료 등)될 수 있다.
     @Transactional(propagation = Propagation.REQUIRES_NEW) //해당 메소드 내에서 더티체킹이 되지 않는다. 이걸 해주기 위해 해당 트랜잭션 Requries_new를 세팅한다.
-    @TransactionalEventListener(value =  RentedSuccessEvent.class
+    @TransactionalEventListener(value =  RentedBookEvent.class
             ,phase = TransactionPhase.AFTER_COMMIT
     ) //AfterComiit은 해당 메소드를 호출한 메소드의 트랜잭션이 완료된 이후 비동기로 해당 메소드를 진행한다
-    public void handle(RentedSuccessEvent evt){
-        bookService.rentSuc(evt.getBookNo());
+    public void handle(RentedBookEvent evt){
+//        bookService.rentSuc(evt.getBookNo());
     }
 }
 

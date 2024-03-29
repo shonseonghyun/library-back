@@ -3,6 +3,7 @@ package com.example.library.domain.rent.domain;
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.exception.AppException;
 import com.example.library.exception.ErrorCode;
+import com.example.library.exception.exceptions.BookOnRentException;
 import com.example.library.exception.exceptions.ExceedMaximumRentNumberException;
 import com.example.library.exception.exceptions.ExtendNumberExceedException;
 import com.example.library.exception.exceptions.OverdueUserException;

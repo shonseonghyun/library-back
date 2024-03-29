@@ -42,3 +42,6 @@ out/
 **/src/main/resources/properties/oauth2.properties
 **/src/main/resources/properties/mail.properties
 **/src/main/resources/properties/logging.properties
+
+#static
+**/src/main/resources/static/docs/index.html

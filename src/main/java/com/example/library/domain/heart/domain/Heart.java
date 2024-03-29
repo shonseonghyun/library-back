@@ -1,6 +1,5 @@
-package com.example.library.domain.user.entity;
+package com.example.library.domain.heart.domain;
 
-import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.global.entityListener.Entity.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,20 +15,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Table(name = "heart")
 public class Heart extends BaseEntity {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long heartNo;
 
-    @ManyToOne()
-    @JoinColumn(name = "userNo")
-    private UserEntity user;
+    private Long userNo;
 
-    @ManyToOne
-    @JoinColumn(name = "bookCode")
-    private BookEntity book;
-
-    public void setUser(UserEntity user){
-        this.user = user;
-    }
+    private Long bookNo;
 }

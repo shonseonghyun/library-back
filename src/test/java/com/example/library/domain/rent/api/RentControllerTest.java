@@ -1,7 +1,7 @@
 package com.example.library.domain.rent.api;
 
 import com.example.library.domain.RestDocsSupport;
-import com.example.library.domain.rent.RentState;
+import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.application.RentService;
 import com.example.library.domain.rent.application.dto.UserRentStatusResDto;
 import com.example.library.domain.rent.domain.RentHistory;

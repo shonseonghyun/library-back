@@ -1,4 +1,4 @@
-package com.example.library.domain.rent;
+package com.example.library.domain.rent.enums;
 
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.RentStateNotFoundException;

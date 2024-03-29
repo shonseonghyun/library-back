@@ -9,7 +9,6 @@ import com.example.library.global.entityListener.Entity.ModifiedEntity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Size;
 import lombok.*;
-import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.DynamicInsert;
 
 import java.util.ArrayList;
@@ -52,10 +51,8 @@ public class UserEntity extends ModifiedEntity {
     @Column(name = "provider_id")
     private String providerId;
 
-    @ColumnDefault("'M'")
     private String gender;
 
-    @ColumnDefault("0")
     @Column(nullable = false)
     private Integer useFlg;
 
@@ -65,9 +62,6 @@ public class UserEntity extends ModifiedEntity {
 
     @OneToMany(mappedBy = "user")
     private List<ReviewEntity> review = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user")
-    private List<Heart> heartList = new ArrayList<>();
 
     @Builder(builderMethodName = "createOAuth2User", builderClassName = "createOAuth2User")
     public UserEntity (String userId, String userPwd, String userEmail, String userName, String providerId, SocialLoginType provider, Integer useFlg) {
@@ -79,10 +73,5 @@ public class UserEntity extends ModifiedEntity {
         this.provider = provider;
         this.userGrade = UserGrade.OFFICIALMEMBER;
         this.useFlg = 0;
-    }
-
-    public void heartBook(Heart heart) {
-        this.heartList.add(heart);
-//        heart.setUser(this); //Heart엔티티에서 선언(빌더 부분)하므로 주석처리
     }
 }
