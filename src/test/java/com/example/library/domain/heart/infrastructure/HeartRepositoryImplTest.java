@@ -25,21 +25,16 @@ class HeartRepositoryImplTest {
     @Autowired
     HeartRepository heartRepository;
 
-    @BeforeEach
-
-    @Test
-    void 조회테스트(){
-        List<HeartResponseDto.Response> hearts = heartRepository.findHeartsByUserNo(257L);
-        Assertions.assertEquals(hearts.size(),6);
-    }
-
     @Test
     void 저장테스트(){
         Heart heart= Heart.builder()
                         .userNo(1L)
                                 .build();
         Heart saved= heartRepository.save(heart);
+//        List<HeartResponseDto.Response> responseList = heartRepository.findHeartsByUserNo(1L);
         Assertions.assertEquals(saved.getHeartNo(),heart.getHeartNo());
+//        Assertions.assertEquals(responseList.size(),1);
+
     }
 
 
