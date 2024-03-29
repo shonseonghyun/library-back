@@ -31,10 +31,7 @@ class HeartRepositoryImplTest {
                         .userNo(1L)
                                 .build();
         Heart saved= heartRepository.save(heart);
-//        List<HeartResponseDto.Response> responseList = heartRepository.findHeartsByUserNo(1L);
         Assertions.assertEquals(saved.getHeartNo(),heart.getHeartNo());
-//        Assertions.assertEquals(responseList.size(),1);
-
     }
 
 
