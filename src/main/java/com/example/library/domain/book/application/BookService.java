@@ -1,7 +1,7 @@
-package com.example.library.domain.book.service;
+package com.example.library.domain.book.application;
 
-import com.example.library.domain.book.service.dto.BookAddDto;
-import com.example.library.domain.book.service.dto.BookDto;
+import com.example.library.domain.book.application.dto.BookAddDto;
+import com.example.library.domain.book.application.dto.BookDto;
 import com.example.library.domain.book.domain.BookEntity;
 
 public interface BookService {

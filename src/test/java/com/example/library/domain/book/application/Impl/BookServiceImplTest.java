@@ -1,4 +1,4 @@
-package com.example.library.domain.book.service.Impl;
+package com.example.library.domain.book.application.Impl;
 
 import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.book.enums.BookState;

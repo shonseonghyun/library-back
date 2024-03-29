@@ -1,9 +1,9 @@
 package com.example.library.domain.book.api;
 
 import com.example.library.domain.book.domain.BookEntity;
-import com.example.library.domain.book.service.BookService;
-import com.example.library.domain.book.service.dto.BookAddDto;
-import com.example.library.domain.book.service.dto.BookDto;
+import com.example.library.domain.book.application.BookService;
+import com.example.library.domain.book.application.dto.BookAddDto;
+import com.example.library.domain.book.application.dto.BookDto;
 import com.example.library.exception.ErrorCode;
 import com.example.library.global.response.ApiResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;

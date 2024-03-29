@@ -1,4 +1,4 @@
-package com.example.library.domain.book.service.dto;
+package com.example.library.domain.book.application.dto;
 
 import com.example.library.domain.book.domain.BookEntity;
 import jakarta.validation.constraints.NotNull;

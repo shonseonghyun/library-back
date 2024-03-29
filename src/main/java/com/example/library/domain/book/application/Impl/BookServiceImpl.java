@@ -1,11 +1,11 @@
-package com.example.library.domain.book.service.Impl;
+package com.example.library.domain.book.application.Impl;
 
 import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.book.domain.repository.BookRepository;
 import com.example.library.domain.book.enums.BookState;
-import com.example.library.domain.book.service.BookService;
-import com.example.library.domain.book.service.dto.BookAddDto;
-import com.example.library.domain.book.service.dto.BookDto;
+import com.example.library.domain.book.application.BookService;
+import com.example.library.domain.book.application.dto.BookAddDto;
+import com.example.library.domain.book.application.dto.BookDto;
 import com.example.library.domain.rent.application.event.CheckedRentBookAvailableEvent;
 import com.example.library.domain.rent.application.event.RentedBookEvent;
 import com.example.library.domain.review.repository.ReviewRepository;

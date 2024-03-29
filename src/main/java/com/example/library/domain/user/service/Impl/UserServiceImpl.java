@@ -1,6 +1,6 @@
 package com.example.library.domain.user.service.Impl;
 
-import com.example.library.domain.book.service.BookService;
+import com.example.library.domain.book.application.BookService;
 import com.example.library.domain.heart.domain.HeartRepository;
 import com.example.library.domain.heart.application.event.CheckUserExistEvent;
 import com.example.library.domain.rent.application.RentService;
@@ -53,9 +53,7 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
     private final RentService rentService;
-    private final BookService bookService;
     private final UserRepository userRepository;
-    private final HeartRepository heartRepository;
     private final ReviewRepository reviewRepository;
     private final BCryptPasswordEncoder encoder;
     private final UserOpenFeignClient userOpenFeignClient;

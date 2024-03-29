@@ -1,6 +1,6 @@
 package com.example.library.domain.rent.application.event;
 
-import com.example.library.domain.book.service.BookService;
+import com.example.library.domain.book.application.BookService;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
