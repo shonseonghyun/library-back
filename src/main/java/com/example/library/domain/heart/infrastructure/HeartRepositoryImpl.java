@@ -2,7 +2,7 @@ package com.example.library.domain.heart.infrastructure;
 
 import com.example.library.domain.heart.domain.Heart;
 import com.example.library.domain.heart.domain.HeartRepository;
-import com.example.library.domain.heart.application.dto.HeartResponseDto;
+import com.example.library.domain.heart.domain.HeartResponseDto;
 import com.example.library.domain.heart.application.dto.QHeartResponseDto_Response;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.HeartBookNotFoundException;

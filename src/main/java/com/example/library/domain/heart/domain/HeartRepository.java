@@ -1,7 +1,5 @@
 package com.example.library.domain.heart.domain;
 
-import com.example.library.domain.heart.application.dto.HeartResponseDto;
-
 import java.util.List;
 
 public interface HeartRepository {

@@ -1,4 +1,4 @@
-package com.example.library.domain.heart.application.dto;
+package com.example.library.domain.heart.domain;
 
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
