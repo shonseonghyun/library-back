@@ -2,7 +2,7 @@ package com.example.library.domain.heart.infrastructure;
 
 import com.example.library.domain.heart.domain.Heart;
 import com.example.library.domain.heart.domain.HeartRepository;
-import com.example.library.domain.heart.domain.HeartResponseDto;
+import com.example.library.domain.heart.domain.dto.HeartResponseDto;
 import com.example.library.domain.heart.application.dto.QHeartResponseDto_Response;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.HeartBookNotFoundException;
@@ -26,7 +26,7 @@ public class HeartRepositoryImpl implements HeartRepository {
     private final SpringDataJpaHeartRepository springDataJpaHeartRepository;
 
     @Override
-    public List<HeartResponseDto.Response> findHeartsByUserNo(long userNo) {
+    public List<HeartResponseDto.Response> findHeartsByUserNo(Long userNo) {
         List<HeartResponseDto.Response> result = jpaQueryFactory.select(new QHeartResponseDto_Response(heart.heartNo,heart.userNo,heart.bookNo,bookEntity.bookName,heart.createdTm, heart.createdTm, bookEntity.bookAuthor,bookEntity.bookPublisher,bookEntity.bookImage))
                 .from(heart)
                 .where(heart.userNo.eq(userNo))

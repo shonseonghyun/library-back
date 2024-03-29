@@ -3,7 +3,7 @@ package com.example.library.domain.heart.infrastructure;
 import com.example.library.config.QuerydslConfig;
 import com.example.library.domain.heart.domain.Heart;
 import com.example.library.domain.heart.domain.HeartRepository;
-import com.example.library.domain.heart.domain.HeartResponseDto;
+import com.example.library.domain.heart.domain.dto.HeartResponseDto;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

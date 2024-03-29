@@ -1,6 +1,6 @@
 package com.example.library.domain.heart.application.dto;
 
-import com.example.library.domain.heart.domain.HeartResponseDto;
+import com.example.library.domain.heart.domain.dto.HeartResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
