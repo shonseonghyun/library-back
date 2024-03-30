@@ -16,12 +16,7 @@ public interface UserService {
     UserSearchResDto update(Long userNo, UserUpdateDto userUpdateDto);
     void delete(Long userNo);
     List<UserSearchResDto> getAllUsers();
-
-    //찜 관련
-
-
-    //대여 관련
-    //현재 대여목록 보기
     List<UserRentStatusResDto> getCurrentRentStatus(Long userNo);
+    boolean checkExistUserId(String userId);
 
 }

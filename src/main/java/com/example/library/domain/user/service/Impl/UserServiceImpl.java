@@ -14,7 +14,6 @@ import com.example.library.domain.user.service.dto.UserRentStatusResDto;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.PasswordDifferentException;
 import com.example.library.exception.exceptions.UserIdDuplicateException;
-import com.example.library.exception.exceptions.UserMailNotFoundException;
 import com.example.library.exception.exceptions.UserNotFoundException;
 import com.example.library.global.Events;
 import com.example.library.global.eventListener.SendedMailEvent;
@@ -114,14 +113,6 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
                 .orElseThrow(() -> new UserNotFoundException(ErrorCode.USERID_NOT_FOUND));
 
         return userEntity.getUserGrade();
-    }
-
-    @Transactional(readOnly = true)
-    public String getUserNameByEmail(String userEmail) {
-        UserEntity userEntity = userRepository.findByUserEmail(userEmail)
-                .orElseThrow(() -> new UserMailNotFoundException(ErrorCode.MAIL_NOT_FOUND));
-
-        return UserSearchResDto.from(userEntity).getUserName();
     }
 
     @Override
@@ -231,6 +222,11 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
         UserEntity selectedUser = getUserByUserNoMethod(userNo);
         ApiResponseDto<List<UserRentStatusResDto>> response = userOpenFeignClient.getCurrentRentStatus(userNo);
         return response.getData();
+    }
+
+    @Override
+    public boolean checkExistUserId(String userId) {
+        return userRepository.findByUserId(userId).isEmpty() ? false : true;
     }
 
     @EventListener

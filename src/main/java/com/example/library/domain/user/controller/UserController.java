@@ -12,7 +12,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 
 @Slf4j
@@ -65,9 +64,15 @@ public class UserController {
         return ApiResponseDto.createRes(ErrorCode.SUC, userSearchResDtos);
     }
 
-    @GetMapping("/myLibrary/rentStatus/{userNo}")
+    @GetMapping("/rentStatus/{userNo}")
     public ApiResponseDto getRentStatus(@PathVariable Long userNo){
         List<UserRentStatusResDto> userRentStatusResDtos = userService.getCurrentRentStatus(userNo);
         return ApiResponseDto.createRes(ErrorCode.SUC,userRentStatusResDtos);
+    }
+
+    @GetMapping("/userId/{userId}/exist")
+    public ApiResponseDto checkExistUserId(@PathVariable String userId){
+        boolean existFlg = userService.checkExistUserId(userId);
+        return ApiResponseDto.createRes(ErrorCode.SUC,existFlg);
     }
 }

@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     try {
                         auth
-                            .requestMatchers("/user/login", "/user/join").permitAll()
+                            .requestMatchers("/user/login", "/user/join","/user/userId/**").permitAll()
                             .requestMatchers("/admin/**").hasAuthority(UserGrade.ADMIN.getUserGradeInString())
                             .requestMatchers("/user/**", "/review/write/**","/rent/**").hasAuthority(UserGrade.OFFICIALMEMBER.getUserGradeInString())
                             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/docs/**","/error-code/**", "/book/**", "/review/**").permitAll()
