@@ -11,5 +11,8 @@ public interface HeartRepository {
     Heart save(Heart heart);
     void deleteById(Long heartNo);
     Optional<Heart> getByUserNoAndBookNo(Long userNo, Long bookNo) ;
+    void deleteByUserNoAndBookNo(Long userNo,Long bookNo);
+    void deleteByUserNo(Long userNo);
+
 
  }

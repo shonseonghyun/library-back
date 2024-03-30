@@ -20,4 +20,8 @@ public interface SpringDataJpaHeartRepository extends JpaRepository<Heart, Long>
     @Modifying
     @Query(value = "delete from Heart h where h.userNo = :userNo")
     void deleteByUserUserNo(Long userNo);
+
+    void deleteByUserNoAndBookNo(Long userNo,Long bookNo);
+    void deleteByUserNo(Long userNo);
+
 }

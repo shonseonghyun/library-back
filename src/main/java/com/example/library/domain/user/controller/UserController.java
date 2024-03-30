@@ -53,9 +53,9 @@ public class UserController {
         return ApiResponseDto.createRes(ErrorCode.SUC, userSearchResDto);
     }
 
-    @DeleteMapping("/delete/{userId}")
-    public ApiResponseDto delete(@PathVariable("userId") String userId) {
-        userService.delete(userId);
+    @DeleteMapping("/delete/{userNo}")
+    public ApiResponseDto delete(@PathVariable("userNo") Long userNo) {
+        userService.delete(userNo);
         return ApiResponseDto.createRes(ErrorCode.SUC);
     }
 

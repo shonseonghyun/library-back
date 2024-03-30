@@ -6,14 +6,19 @@ import com.example.library.domain.rent.application.event.ReturnedBookEvent;
 import com.example.library.domain.rent.domain.RentManager;
 import com.example.library.domain.rent.domain.RentRepository;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
+import com.example.library.domain.user.entity.event.UserDeletedEvent;
 import com.example.library.global.Events;
 import com.example.library.global.eventListener.SendedMailEvent;
 import com.example.library.global.mail.enums.MailType;
 import com.example.library.global.mail.mailHistory.MailDto;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 
@@ -73,6 +78,14 @@ public class RentServiceImpl implements RentService{
     public List<RentStatusResponseDto.Response> getCurrentRentStatus(Long userNo){
         List<RentStatusResponseDto.Response> rentStatusResponseDtoList = rentRepository.findUserRentStatus(userNo);
         return rentStatusResponseDtoList;
+    }
+
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void userDeletedEventHandle(UserDeletedEvent evt){
+        log.info("비동기 userDeletedEventHandle - Rent");
+        rentRepository.deleteByUserNo(evt.getUserNo()); //만약 heart삭제 시 에러 나면 롤백되나?
     }
 
 }

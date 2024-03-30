@@ -65,6 +65,16 @@ public class HeartRepositoryImpl implements HeartRepository {
     }
 
     @Override
+    public void deleteByUserNoAndBookNo(Long userNo, Long bookNo) {
+        springDataJpaHeartRepository.deleteByUserNoAndBookNo(userNo,bookNo);
+    }
+
+    @Override
+    public void deleteByUserNo(Long userNo) {
+        springDataJpaHeartRepository.deleteByUserNo(userNo);
+    }
+
+    @Override
     public Heart save(Heart heart) {
         return springDataJpaHeartRepository.save(heart);
     }

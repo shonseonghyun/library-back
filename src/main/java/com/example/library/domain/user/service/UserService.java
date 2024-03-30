@@ -14,7 +14,7 @@ public interface UserService {
     UserSearchResDto getUserByUserId(String userId);
     UserGrade getUserGrade(String userId);
     UserSearchResDto update(Long userNo, UserUpdateDto userUpdateDto);
-    void delete(String userId);
+    void delete(Long userNo);
     List<UserSearchResDto> getAllUsers();
 
     //찜 관련

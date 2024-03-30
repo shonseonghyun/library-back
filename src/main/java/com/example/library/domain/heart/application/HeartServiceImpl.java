@@ -6,13 +6,19 @@ import com.example.library.domain.heart.domain.dto.HeartResponseDto;
 import com.example.library.domain.heart.application.dto.UserSelectHeartResDto;
 import com.example.library.domain.heart.application.event.CheckBookExistEvent;
 import com.example.library.domain.heart.application.event.CheckUserExistEvent;
+import com.example.library.domain.user.entity.event.UserDeletedEvent;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.HeartBookAlreadyException;
 import com.example.library.global.Events;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 import java.util.List;
 
@@ -57,8 +63,9 @@ public class HeartServiceImpl implements HeartService{
     public void removeHeartBook(Long userNo,Long bookNo) {
         Events.raise(new CheckUserExistEvent(userNo));
         Events.raise(new CheckBookExistEvent(bookNo));
-        Heart selectedHeart = heartRepository.findByUserNoAndBookNo(userNo,bookNo);
-        heartRepository.deleteById(selectedHeart.getHeartNo());
+//        Heart selectedHeart = heartRepository.findByUserNoAndBookNo(userNo,bookNo);
+//        heartRepository.deleteById(selectedHeart.getHeartNo());
+        heartRepository.deleteByUserNoAndBookNo(userNo,bookNo);
     }
 
     private void checkAlreadyHeartBook(Long userNo, Long bookNo){
@@ -66,5 +73,13 @@ public class HeartServiceImpl implements HeartService{
                .ifPresent(a->{
                    throw new HeartBookAlreadyException(ErrorCode.HEARTBOOK_ALREADY);
                });
+    }
+
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void userDeletedEventHandle(UserDeletedEvent evt){
+        log.info("비동기 userDeletedEventHandle - Heart");
+        heartRepository.deleteByUserNo(evt.getUserNo()); //만약 heart삭제 시 에러 나면 롤백되나?
     }
 }

@@ -72,6 +72,12 @@ public class RentRepositoryImpl implements RentRepository {
         return result;
     }
 
+    @Override
+    public void deleteByUserNo(Long userNo) {
+        rentManagerRepository.deleteByUserNo(userNo);
+        rentHistoryRepository.deleteByUserNo(userNo);
+    }
+
     private RentManager convert(RentManagerEntity entity){
         return RentManager.by(entity);
     }

@@ -1,13 +1,10 @@
 package com.example.library.domain.user.service.Impl;
 
-import com.example.library.domain.book.application.BookService;
-import com.example.library.domain.heart.domain.HeartRepository;
 import com.example.library.domain.heart.application.event.CheckUserExistEvent;
 import com.example.library.domain.rent.application.RentService;
-import com.example.library.domain.review.entity.ReviewEntity;
-import com.example.library.domain.review.repository.ReviewRepository;
 import com.example.library.domain.user.dto.*;
 import com.example.library.domain.user.entity.UserEntity;
+import com.example.library.domain.user.entity.event.UserDeletedEvent;
 import com.example.library.domain.user.enums.SocialLoginType;
 import com.example.library.domain.user.enums.UserGrade;
 import com.example.library.domain.user.repository.UserOpenFeignClient;
@@ -27,8 +24,6 @@ import com.example.library.global.response.ApiResponseDto;
 import com.example.library.global.security.oauth2.principal.CustomOAuth2User;
 import com.example.library.global.security.oauth2.userInfo.CustomOAuthAttributes;
 import com.example.library.global.utils.JwtUtil;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -54,11 +49,8 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
 
     private final RentService rentService;
     private final UserRepository userRepository;
-    private final ReviewRepository reviewRepository;
     private final BCryptPasswordEncoder encoder;
     private final UserOpenFeignClient userOpenFeignClient;
-    @PersistenceContext
-    private EntityManager entityManager;
 
     @Transactional
     public void join(UserJoinReqDto userJoinReqDto) {
@@ -150,21 +142,12 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
 
     @Override
     @Transactional
-    public void delete(String userId) {
-        List<ReviewEntity> review = reviewRepository.findAllByUserUserId(userId);
-        Long userNo = userRepository.findByUserId(userId).get().getUserNo();
-//        List<Heart> heartList = heartRepository.findHeartsByUserNo(userNo);
-//        entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 0").executeUpdate();
-//        heartList.forEach((h) -> {
-//            heartRepository.deleteByUserUserNo(userNo);
-//        });
-        review.forEach((r) -> {
-            if (r.getUser().getUserId().equals(userId)) {
-                reviewRepository.update(userId, "unknown");
-            }
-        });
-        userRepository.deleteByUserId(userId);
-        entityManager.createNativeQuery("SET FOREIGN_KEY_CHECKS = 1").executeUpdate();
+    public void delete(Long userNo) {
+        getUserByUserNoMethod(userNo);
+        userRepository.deleteByUserNo(userNo);
+        Events.raise(new UserDeletedEvent(userNo));
+        Events.raise(new SendedMailEvent(new MailDto(userNo, MailType.MAIL_DELETE)));
+
     }
 
     @Override

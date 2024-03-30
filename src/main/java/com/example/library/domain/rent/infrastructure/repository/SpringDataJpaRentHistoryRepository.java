@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface SpringDataJpaRentHistoryRepository extends JpaRepository<RentHistoryEntity,Long> {
     Optional<RentHistoryEntity> findByUserNoAndBookNoAndRentState(Long userNo, Long bookNo, RentState rentState);
     List<RentHistoryEntity> findByUserNoAndRentState(Long userNo, RentState rentState);
+    void deleteByUserNo(Long userNo);
 }

@@ -13,8 +13,9 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByUserNo(Long userNo);
     UserEntity findByProviderAndProviderIdAndUserEmail(SocialLoginType socialLoginType, String providerId, String userEmail);
     Optional<UserEntity> findByUserEmail(String userEmail);
-    @Modifying
-    @Query(value = "delete from UserEntity u where u.userId = :userId")
-    void deleteByUserId(String userId);
+//    @Modifying
+//    @Query(value = "delete from UserEntity u where u.userId = :userId")
+//    void deleteByUserId(String userId);
+    void deleteByUserNo(Long userNo);
 
 }

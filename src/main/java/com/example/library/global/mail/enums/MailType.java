@@ -49,8 +49,13 @@ public enum MailType implements MailContentInterface{
         public String getContent(String userId, String contentForm) {
             return String.format(contentForm, userId);
         }
-    }
-    ;
+    },
+    MAIL_DELETE("DELETE","회원 탈퇴" ) {
+        @Override
+        public String getContent(String userId, String contentForm) {
+            return String.format(contentForm,userId);
+        }
+    };
 
 
     private final String type;
