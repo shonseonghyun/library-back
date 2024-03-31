@@ -2,7 +2,7 @@ package com.example.library.config;
 
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.global.Events;
-import com.example.library.global.eventListener.SendedMailEvent;
+import com.example.library.global.event.SendedMailEvent;
 import com.example.library.global.mail.enums.MailType;
 import com.example.library.global.mail.mailHistory.MailDto;
 import jakarta.persistence.EntityManagerFactory;

@@ -7,8 +7,9 @@ import com.example.library.domain.rent.domain.RentManager;
 import com.example.library.domain.rent.domain.RentRepository;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import com.example.library.domain.user.entity.event.UserDeletedEvent;
+import com.example.library.domain.user.service.event.UserJoinedEvent;
 import com.example.library.global.Events;
-import com.example.library.global.eventListener.SendedMailEvent;
+import com.example.library.global.event.SendedMailEvent;
 import com.example.library.global.mail.enums.MailType;
 import com.example.library.global.mail.mailHistory.MailDto;
 import lombok.RequiredArgsConstructor;
@@ -29,17 +30,7 @@ public class RentServiceImpl implements RentService{
 
     private final RentRepository rentRepository;
 
-    public void createRentManager(Long userNo){
-        log.info(String.format("[createRentManager] rent Manager 생성: 유저번호[%s]",userNo.toString()));
 
-        RentManager rentManager = RentManager.createRentManager()
-                .userNo(userNo)
-                .build()
-                ;
-        rentRepository.save(rentManager);
-
-        log.info("[createRentManager] rent Manager 생성 완료");
-    }
 
     //두 개의 에그리거트가 변경되므로 응용서비스에 각각 변경되야할 각 애그리거트로 진행
     @Override
@@ -84,8 +75,24 @@ public class RentServiceImpl implements RentService{
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void userDeletedEventHandle(UserDeletedEvent evt){
-        log.info("비동기 userDeletedEventHandle - Rent");
         rentRepository.deleteByUserNo(evt.getUserNo()); //만약 heart삭제 시 에러 나면 롤백되나?
+    }
+
+    @Async
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+    public void userJoinedEventHandler(UserJoinedEvent evt){
+        this.createRentManager(evt.getUserNo());
+    }
+
+    private void createRentManager(Long userNo){
+        log.info(String.format("[createRentManager] rent Manager 생성: 유저번호[%s]",userNo.toString()));
+        RentManager rentManager = RentManager.createRentManager()
+                .userNo(userNo)
+                .build()
+                ;
+        rentRepository.save(rentManager);
+        log.info("[createRentManager] rent Manager 생성 완료");
     }
 
 }

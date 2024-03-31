@@ -11,12 +11,12 @@ import com.example.library.domain.user.repository.UserOpenFeignClient;
 import com.example.library.domain.user.repository.UserRepository;
 import com.example.library.domain.user.service.UserService;
 import com.example.library.domain.user.service.dto.UserRentStatusResDto;
+import com.example.library.domain.user.service.event.UserJoinedEvent;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.PasswordDifferentException;
-import com.example.library.exception.exceptions.UserIdDuplicateException;
 import com.example.library.exception.exceptions.UserNotFoundException;
 import com.example.library.global.Events;
-import com.example.library.global.eventListener.SendedMailEvent;
+import com.example.library.global.event.SendedMailEvent;
 import com.example.library.global.mail.enums.MailType;
 import com.example.library.global.mail.mailHistory.MailDto;
 import com.example.library.global.response.ApiResponseDto;
@@ -39,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -53,10 +54,6 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
 
     @Transactional
     public void join(UserJoinReqDto userJoinReqDto) {
-        userRepository.findByUserId(userJoinReqDto.getUserId()).ifPresent(user -> {
-            throw new UserIdDuplicateException(ErrorCode.USERID_DUPLICATED);
-        });
-
         UserEntity user = UserEntity.createOfficialUser()
                 .userId(userJoinReqDto.getUserId())
                 .userPwd(encoder.encode(userJoinReqDto.getUserPwd()))
@@ -69,16 +66,14 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
                 .build()
         ;
 
-        userRepository.save(user);
-        rentService.createRentManager(user.getUserNo());
-
+        UserEntity saved= userRepository.save(user);
+        Events.raise(new UserJoinedEvent(saved.getUserNo()));
         Events.raise(new SendedMailEvent(new MailDto(user.getUserNo(), MailType.MAIL_JOIN)));
     }
 
     @Transactional(readOnly = true)
     public UserLoginResDto login(UserLoginReqDto userLoginReqDto) {
-        UserEntity selectedUser = userRepository.findByUserId(userLoginReqDto.getUserId())
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USERID_NOT_FOUND));
+        UserEntity selectedUser = getUserEntityByUserId(userLoginReqDto.getUserId());
 
         if(!encoder.matches(userLoginReqDto.getUserPwd(), selectedUser.getUserPwd())) {
             throw new PasswordDifferentException(ErrorCode.PASSWORD_DIFFERNET);
@@ -93,51 +88,37 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     @Override
     @Transactional(readOnly = true)
     public UserSearchResDto getUserByUserNo(Long userNo) {
-        UserEntity userEntity = userRepository.findByUserNo(userNo)
-                .orElseThrow(()->new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
-
+        UserEntity userEntity = getUserEntityByUserNo(userNo);
         return UserSearchResDto.from(userEntity);
     }
 
     @Override
     @Transactional(readOnly = true)
     public UserSearchResDto getUserByUserId(String userId) {
-        UserEntity userEntity = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USERID_NOT_FOUND));
+        UserEntity userEntity = getUserEntityByUserId(userId);
         return UserSearchResDto.from(userEntity);
-    }
-
-    @Override
-    public UserGrade getUserGrade(String userId) {
-        UserEntity userEntity = userRepository.findByUserId(userId)
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USERID_NOT_FOUND));
-
-        return userEntity.getUserGrade();
     }
 
     @Override
     @Transactional
     public UserSearchResDto update(Long userNo, UserUpdateDto userUpdateDto) {
-        UserEntity selectedUser = userRepository.findByUserNo(userNo)
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USERID_NOT_FOUND));
-
+        UserEntity selectedUser = getUserEntityByUserNo(userNo);
         selectedUser.setUserPwd(encoder.encode(userUpdateDto.getUserPwd()));
         selectedUser.setUserName(userUpdateDto.getUserName());
         selectedUser.setTel(userUpdateDto.getTel());
         selectedUser.setUserEmail(userUpdateDto.getEmail());
         selectedUser.setGender(userUpdateDto.getGender());
         selectedUser.setUseFlg(userUpdateDto.getUseFlg());
-
         return UserSearchResDto.from(selectedUser);
     }
 
     @Override
     @Transactional
     public void delete(Long userNo) {
-        getUserByUserNoMethod(userNo);
+        UserEntity selectedUser = getUserEntityByUserNo(userNo);
         userRepository.deleteByUserNo(userNo);
         Events.raise(new UserDeletedEvent(userNo));
-        Events.raise(new SendedMailEvent(new MailDto(userNo, MailType.MAIL_DELETE)));
+        Events.raise(new SendedMailEvent(new MailDto(userNo, selectedUser.getUserId(),selectedUser.getUserEmail(), MailType.MAIL_DELETE)));
 
     }
 
@@ -145,7 +126,6 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     @Transactional(readOnly = true)
     public List<UserSearchResDto> getAllUsers() {
         List<UserEntity> user = userRepository.findAll();
-
         return user.stream()
                 .map(m -> new UserSearchResDto(
                         m.getUserNo(), m.getUserId(), m.getUserName(), m.getTel(), m.getUserEmail(), m.getProvider(),
@@ -156,6 +136,7 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     }
 
     @Override
+    @Transactional
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         /*
          * DefaultOAut2UserService 객체 생성 후 해당 객체를 통하여 loadUser메소드를 통해 OAuth2User 반환
@@ -177,7 +158,7 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
 
 
         //2. 당사 존재 여부 파악 (조회 조건: 소셜플랫폼 종류, email, socialId )
-        UserEntity saved = userRepository.findByProviderAndProviderIdAndUserEmail
+        Optional<UserEntity> saved = userRepository.findByProviderAndProviderIdAndUserEmail
                 (
                     socialLoginType,
                     customOAuthAttributes.getOAuthUserInfo().getProviderId(),
@@ -185,7 +166,7 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
                 );
 
         //3. 존재하지 않는 경우 자동 회원가입/ 존재하는 경우 패스
-        if(saved == null){
+        if(saved.isEmpty()){
             UserEntity userEntityBySocialLogin = CustomOAuthAttributes.toEntity(socialLoginType, customOAuthAttributes.getOAuthUserInfo());
             UserEntity savedUserEntityBySocialLogin = userRepository.save(userEntityBySocialLogin);
 
@@ -201,25 +182,20 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
                         Collections.singleton(new SimpleGrantedAuthority("ROLE")),
                         oAuth2User.getAttributes(),
                         userNameAttributeName,
-                        saved
+                        saved.get()
                     );
         }
     }
 
-
-
-    /**
-     * 유저번호로 유저엔티티 조회
-     * @param userNo
-     * @return throw UserNotFoundException
-     */
-    private UserEntity getUserByUserNoMethod(Long userNo) {
-        return userRepository.findByUserNo(userNo)
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
+    @Override
+    @Transactional(readOnly = true)
+    public UserGrade getUserGrade(String userId) {
+        UserEntity userEntity = getUserEntityByUserId(userId);
+        return userEntity.getUserGrade();
     }
 
     public List<UserRentStatusResDto> getCurrentRentStatus(Long userNo){
-        UserEntity selectedUser = getUserByUserNoMethod(userNo);
+        UserEntity selectedUser = getUserEntityByUserNo(userNo);
         ApiResponseDto<List<UserRentStatusResDto>> response = userOpenFeignClient.getCurrentRentStatus(userNo);
         return response.getData();
     }
@@ -229,8 +205,23 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
         return userRepository.findByUserId(userId).isEmpty() ? false : true;
     }
 
+    /**
+     * 유저번호로 유저엔티티 조회
+     * @param userNo
+     * @return throw UserNotFoundException
+     */
+    private UserEntity getUserEntityByUserNo(Long userNo) {
+        return userRepository.findByUserNo(userNo)
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
+    }
+
+    private UserEntity getUserEntityByUserId(String userId) {
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USERID_NOT_FOUND));
+    }
+
     @EventListener
     public void checkUserExist(CheckUserExistEvent evt){
-        getUserByUserNoMethod(evt.getUserNo());
+        getUserEntityByUserNo(evt.getUserNo());
     }
 }

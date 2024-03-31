@@ -1,4 +1,4 @@
-package com.example.library.global.eventListener;
+package com.example.library.global.event;
 
 import com.example.library.global.mail.mailHistory.MailDto;
 import lombok.AllArgsConstructor;
