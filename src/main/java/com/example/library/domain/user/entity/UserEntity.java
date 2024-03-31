@@ -29,15 +29,12 @@ public class UserEntity extends ModifiedEntity {
     private Long userNo;
 
     @Column(nullable = false, unique = true)
-    @Size(min = 4, max = 15, message = "이름은 4글자 이상, 15글자 이하로 입력해주세요.")
     private String userId;
 
     @Column(nullable = false)
-//    @Size(min = 6, max = 15, message = "이름은 6글자 이상, 15글자 이하로 입력해주세요.")
     private String userPwd;
 
     @Column(nullable = false)
-    @Size(min = 2, max = 5, message = "이름은 2글자 이상, 5글자 이하로 입력해주세요.")
     private String userName;
 
     private String tel;
@@ -60,7 +57,14 @@ public class UserEntity extends ModifiedEntity {
     @Convert(converter = UserGradeConverter.class)
     private UserGrade userGrade;
 
-    @OneToMany(mappedBy = "user")
+    @OneToMany(
+            cascade = {CascadeType.MERGE //유저엔티티를 통한 리뷰엔티티리스트 내 추가할 때 필요
+                    ,CascadeType.PERSIST //reviewNo를 알고 있는 UserEntitiy가 저장되는 시점에 리뷰에 대한 정보도 함꼐 저장
+            } //PERSIST 대신 MERGE나 ALL 가능
+            ,orphanRemoval = true
+
+    )
+    @JoinColumn(name = "user_no",updatable = false,nullable = false)
     private List<ReviewEntity> review = new ArrayList<>();
 
     @Builder(builderMethodName = "createOAuth2User", builderClassName = "createOAuth2User")
@@ -72,6 +76,6 @@ public class UserEntity extends ModifiedEntity {
         this.providerId = providerId;
         this.provider = provider;
         this.userGrade = UserGrade.OFFICIALMEMBER;
-        this.useFlg = 0;
+        this.useFlg = useFlg;
     }
 }

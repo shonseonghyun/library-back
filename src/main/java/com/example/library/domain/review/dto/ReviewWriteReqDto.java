@@ -8,7 +8,7 @@ import lombok.*;
 @AllArgsConstructor
 @ToString
 @Builder
-public class ReviewWriteDto {
+public class ReviewWriteReqDto {
     @NotNull
     private String reviewContent;
 }

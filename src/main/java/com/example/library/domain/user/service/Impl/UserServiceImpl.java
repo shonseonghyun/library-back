@@ -1,7 +1,6 @@
 package com.example.library.domain.user.service.Impl;
 
 import com.example.library.domain.heart.application.event.CheckUserExistEvent;
-import com.example.library.domain.rent.application.RentService;
 import com.example.library.domain.user.dto.*;
 import com.example.library.domain.user.entity.UserEntity;
 import com.example.library.domain.user.entity.event.UserDeletedEvent;
@@ -11,6 +10,7 @@ import com.example.library.domain.user.repository.UserOpenFeignClient;
 import com.example.library.domain.user.repository.UserRepository;
 import com.example.library.domain.user.service.UserService;
 import com.example.library.domain.user.service.dto.UserRentStatusResDto;
+import com.example.library.domain.user.service.dto.UserReviewsResDto;
 import com.example.library.domain.user.service.event.UserJoinedEvent;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.PasswordDifferentException;
@@ -47,7 +47,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2UserRequest, OAuth2User> {
 
-    private final RentService rentService;
     private final UserRepository userRepository;
     private final BCryptPasswordEncoder encoder;
     private final UserOpenFeignClient userOpenFeignClient;
@@ -93,13 +92,6 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     }
 
     @Override
-    @Transactional(readOnly = true)
-    public UserSearchResDto getUserByUserId(String userId) {
-        UserEntity userEntity = getUserEntityByUserId(userId);
-        return UserSearchResDto.from(userEntity);
-    }
-
-    @Override
     @Transactional
     public UserSearchResDto update(Long userNo, UserUpdateDto userUpdateDto) {
         UserEntity selectedUser = getUserEntityByUserNo(userNo);
@@ -120,19 +112,6 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
         Events.raise(new UserDeletedEvent(userNo));
         Events.raise(new SendedMailEvent(new MailDto(userNo, selectedUser.getUserId(),selectedUser.getUserEmail(), MailType.MAIL_DELETE)));
 
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserSearchResDto> getAllUsers() {
-        List<UserEntity> user = userRepository.findAll();
-        return user.stream()
-                .map(m -> new UserSearchResDto(
-                        m.getUserNo(), m.getUserId(), m.getUserName(), m.getTel(), m.getUserEmail(), m.getProvider(),
-                        m.getProviderId(), m.getGender(), m.getUseFlg(), m.getUserGrade(), m.getReview()
-                    )
-                )
-                .collect(Collectors.toList());
     }
 
     @Override
@@ -203,6 +182,20 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     @Override
     public boolean checkExistUserId(String userId) {
         return userRepository.findByUserId(userId).isEmpty() ? false : true;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<UserReviewsResDto> getReviewsOfUser(Long userNo) {
+        UserEntity selectedUser = userRepository.findFetchJoinReviewsByUserNo(userNo)
+                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
+        //N+1 발생 -> 해결 fetchJoin
+        List<UserReviewsResDto> userReviewsResDtos= selectedUser.getReview().stream()
+                .map(review->UserReviewsResDto.from(review))
+                .collect(Collectors.toList())
+                ;
+
+        return userReviewsResDtos;
     }
 
     /**

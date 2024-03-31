@@ -60,7 +60,7 @@ public class BookEntity extends ModifiedEntity {
     @Column()
     private String bookImage;
 
-    @OneToMany(mappedBy = "book", fetch = FetchType.EAGER, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
     private List<ReviewEntity> review = new ArrayList<>();
 
 

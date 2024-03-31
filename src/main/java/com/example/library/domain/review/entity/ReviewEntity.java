@@ -1,8 +1,7 @@
 package com.example.library.domain.review.entity;
 
 import com.example.library.domain.book.domain.BookEntity;
-import com.example.library.global.entityListener.Entity.BaseEntity;
-import com.example.library.domain.user.entity.UserEntity;
+import com.example.library.global.entityListener.Entity.ModifiedEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,19 +12,15 @@ import lombok.*;
 @AllArgsConstructor
 @Builder
 @Table(name = "review")
-public class ReviewEntity extends BaseEntity {
+public class ReviewEntity extends ModifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long reviewNo;
 
-    @Column(nullable = false)
-    private String reviewContent;
-
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "bookCode", nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bookNo", nullable = false)
     private BookEntity book;
 
-    @ManyToOne(cascade = CascadeType.REMOVE)
-    @JoinColumn(name = "userId", nullable = false, referencedColumnName = "userId")
-    private UserEntity user;
+    @Column(nullable = false)
+    private String reviewContent;
 }

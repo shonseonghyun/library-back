@@ -1,7 +1,7 @@
 package com.example.library.domain.review.controller;
 
 import com.example.library.domain.review.dto.ReviewDto;
-import com.example.library.domain.review.dto.ReviewWriteDto;
+import com.example.library.domain.review.dto.ReviewWriteReqDto;
 import com.example.library.domain.review.service.ReviewService;
 import com.example.library.exception.ErrorCode;
 import com.example.library.global.response.ApiResponseDto;
@@ -25,9 +25,15 @@ public class ReviewController {
         return ApiResponseDto.createRes(ErrorCode.SUC, reviewDtos);
     }
 
-    @PostMapping("/write/{bookCode}/{userId}")
-    public ApiResponseDto write(@Valid @RequestBody ReviewWriteDto reviewWriteDto, @PathVariable("bookCode") Long bookCode, @PathVariable("userId") String userId) {
-        ReviewDto reviewDto = reviewService.write(reviewWriteDto, bookCode, userId);
-        return ApiResponseDto.createRes(ErrorCode.SUC, reviewDto);
+    @PostMapping("/user/{userNo}/book/{bookNo}")
+    public ApiResponseDto writeReview(@Valid @RequestBody ReviewWriteReqDto reviewWriteReqDto, @PathVariable("userNo")Long userNo, @PathVariable("bookNo") Long bookNo) {
+        reviewService.writeReview(reviewWriteReqDto, userNo, bookNo);
+        return ApiResponseDto.createRes(ErrorCode.SUC);
+    }
+
+    @DeleteMapping("/{reviewNo}")
+    public ApiResponseDto deleteReview(  @PathVariable("reviewNo") Long reviewNo ) {
+        reviewService.deleteReview(reviewNo);
+        return ApiResponseDto.createRes(ErrorCode.SUC);
     }
 }

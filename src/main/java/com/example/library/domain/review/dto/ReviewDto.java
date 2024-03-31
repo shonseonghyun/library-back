@@ -28,7 +28,9 @@ public class ReviewDto {
 
     public ReviewDto(ReviewEntity review) {
         this.bookCode = review.getBook().getBookCode();
-        this.userId = review.getUser() == null ? "unknown" : review.getUser().getUserId();
+        this.userId =
+//                review.getUser() == null ? "unknown" : review.getUser().getUserId();
+        null;
         this.regDt = review.getCreatedDt();
         this.regTm = review.getCreatedTm();
         this.reviewContent = review.getReviewContent();

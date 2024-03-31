@@ -34,8 +34,6 @@ public class UserSearchResDto {
 
     private UserGrade userGrade;
 
-    private List<ReviewDto> review;
-
     public UserSearchResDto(UserEntity user) {
         this.userNo = user.getUserNo();
         this.userId = user.getUserId();
@@ -47,13 +45,11 @@ public class UserSearchResDto {
         this.useFlg = user.getUseFlg();
         this.userGrade = user.getUserGrade();
         this.providerId = user.getProviderId();
-        this.review = user.getReview().stream()
-                .map(ReviewDto::info)
-                .collect(Collectors.toList());
+
     }
 
     public UserSearchResDto
-            (Long userNo, @Size(min = 4, max = 10) String userId, @Size(min = 2, max = 5) String userName,
+            (Long userNo, String userId, String userName,
              String tel, String userEmail, SocialLoginType provider, String providerId, String gender,
              Integer useFlg, UserGrade userGrade, List<ReviewEntity> review)
     {
@@ -67,9 +63,6 @@ public class UserSearchResDto {
         this.useFlg = useFlg;
         this.userGrade = userGrade;
         this.providerId = providerId;
-        this.review = review.stream()
-                .map(ReviewDto::info)
-                .collect(Collectors.toList());
     }
 
     public static UserSearchResDto from(UserEntity user){

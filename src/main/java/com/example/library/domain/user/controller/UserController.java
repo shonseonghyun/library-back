@@ -3,6 +3,7 @@ package com.example.library.domain.user.controller;
 import com.example.library.domain.user.dto.*;
 import com.example.library.domain.user.service.UserService;
 import com.example.library.domain.user.service.dto.UserRentStatusResDto;
+import com.example.library.domain.user.service.dto.UserReviewsResDto;
 import com.example.library.exception.ErrorCode;
 import com.example.library.global.response.ApiResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -12,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -34,15 +36,10 @@ public class UserController {
         return ApiResponseDto.createRes(ErrorCode.SUC, userLoginResDto);
     }
 
-    @GetMapping("/get/userNo/{userNo}")
-    public ApiResponseDto getUserByUserNo(@PathVariable("userNo") Long userNo) {
-        UserSearchResDto userSearchResDto = userService.getUserByUserNo(userNo);
-        return ApiResponseDto.createRes(ErrorCode.SUC, userSearchResDto);
-    }
-
-    @GetMapping("/get/userId/{userId}")
-    public ApiResponseDto getUserByUserId(@PathVariable("userId") String userId) {
-        UserSearchResDto userSearchResDto = userService.getUserByUserId(userId);
+    //내정보 수정
+    @GetMapping("/get/mypage")
+    public ApiResponseDto getUserByUserNo(@RequestBody Map<String,Long> map) {
+        UserSearchResDto userSearchResDto = userService.getUserByUserNo(map.get("userNo"));
         return ApiResponseDto.createRes(ErrorCode.SUC, userSearchResDto);
     }
 
@@ -58,16 +55,17 @@ public class UserController {
         return ApiResponseDto.createRes(ErrorCode.SUC);
     }
 
-    @GetMapping("/getAll")
-    public ApiResponseDto getAllUsers() {
-        List<UserSearchResDto> userSearchResDtos = userService.getAllUsers();
-        return ApiResponseDto.createRes(ErrorCode.SUC, userSearchResDtos);
-    }
-
     @GetMapping("/rentStatus/{userNo}")
     public ApiResponseDto getRentStatus(@PathVariable Long userNo){
         List<UserRentStatusResDto> userRentStatusResDtos = userService.getCurrentRentStatus(userNo);
         return ApiResponseDto.createRes(ErrorCode.SUC,userRentStatusResDtos);
+    }
+
+    //내가 작성한 리뷰
+    @GetMapping("/get/{userNo}/review")
+    public ApiResponseDto getReviewsOfUser(@PathVariable Long userNo) {
+        List<UserReviewsResDto> userReviewsResDtos= userService.getReviewsOfUser(userNo);
+        return ApiResponseDto.createRes(ErrorCode.SUC,userReviewsResDtos);
     }
 
     @GetMapping("/userId/{userId}/exist")
