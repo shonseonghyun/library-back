@@ -9,6 +9,7 @@ import com.example.library.global.entityListener.Entity.ModifiedEntity;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
@@ -57,12 +58,8 @@ public class BookEntity extends ModifiedEntity {
     @Column(nullable = false)
     private String bookLocation;
 
-    @Column()
+    @Column
     private String bookImage;
-
-    @OneToMany(mappedBy = "book", fetch = FetchType.LAZY)
-    private List<ReviewEntity> review = new ArrayList<>();
-
 
     public void rentSuc(){
         changeRentUnavailable();

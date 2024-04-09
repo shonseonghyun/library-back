@@ -1,9 +1,10 @@
 package com.example.library.domain.user.service;
 
 import com.example.library.domain.user.dto.*;
+import com.example.library.domain.user.entity.UserEntity;
 import com.example.library.domain.user.enums.UserGrade;
 import com.example.library.domain.user.service.dto.UserRentStatusResDto;
-import com.example.library.domain.user.service.dto.UserReviewsResDto;
+import org.springframework.data.domain.Page;
 
 import java.util.List;
 
@@ -16,6 +17,4 @@ public interface UserService {
     void delete(Long userNo);
     List<UserRentStatusResDto> getCurrentRentStatus(Long userNo);
     boolean checkExistUserId(String userId);
-    List<UserReviewsResDto> getReviewsOfUser(Long userNo);
-
 }

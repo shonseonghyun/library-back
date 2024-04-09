@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @Builder
 @ToString
-public class BookAddDto {
+public class BookModifiyReqDto {
 
     @NotNull
     private String bookName;
@@ -39,7 +39,7 @@ public class BookAddDto {
 
     private String bookImage;
 
-    private BookAddDto(BookEntity book) {
+    private BookModifiyReqDto(BookEntity book) {
         this.bookName = book.getBookName();
         this.bookAuthor = book.getBookAuthor();
         this.bookContent = book.getBookContent();
@@ -51,7 +51,7 @@ public class BookAddDto {
         this.bookImage = book.getBookImage();
     }
 
-    public static BookAddDto add(BookEntity book) {
-        return new BookAddDto(book);
+    public static BookModifiyReqDto add(BookEntity book) {
+        return new BookModifiyReqDto(book);
     }
 }

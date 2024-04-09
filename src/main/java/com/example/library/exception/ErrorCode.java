@@ -40,7 +40,7 @@ public enum ErrorCode {
 
     //Review
     REVIEW_NOT_FOUND("R01", "해당도서의 리뷰가 없습니다."),
-
+    REVIEW_WRITE_AVAILABLE_DUE_TO_NEVER_RENT("R02","대여 히스토리가 존재하지 않아 리뷰작성 붐가합니다."),
     //Parameter
     PARAMETER_FORMAT_INVALID("P01", "인입필드 형식 또는 타입이 올바르지 않습니다. 에러 필드 내 상세 사유를 확인해주세요."),
     PARAMETER_FIELD_INVALID("P02", "JSON 파싱 실패하였습니다. JSON데이터를 확인해주세요."),

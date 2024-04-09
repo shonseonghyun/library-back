@@ -3,7 +3,6 @@ package com.example.library.domain.user.controller;
 import com.example.library.domain.user.dto.*;
 import com.example.library.domain.user.service.UserService;
 import com.example.library.domain.user.service.dto.UserRentStatusResDto;
-import com.example.library.domain.user.service.dto.UserReviewsResDto;
 import com.example.library.exception.ErrorCode;
 import com.example.library.global.response.ApiResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -61,12 +60,13 @@ public class UserController {
         return ApiResponseDto.createRes(ErrorCode.SUC,userRentStatusResDtos);
     }
 
-    //내가 작성한 리뷰
-    @GetMapping("/get/{userNo}/review")
-    public ApiResponseDto getReviewsOfUser(@PathVariable Long userNo) {
-        List<UserReviewsResDto> userReviewsResDtos= userService.getReviewsOfUser(userNo);
-        return ApiResponseDto.createRes(ErrorCode.SUC,userReviewsResDtos);
-    }
+//    //내가 작성한 리뷰
+//    @GetMapping("/get/{userNo}/review")
+//    public ApiResponseDto getReviewsOfUser(@PathVariable Long userNo,@RequestParam("page") Integer page,@RequestParam("size") Integer size) {
+////        List<UserReviewsResDto> userReviewsResDtos= userService.getReviewsOfUser(userNo,page,size);
+////        List<UserReviewsResDto> userReviewsResDtos= userService.getReviewsOfUser(userNo,page,size);
+//        return ApiResponseDto.createRes(ErrorCode.SUC,userService.getReviewsOfUser(userNo,page,size));
+//    }
 
     @GetMapping("/userId/{userId}/exist")
     public ApiResponseDto checkExistUserId(@PathVariable String userId){

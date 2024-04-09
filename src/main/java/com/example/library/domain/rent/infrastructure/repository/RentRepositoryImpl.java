@@ -6,6 +6,7 @@ import com.example.library.domain.rent.domain.RentRepository;
 import com.example.library.domain.rent.domain.dto.QRentStatusResponseDto_Response;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import com.example.library.domain.rent.enums.RentState;
+import com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.exception.ErrorCode;
@@ -57,6 +58,21 @@ public class RentRepositoryImpl implements RentRepository {
         managerDomain.setRentHistory(historyDomain);
 
         return managerDomain;
+    }
+
+    @Override
+    public Integer findRentHistoryCountWithReturn(Long userNo, Long bookNo) {
+        RentManagerEntity managerEntity = rentManagerRepository.findByUserNo(userNo)
+                .orElseThrow(()->new RentManagerNotFoudException(ErrorCode.RENTMANAGER_USERNO_NOT_FOUND));
+
+        return Math.toIntExact(jpaQueryFactory.select(rentHistoryEntity.count())
+                .from(rentHistoryEntity)
+                .where(rentHistoryEntity.userNo.eq(userNo)
+                        .and(rentHistoryEntity.bookNo.eq(bookNo))
+                        .and(rentHistoryEntity.rentState.notIn(RentState.ON_RENT))
+                )
+                .fetchFirst())
+        ;
     }
 
     @Override

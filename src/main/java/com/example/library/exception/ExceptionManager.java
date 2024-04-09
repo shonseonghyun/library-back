@@ -17,7 +17,6 @@ public class ExceptionManager {
 
     @ExceptionHandler(AppException.class)
     public ApiResponseDto appExceptionHandler(AppException e) {
-        System.out.println("잡혓냐?");
         return ApiResponseDto.createRes(e.getErrorCode());
     }
 

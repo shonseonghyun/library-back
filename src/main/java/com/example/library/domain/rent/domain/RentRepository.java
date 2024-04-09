@@ -10,4 +10,5 @@ public interface RentRepository {
     RentManager findRentManagerWithRentedBookHistory(Long userNo, Long book); //RentManager + history on rent
     List<RentStatusResponseDto.Response> findUserRentStatus(Long userNo);
     void deleteByUserNo(Long userNo);
+    Integer findRentHistoryCountWithReturn(Long userNo, Long bookNo);
 }

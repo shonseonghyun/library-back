@@ -4,13 +4,17 @@ import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.book.domain.repository.BookRepository;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.BookNotFoundException;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 @Repository
 @RequiredArgsConstructor
 public class BookRepositoryAdapter implements BookRepository {
 
+    private final JPAQueryFactory jpaQueryFactory;
     private final SpringDataJpaBookRepository bookRepository;
 
     @Override

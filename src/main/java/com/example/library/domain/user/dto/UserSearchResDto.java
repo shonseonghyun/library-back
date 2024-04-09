@@ -1,15 +1,12 @@
 package com.example.library.domain.user.dto;
 
-import com.example.library.domain.review.dto.ReviewDto;
 import com.example.library.domain.review.entity.ReviewEntity;
 import com.example.library.domain.user.enums.SocialLoginType;
 import com.example.library.domain.user.enums.UserGrade;
 import com.example.library.domain.user.entity.UserEntity;
-import jakarta.validation.constraints.Size;
 import lombok.Getter;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 public class UserSearchResDto {

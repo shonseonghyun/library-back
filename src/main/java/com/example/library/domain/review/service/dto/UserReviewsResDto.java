@@ -1,4 +1,4 @@
-package com.example.library.domain.user.service.dto;
+package com.example.library.domain.review.service.dto;
 
 
 import com.example.library.domain.review.entity.ReviewEntity;

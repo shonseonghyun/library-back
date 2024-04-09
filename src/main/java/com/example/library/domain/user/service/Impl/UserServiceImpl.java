@@ -10,7 +10,6 @@ import com.example.library.domain.user.repository.UserOpenFeignClient;
 import com.example.library.domain.user.repository.UserRepository;
 import com.example.library.domain.user.service.UserService;
 import com.example.library.domain.user.service.dto.UserRentStatusResDto;
-import com.example.library.domain.user.service.dto.UserReviewsResDto;
 import com.example.library.domain.user.service.event.UserJoinedEvent;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.PasswordDifferentException;
@@ -26,6 +25,8 @@ import com.example.library.global.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -40,7 +41,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -79,6 +79,7 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
         }
 
         String token = JwtUtil.createJwt(selectedUser.getUserId());
+        log.info(token);
         Events.raise(new SendedMailEvent(new MailDto(selectedUser.getUserNo(),MailType.MAIL_LOGIN)));
 
         return UserLoginResDto.from(selectedUser,token);
@@ -182,20 +183,6 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     @Override
     public boolean checkExistUserId(String userId) {
         return userRepository.findByUserId(userId).isEmpty() ? false : true;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<UserReviewsResDto> getReviewsOfUser(Long userNo) {
-        UserEntity selectedUser = userRepository.findFetchJoinReviewsByUserNo(userNo)
-                .orElseThrow(() -> new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
-        //N+1 발생 -> 해결 fetchJoin
-        List<UserReviewsResDto> userReviewsResDtos= selectedUser.getReview().stream()
-                .map(review->UserReviewsResDto.from(review))
-                .collect(Collectors.toList())
-                ;
-
-        return userReviewsResDtos;
     }
 
     /**

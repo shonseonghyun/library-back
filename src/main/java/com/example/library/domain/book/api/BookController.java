@@ -1,9 +1,8 @@
 package com.example.library.domain.book.api;
 
-import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.book.application.BookService;
-import com.example.library.domain.book.application.dto.BookAddDto;
-import com.example.library.domain.book.application.dto.BookDto;
+import com.example.library.domain.book.application.dto.BookModifiyReqDto;
+import com.example.library.domain.book.application.dto.UserInquiryBookResDto;
 import com.example.library.exception.ErrorCode;
 import com.example.library.global.response.ApiResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,16 +42,16 @@ public class BookController {
 //    }
 
     @PostMapping("/add")
-    public ApiResponseDto add(@Valid @RequestBody BookAddDto bookAddDto) {
-        BookAddDto bookAdd = bookService.add(bookAddDto);
+    public ApiResponseDto add(@Valid @RequestBody BookModifiyReqDto bookModifiyReqDto) {
+        BookModifiyReqDto bookAdd = bookService.add(bookModifiyReqDto);
         return ApiResponseDto.createRes(ErrorCode.SUC, bookAdd);
     }
 
-    @PutMapping("/update/{bookCode}")
-    public ApiResponseDto update(@Valid @RequestBody BookDto bookDto, @PathVariable("bookCode") Long bookCode) {
-        BookDto book = bookService.update(bookDto, bookCode);
-        return ApiResponseDto.createRes(ErrorCode.SUC, bookDto);
-    }
+//    @PutMapping("/update/{bookCode}")
+//    public ApiResponseDto update(@Valid @RequestBody BookDto bookDto, @PathVariable("bookCode") Long bookCode) {
+//        BookDto book = bookService.update(bookDto, bookCode);
+//        return ApiResponseDto.createRes(ErrorCode.SUC, bookDto);
+//    }
 
 //    @DeleteMapping("/delete/{bookCode}")
 //    public ApiResponseDto delete(@PathVariable("bookCode") Long bookCode) {
@@ -61,8 +60,8 @@ public class BookController {
 //    }
 
     @GetMapping("/{bookNo}")
-    public ApiResponseDto getBook(@PathVariable("bookNo") Long bookNo){
-        BookEntity selectedBook = bookService.inquiryBook(bookNo);
-        return ApiResponseDto.createRes(ErrorCode.SUC,selectedBook);
+    public ApiResponseDto inquiryBook(@PathVariable("bookNo") Long bookNo){
+        UserInquiryBookResDto userInquiryBookResDto = bookService.inquiryBook(bookNo);
+        return ApiResponseDto.createRes(ErrorCode.SUC,userInquiryBookResDto);
     }
 }
