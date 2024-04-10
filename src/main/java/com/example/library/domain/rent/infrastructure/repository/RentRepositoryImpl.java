@@ -6,7 +6,6 @@ import com.example.library.domain.rent.domain.RentRepository;
 import com.example.library.domain.rent.domain.dto.QRentStatusResponseDto_Response;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import com.example.library.domain.rent.enums.RentState;
-import com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.exception.ErrorCode;
@@ -41,9 +40,19 @@ public class RentRepositoryImpl implements RentRepository {
 
     @Override
     public RentManager findRentManagerByUserNo(Long userNo) {
-        RentManagerEntity entity = rentManagerRepository.findByUserNo(userNo)
+        RentManagerEntity mangerEntity = rentManagerRepository.findByUserNo(userNo)
                 .orElseThrow(()->new RentManagerNotFoudException(ErrorCode.RENTMANAGER_USERNO_NOT_FOUND));
-        return convert(entity);
+        RentManager rentManager = convert(mangerEntity);
+//        //대여 중인 history 조회
+//        List<RentHistoryEntity> historyEntityList = rentHistoryRepository.findByUserNoAndRentState(userNo,RentState.ON_RENT);
+//
+//        //존재한다면 rentManager도메인 필드에 세팅
+//        if(historyEntityList.size()>0){
+//            List<RentHistory> rentHistoryList = historyEntityList.stream().map(rentHistoryEntity->convert(rentHistoryEntity))
+//                            .collect(Collectors.toList());
+//            rentManager.setRentHistoryList(rentHistoryList);
+//        }
+        return rentManager;
     }
 
     @Override

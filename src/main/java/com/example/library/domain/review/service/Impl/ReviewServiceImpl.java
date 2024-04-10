@@ -2,7 +2,6 @@ package com.example.library.domain.review.service.Impl;
 
 import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.book.infrastructure.SpringDataJpaBookRepository;
-import com.example.library.domain.rent.domain.RentManager;
 import com.example.library.domain.rent.domain.RentRepository;
 import com.example.library.domain.review.dto.ReviewWriteReqDto;
 import com.example.library.domain.review.entity.ReviewEntity;
@@ -71,7 +70,7 @@ public class ReviewServiceImpl implements ReviewService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<BookReviewResDto> getReviewsOfBook(Long bookNo, PageRequest pageRequest) {
+    public List<BookReviewResDto> getReviewsOfBook(Long bookNo) {
         List<ReviewEntity> list  = reviewRepository.findFetchJoinReviewsByBookNo(bookNo);
         List<BookReviewResDto> bookReviewResDtos = list.stream().map(BookReviewResDto::from)
                 .collect(Collectors.toList());

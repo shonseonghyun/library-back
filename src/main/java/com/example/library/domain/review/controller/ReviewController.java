@@ -42,9 +42,8 @@ public class ReviewController {
     }
 
     @GetMapping("/book/{bookNo}")
-    public ApiResponseDto getReviewsOfBook(@PathVariable Long bookNo,@RequestParam("page") Integer page,@RequestParam("size") Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDt","createdTm").descending());
-        List<BookReviewResDto> bookReviewResDtos = reviewService.getReviewsOfBook(bookNo,pageRequest);
+    public ApiResponseDto getReviewsOfBook(@PathVariable Long bookNo) {
+        List<BookReviewResDto> bookReviewResDtos = reviewService.getReviewsOfBook(bookNo);
         return ApiResponseDto.createRes(ErrorCode.SUC, bookReviewResDtos);
     }
 }

@@ -20,7 +20,7 @@ public class RentHistory {
         this.userNo=userNo;
         this.bookNo=bookNo;
         this.rentDt = DateUtil.getDate();
-        this.haveToReturnDt = rentDt+6;  // 수정 필요
+        this.haveToReturnDt = DateUtil.getDateAfter7Days(this.rentDt);
         this.extensionFlg = false;
         this.rentState=RentState.ON_RENT;
     }
