@@ -35,7 +35,10 @@ public class UserLoginResDto {
 
     private String accessToken;
 
-    public UserLoginResDto(UserEntity user, String accessToken) {
+    private String refreshToken;
+
+
+    public UserLoginResDto(UserEntity user, String accessToken, String refreshToken) {
         this.userNo = user.getUserNo();
         this.userId = user.getUserId();
         this.userName = user.getUserName();
@@ -47,9 +50,10 @@ public class UserLoginResDto {
         this.userGrade = user.getUserGrade();
         this.providerId = user.getProviderId();
         this.accessToken = accessToken;
+        this.refreshToken= refreshToken;
     }
 
-    public static UserLoginResDto from(UserEntity user, String accessToken) {
-        return new UserLoginResDto(user,accessToken);
+    public static UserLoginResDto from(UserEntity user, String accessToken,String refreshToken) {
+        return new UserLoginResDto(user,accessToken,refreshToken);
     }
 }

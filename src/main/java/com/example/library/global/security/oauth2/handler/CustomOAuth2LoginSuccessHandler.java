@@ -30,11 +30,12 @@ public class CustomOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
         UserEntity user = customOAuth2User.getUser();
 
         //2. "유저이메일"을 통한 accessToken생성
-        String accessToken = JwtUtil.createJwt(user.getUserEmail());
+        String accessToken = JwtUtil.createAccessToken(user.getUserEmail());
+        String refreshToken = JwtUtil.createRefreshToken();
 
         ObjectMapper om = new ObjectMapper();
         response.addHeader("Content-Type", "application/json; charset=UTF-8");
 
-        om.writeValue(response.getOutputStream(), UserLoginResDto.from(user,accessToken));
+        om.writeValue(response.getOutputStream(), UserLoginResDto.from(user,accessToken,refreshToken));
     }
 }

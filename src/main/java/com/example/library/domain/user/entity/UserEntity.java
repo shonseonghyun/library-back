@@ -52,6 +52,8 @@ public class UserEntity extends ModifiedEntity {
     @Convert(converter = UserGradeConverter.class)
     private UserGrade userGrade;
 
+    private String refreshToken;
+
 
 //    @OneToMany(
 //            cascade = {CascadeType.MERGE //유저엔티티를 통한 리뷰엔티티리스트 내 추가할 때 필요
@@ -76,4 +78,9 @@ public class UserEntity extends ModifiedEntity {
         this.userGrade = UserGrade.OFFICIALMEMBER;
         this.useFlg = useFlg;
     }
+
+    public void loginSuccess(String refreshToken){
+        this.refreshToken=refreshToken;
+    }
+
 }

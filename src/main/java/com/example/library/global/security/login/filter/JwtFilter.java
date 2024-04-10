@@ -28,34 +28,19 @@ public class JwtFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-
         UsernamePasswordAuthenticationToken authenticationToken= null;
+        final String accessTokenWithPrefix = request.getHeader(HttpHeaders.AUTHORIZATION);
+        log.info("accessToken : {}", accessTokenWithPrefix);
 
-        final String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
-        log.info("authorization : {}", authorization);
-
-        //token 없으면 block
-        if(authorization == null || !authorization.startsWith("Bearer ")) {
-            log.error("authorization is null || authorization is not Bearer");
-            filterChain.doFilter(request, response);
-            return; //이 뒤에 필터를 안타면 내가 원하는 url에 갈 수 잇나?
-        }
-
-        //token 꺼내기
-        String token = authorization.split(" ")[1];
-
-        //token expired ?
-        if(JwtUtil.isExpired(token)) {
-            log.error("Token is expired..");
+        if(JwtUtil.validateAccessToken(accessTokenWithPrefix)) {
             filterChain.doFilter(request, response);
             return;
         }
 
-        //UserId Token 에서 꺼내기
-        String userId = JwtUtil.getUserId(token);
+        String accessToken = accessTokenWithPrefix.split(" ")[1];
+        String userId = JwtUtil.getUserId(accessToken);
         log.info("userId : {}", userId);
 
-        //서명 정상적으로 됨
         if(StringUtils.hasText(userId)){
             UserGrade userGrade = userService.getUserGrade(userId);
             authenticationToken = new UsernamePasswordAuthenticationToken(userId, null, List.of(new SimpleGrantedAuthority(String.valueOf(userGrade.getGrade()))));
@@ -66,4 +51,15 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authenticationToken);
         filterChain.doFilter(request, response);
     }
+
+//    private boolean validateAccessToken(String accessTokenWithPrefix){
+//        if(accessTokenWithPrefix==null){
+//            log.error("authorization is null");
+//            return false;
+//        } else if (accessTokenWithPrefix.startsWith("Bearer ")) {
+//            log.error("authorization doesn't start with Bearer");
+//            return false;
+//        }
+//        return true;
+//    }
 }

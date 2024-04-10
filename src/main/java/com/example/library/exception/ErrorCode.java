@@ -60,6 +60,7 @@ public enum ErrorCode {
 
     //Token
     ACCESSTOKEN_EXPIRED("T01","액세스 토큰 유효기간 만료되었습니다. 재로그인 바랍니다."),
+    ACCESSTOKEN_PARSE_ERROR("T02","토큰 파싱에 실패하였습니다. 정상적인 토큰이 맞는지 확인 바랍니다."),
 
     //Extension
     BOOK_EXTEND_NUMBER_EXCEED("E01","도서 연장 횟수 초과하여 연장 불가합니다.")

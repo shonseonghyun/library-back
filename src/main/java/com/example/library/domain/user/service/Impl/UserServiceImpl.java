@@ -70,19 +70,23 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
         Events.raise(new SendedMailEvent(new MailDto(user.getUserNo(), MailType.MAIL_JOIN)));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public UserLoginResDto login(UserLoginReqDto userLoginReqDto) {
         UserEntity selectedUser = getUserEntityByUserId(userLoginReqDto.getUserId());
+        matchPassWord(userLoginReqDto.getUserPwd(), selectedUser.getUserPwd());
 
-        if(!encoder.matches(userLoginReqDto.getUserPwd(), selectedUser.getUserPwd())) {
+        String accessToken = JwtUtil.createAccessToken(selectedUser.getUserId());
+        String refreshToken = JwtUtil.createRefreshToken();
+        selectedUser.loginSuccess(refreshToken);
+        Events.raise(new SendedMailEvent(new MailDto(selectedUser.getUserNo(),MailType.MAIL_LOGIN)));
+        return UserLoginResDto.from(selectedUser,accessToken,refreshToken);
+    }
+
+    private boolean matchPassWord(String inputPwd,String dbPwd){
+        if(!encoder.matches(inputPwd, dbPwd)) {
             throw new PasswordDifferentException(ErrorCode.PASSWORD_DIFFERNET);
         }
-
-        String token = JwtUtil.createJwt(selectedUser.getUserId());
-        log.info(token);
-        Events.raise(new SendedMailEvent(new MailDto(selectedUser.getUserNo(),MailType.MAIL_LOGIN)));
-
-        return UserLoginResDto.from(selectedUser,token);
+        return true;
     }
 
     @Override
