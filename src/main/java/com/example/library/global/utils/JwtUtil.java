@@ -19,7 +19,7 @@ public class JwtUtil {
             1000
 //                    * 60 * 60
                     *
-                    24L;
+                    60L;
     private static final Long expiredMsOfRefresh = 1000 * 60 * 24 *30 * 60 * 24L;
 
 

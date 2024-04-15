@@ -23,6 +23,13 @@ import java.util.Map;
 public class UserController {
     private final UserService userService;
 
+    @PostMapping("/auth/refreshToken/reissue")
+    public ApiResponseDto reissueAccessToken(@RequestBody Map<String,String> map){
+        log.info("reissue");
+        String reissueAccessToken = userService.reissueAccessTokenWithRefreshToken(map.get("refreshToken"));
+        return ApiResponseDto.createRes(ErrorCode.SUC, reissueAccessToken);
+    }
+
     @PostMapping("/join")
     public ApiResponseDto join(@Valid @RequestBody UserJoinReqDto userJoinReqDto) {
         userService.join(userJoinReqDto);
@@ -35,8 +42,7 @@ public class UserController {
         return ApiResponseDto.createRes(ErrorCode.SUC, userLoginResDto);
     }
 
-    //내정보 수정
-    @GetMapping("/get/mypage")
+    @PostMapping("/get/mypage")
     public ApiResponseDto getUserByUserNo(@RequestBody Map<String,Long> map) {
         UserSearchResDto userSearchResDto = userService.getUserByUserNo(map.get("userNo"));
         return ApiResponseDto.createRes(ErrorCode.SUC, userSearchResDto);

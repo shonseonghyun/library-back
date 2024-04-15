@@ -11,6 +11,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.json.JsonParseException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -28,6 +29,7 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
         try{
             filterChain.doFilter(request,response); //JwtAuthenticationFilter로 간다.
         }catch (ExpiredTokenException e){
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
             om.writeValue(response.getOutputStream(), ApiResponseDto.createRes(e.getErrorCode()));
         }catch (JsonParseException e){
             om.writeValue(response.getOutputStream(), ApiResponseDto.createRes(ErrorCode.ACCESSTOKEN_PARSE_ERROR));

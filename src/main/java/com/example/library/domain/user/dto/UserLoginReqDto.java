@@ -15,4 +15,6 @@ public class UserLoginReqDto {
 
     @NotNull
     private String userPwd;
+
+    private boolean autoLogin;
 }

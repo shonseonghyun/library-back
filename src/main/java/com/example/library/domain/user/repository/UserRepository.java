@@ -14,4 +14,5 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByUserNo(Long userNo);
     Optional<UserEntity> findByProviderAndProviderIdAndUserEmail(SocialLoginType socialLoginType, String providerId, String userEmail);
     void deleteByUserNo(Long userNo);
+    Optional<UserEntity> findByRefreshToken(String refreshToken);
 }

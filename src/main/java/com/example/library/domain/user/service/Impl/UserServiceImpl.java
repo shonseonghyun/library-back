@@ -13,6 +13,7 @@ import com.example.library.domain.user.service.dto.UserRentStatusResDto;
 import com.example.library.domain.user.service.event.UserJoinedEvent;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.PasswordDifferentException;
+import com.example.library.exception.exceptions.RefreshTokenNotFountException;
 import com.example.library.exception.exceptions.UserNotFoundException;
 import com.example.library.global.Events;
 import com.example.library.global.event.SendedMailEvent;
@@ -25,8 +26,6 @@ import com.example.library.global.utils.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -72,14 +71,26 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
 
     @Transactional
     public UserLoginResDto login(UserLoginReqDto userLoginReqDto) {
+        String refreshToken = null;
+
         UserEntity selectedUser = getUserEntityByUserId(userLoginReqDto.getUserId());
         matchPassWord(userLoginReqDto.getUserPwd(), selectedUser.getUserPwd());
 
         String accessToken = JwtUtil.createAccessToken(selectedUser.getUserId());
-        String refreshToken = JwtUtil.createRefreshToken();
-        selectedUser.loginSuccess(refreshToken);
+        if(userLoginReqDto.isAutoLogin()){
+            refreshToken = JwtUtil.createRefreshToken();
+            doAutoLogin(selectedUser,refreshToken);
+        }
         Events.raise(new SendedMailEvent(new MailDto(selectedUser.getUserNo(),MailType.MAIL_LOGIN)));
         return UserLoginResDto.from(selectedUser,accessToken,refreshToken);
+    }
+
+    @Override
+    @Transactional
+    public void doAutoLogin(UserEntity selectedUser,String refreshToken){
+        log.info("자동 로그인 설정");
+        selectedUser.loginSuccess(refreshToken);
+        userRepository.save(selectedUser);
     }
 
     private boolean matchPassWord(String inputPwd,String dbPwd){
@@ -187,6 +198,13 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     @Override
     public boolean checkExistUserId(String userId) {
         return userRepository.findByUserId(userId).isEmpty() ? false : true;
+    }
+
+    @Override
+    public String reissueAccessTokenWithRefreshToken(String refreshToken) {
+        UserEntity selectedUser = userRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(()->new RefreshTokenNotFountException(ErrorCode.USERNO_NOT_FOUND));;
+        return JwtUtil.createAccessToken(selectedUser.getUserId());
     }
 
     /**

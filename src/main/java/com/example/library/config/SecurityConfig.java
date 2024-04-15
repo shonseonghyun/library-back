@@ -41,7 +41,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> {
                     try {
                         auth
-                            .requestMatchers("/user/login", "/user/join","/user/userId/**").permitAll()
+                            .requestMatchers("/user/auth/refreshToken/reissue","/user/login", "/user/join","/user/userId/**").permitAll()
                             .requestMatchers("/admin/**").hasAuthority(UserGrade.ADMIN.getUserGradeInString())
                             .requestMatchers("/user/**", "/review/write/**","/rent/**").hasAuthority(UserGrade.OFFICIALMEMBER.getUserGradeInString())
                             .requestMatchers("/swagger-ui/**", "/v3/api-docs/**","/docs/**","/error-code/**", "/book/**", "/review/**").permitAll()
@@ -70,7 +70,7 @@ public class SecurityConfig {
                         .redirectionEndpoint(redirectionEndpointConfig -> redirectionEndpointConfig.baseUri("/api/user/login/oauth2/code/*"))
                         .userInfoEndpoint(userInfoEndpoint->userInfoEndpoint.userService((OAuth2UserService<OAuth2UserRequest, OAuth2User>) userService)) //인가된 정보를 활용 하여 당사에서 활용할 수 있도록 커스터마이징
                         .successHandler(customAuthenticationSuccessHandler) //소셜 로그인 성공 후처리 핸들러 커스터마이징
-//                        .defaultSuccessUrl("/api/user/login/oauth") //소셜 로그인 성공 후 보여질 화묜 url 커스터마이징
+//                        .defaultSuccessUrl("http://localhost:3000/api/user/login/oauth") //소셜 로그인 성공 후 보여질 화묜 url 커스터마이징
                 )
                 .exceptionHandling(httpSecurityExceptionHandlingConfigurer
                         -> httpSecurityExceptionHandlingConfigurer.accessDeniedHandler(customAccessDeniedHandler) //인가 거절 관련 후처리 핸들러 커스터마이징
