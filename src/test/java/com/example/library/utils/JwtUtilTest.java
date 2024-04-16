@@ -10,7 +10,7 @@ class JwtUtilTest {
 
     @Test
     public void 토큰생성테스트(){
-        String token = JwtUtil.createJwt("son");
+        String token = JwtUtil.createAccessToken("son");
         assertTrue(StringUtils.hasText(token));
     }
 

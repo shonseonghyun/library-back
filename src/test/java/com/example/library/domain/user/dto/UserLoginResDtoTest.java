@@ -18,7 +18,7 @@ class UserLoginResDtoTest {
         String providerId = "213214142";
 
         //given
-        String accessToken = JwtUtil.createJwt("테스트");
+        String accessToken = JwtUtil.createAccessToken("테스트");
         UserEntity user = UserEntity.createOAuth2User()
                 .userId(id)
                 .userEmail(email)
@@ -28,7 +28,7 @@ class UserLoginResDtoTest {
                 .build();
 
         //when
-        UserLoginResDto userLoginResDto = UserLoginResDto.from(user,accessToken);
+        UserLoginResDto userLoginResDto = UserLoginResDto.from(user,accessToken,null);
 
         //then
         assertAll(

@@ -1,6 +1,7 @@
 package com.example.library.domain.book.api;
 
 import com.example.library.domain.RestDocsSupport;
+import com.example.library.domain.book.application.dto.UserInquiryBookResDto;
 import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.book.enums.BookState;
 import com.example.library.domain.book.application.BookService;
@@ -24,7 +25,7 @@ class BookControllerTest extends RestDocsSupport {
     @WithMockUser(username = "테스트_최고관리자", authorities = {"0"}) //권한 부여
     void 도서정보조회() throws Exception {
         //given
-        BookEntity bookEntity = BookEntity.builder()
+        BookEntity book = BookEntity.builder()
                 .bookCode(1L)
                 .bookAuthor("author")
                 .bookContent("content")
@@ -36,14 +37,15 @@ class BookControllerTest extends RestDocsSupport {
                 .bookName("도서제목")
                 .build()
                 ;
-        when(bookService.inquiryBook(1L)).thenReturn(bookEntity);
+
+        when(bookService.inquiryBook(1L)).thenReturn(UserInquiryBookResDto.from(book));
 
         //when
         mockMvc.perform(get("/book/1")
                 .with(csrf())
         )
         //then
-        .andExpect(jsonPath("$.data.bookCode").value(1L))
+        .andExpect(jsonPath("$.data.bookNo").value(1L))
         ;
 
     }

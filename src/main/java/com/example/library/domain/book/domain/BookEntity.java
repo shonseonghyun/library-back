@@ -53,7 +53,7 @@ public class BookEntity extends ModifiedEntity {
     private String isbn;
 
     @Column(nullable = false)
-    private Date pubDate;
+    private String pubDt;
 
     @Column(nullable = false)
     private String bookLocation;

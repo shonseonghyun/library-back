@@ -32,7 +32,7 @@ class ReviewServiceImplTest {
                         .bookContent("책 내용")
                         .bookPublisher("출판사1")
                         .bookLocation("A1")
-                        .pubDate(new Date())
+                        .pubDt("20231111")
                         .bookState(BookState.RENT_AVAILABLE)
                         .build()
                 ;

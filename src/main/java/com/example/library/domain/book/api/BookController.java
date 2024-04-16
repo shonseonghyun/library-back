@@ -3,12 +3,16 @@ package com.example.library.domain.book.api;
 import com.example.library.domain.book.application.BookService;
 import com.example.library.domain.book.application.dto.BookModifiyReqDto;
 import com.example.library.domain.book.application.dto.UserInquiryBookResDto;
+import com.example.library.domain.book.domain.dto.BookSearchResponseDto;
+import com.example.library.domain.book.enums.InquiryCategory;
 import com.example.library.exception.ErrorCode;
 import com.example.library.global.response.ApiResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/book")
@@ -23,23 +27,12 @@ public class BookController {
 //        return ApiResponseDto.createRes(ErrorCode.SUC, bookDto);
 //    }
 
-//    @GetMapping("/search/detail/bookName/{bookName}")
-//    public ApiResponseDto detailSearchByBookName(@PathVariable("bookName") String bookName) {
-//        BookDto bookDto = bookService.detailSearchByBookName(bookName);
-//        return ApiResponseDto.createRes(ErrorCode.SUC, bookDto);
-//    }
 
-//    @GetMapping("/search/simple/bookAuthor/{bookAuthor}")
-//    public ApiResponseDto simpleSearchByBookAuthor(@PathVariable("bookAuthor") String bookAuthor) {
-//        BookSimpleDto bookSimpleDto = bookService.simpleSearchByBookAuthor(bookAuthor);
-//        return ApiResponseDto.createRes(ErrorCode.SUC, bookSimpleDto);
-//    }
-
-//    @GetMapping("/search/simple/bookName/{bookName}")
-//    public ApiResponseDto simpleSearchByBookName(@PathVariable("bookName") String bookName) {
-//        BookSimpleDto bookSimpleDto = bookService.simpleSearchByBookName(bookName);
-//        return ApiResponseDto.createRes(ErrorCode.SUC, bookSimpleDto);
-//    }
+    @GetMapping("/inquiry/{category}/{inquiryWord}")
+    public ApiResponseDto inquirySimpleCategory(@PathVariable("category") String category,@PathVariable("inquiryWord") String inquiryWord) {
+        List<BookSearchResponseDto.Response> bookSearchResDto  = bookService.inquirySimpleCategory(InquiryCategory.getCategory(category),inquiryWord);
+        return ApiResponseDto.createRes(ErrorCode.SUC, bookSearchResDto);
+    }
 
     @PostMapping("/add")
     public ApiResponseDto add(@Valid @RequestBody BookModifiyReqDto bookModifiyReqDto) {

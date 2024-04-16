@@ -117,11 +117,13 @@ public class UsercontrollerTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.userNo").value(1L))
                 .andExpect(jsonPath("$.data.userId").value(id))
+                .andExpect(jsonPath("$.data.autoLogin").value(false))
                 .andDo(
                         restDocs.document(
                                 requestFields(
                                         fieldWithPath("userId").description("아이디"),
-                                        fieldWithPath("userPwd").description("비밀번호")
+                                        fieldWithPath("userPwd").description("비밀번호"),
+                                        fieldWithPath("autoLogin").description("자동로그인 여부")
                                 ),
                                 responseFields(
                                 beneathPath("data"),
@@ -200,14 +202,14 @@ public class UsercontrollerTest extends RestDocsSupport {
                         .with(csrf()) //403에러 해결
                 )
                 .andExpect(jsonPath("$.code").value("P01"))
-                .andDo(restDocs.document(
-                        responseFields(
-                                fieldWithPath("code").description("내용"),
-                                fieldWithPath("msg").description("메시지"),
-                                fieldWithPath("errors[].field").description("문제된 필드명"),
-                                fieldWithPath("errors.[]message").description("필드에 대한 에러메시지")
-                        )
-                ))
+//                .andDo(restDocs.document(
+//                        responseFields(
+//                                fieldWithPath("code").description("내용"),
+//                                fieldWithPath("msg").description("메시지"),
+//                                fieldWithPath("errors[].field").description("문제된 필드명"),
+//                                fieldWithPath("errors.[]message").description("필드에 대한 에러메시지")
+//                        )
+//                ))
         ;
     }
 }

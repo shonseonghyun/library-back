@@ -22,7 +22,7 @@ public class UserInquiryBookResDto {
 
     private String isbn;
 
-    private Date pubDate;
+    private String pubDt;
 
     private String bookLocation;
 
@@ -36,7 +36,7 @@ public class UserInquiryBookResDto {
         this.bookState = bookEntity.getBookState();
         this.bookPublisher = bookEntity.getBookPublisher();
         this.isbn = bookEntity.getIsbn();
-        this.pubDate = bookEntity.getPubDate();
+        this.pubDt = bookEntity.getPubDt();
         this.bookLocation = bookEntity.getBookLocation();
         this.bookImage = bookEntity.getBookImage();
     }

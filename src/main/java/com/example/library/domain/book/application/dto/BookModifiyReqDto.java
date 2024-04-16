@@ -32,7 +32,7 @@ public class BookModifiyReqDto {
     private String isbn;
 
     @NotNull
-    private Date pubDate;
+    private String pubDt;
 
     @NotNull
     private String bookLocation;
@@ -46,7 +46,7 @@ public class BookModifiyReqDto {
         this.bookState = book.getBookState().getStateNum();
         this.bookPublisher = book.getBookPublisher();
         this.isbn = book.getIsbn();
-        this.pubDate = book.getPubDate();
+        this.pubDt = book.getPubDt();
         this.bookLocation = book.getBookLocation();
         this.bookImage = book.getBookImage();
     }

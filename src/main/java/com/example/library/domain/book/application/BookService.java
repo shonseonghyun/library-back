@@ -2,19 +2,13 @@ package com.example.library.domain.book.application;
 
 import com.example.library.domain.book.application.dto.BookModifiyReqDto;
 import com.example.library.domain.book.application.dto.UserInquiryBookResDto;
-import com.example.library.domain.book.domain.BookEntity;
-import org.springframework.data.domain.PageRequest;
+import com.example.library.domain.book.domain.dto.BookSearchResponseDto;
+import com.example.library.domain.book.enums.InquiryCategory;
+
+import java.util.List;
 
 public interface BookService {
-    //    BookDto detailSearchByBookAuthor(String bookAuthor);
-//    BookDto detailSearchByBookName(String bookName);
-//    BookSimpleDto simpleSearchByBookAuthor(String bookAuthor);
-//    BookSimpleDto simpleSearchByBookName(String bookName);
-//    BookDto update(BookDto bookDto, Long bookCode);
-
-    //    void delete(Long bookCode);
+    List<BookSearchResponseDto.Response> inquirySimpleCategory(InquiryCategory category, String inquiryWord);
     BookModifiyReqDto add(BookModifiyReqDto bookModifiyReqDto);
-
-    //특정 도서 정보조회(리뷰 포함)
     UserInquiryBookResDto inquiryBook(Long bookNo);
 }

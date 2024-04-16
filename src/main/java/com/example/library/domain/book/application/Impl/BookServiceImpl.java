@@ -4,8 +4,10 @@ import com.example.library.domain.book.application.BookService;
 import com.example.library.domain.book.application.dto.BookModifiyReqDto;
 import com.example.library.domain.book.application.dto.UserInquiryBookResDto;
 import com.example.library.domain.book.domain.BookEntity;
+import com.example.library.domain.book.domain.dto.BookSearchResponseDto;
 import com.example.library.domain.book.domain.repository.BookRepository;
 import com.example.library.domain.book.enums.BookState;
+import com.example.library.domain.book.enums.InquiryCategory;
 import com.example.library.domain.rent.application.event.CheckedRentBookAvailableEvent;
 import com.example.library.domain.rent.application.event.RentedBookEvent;
 import lombok.RequiredArgsConstructor;
@@ -14,45 +16,20 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 public class BookServiceImpl implements BookService {
     private final BookRepository bookRepository;
 
-//    @Override
-//    @Transactional(readOnly = true)
-//    public BookDto detailSearchByBookAuthor(String bookAuthor) {
-//        BookEntity bookEntity = bookRepository.findByBookAuthor(bookAuthor)
-//                .orElseThrow(() -> new BookNotFoundException(ErrorCode.BOOKAUTHOR_NOT_FOUND));
-//
-//        return BookDto.detail(bookEntity);
-//    }
-//
-//    @Override
-//    @Transactional(readOnly = true)
-//    public BookDto detailSearchByBookName(String bookName) {
-//        BookEntity bookEntity = bookRepository.findByBookName(bookName)
-//                .orElseThrow(() -> new BookNotFoundException(ErrorCode.BOOKNAME_NOT_FOUND));
-//
-//        return BookDto.detail(bookEntity);
-//    }
-//
-//    @Override
-//    public BookSimpleDto simpleSearchByBookAuthor(String bookAuthor) {
-//        BookEntity bookEntity = bookRepository.findByBookAuthor(bookAuthor)
-//                .orElseThrow(() -> new BookNotFoundException(ErrorCode.BOOKAUTHOR_NOT_FOUND));
-//
-//        return BookSimpleDto.simple(bookEntity);
-//    }
-//
-//    @Override
-//    public BookSimpleDto simpleSearchByBookName(String bookName) {
-//        BookEntity bookEntity = bookRepository.findByBookName(bookName)
-//                .orElseThrow(() -> new BookNotFoundException(ErrorCode.BOOKNAME_NOT_FOUND));
-//
-//        return BookSimpleDto.simple(bookEntity);
-//    }
+
+    @Override
+    public List<BookSearchResponseDto.Response> inquirySimpleCategory(InquiryCategory category, String inquiryWord) {
+        List<BookSearchResponseDto.Response> responses = bookRepository.findBooksBySimpleCategory(category,inquiryWord);
+        return responses;
+    }
 
     @Override
     @Transactional
@@ -64,7 +41,7 @@ public class BookServiceImpl implements BookService {
                 .bookState(BookState.getBookState(bookModifiyReqDto.getBookState()))
                 .bookPublisher(bookModifiyReqDto.getBookPublisher())
                 .isbn(bookModifiyReqDto.getIsbn())
-                .pubDate(bookModifiyReqDto.getPubDate())
+                .pubDt(bookModifiyReqDto.getPubDt())
                 .bookLocation(bookModifiyReqDto.getBookLocation())
                 .bookImage(bookModifiyReqDto.getBookImage())
                 .build();
