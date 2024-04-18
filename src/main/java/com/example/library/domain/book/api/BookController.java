@@ -31,18 +31,9 @@ public class BookController {
 
 
     @GetMapping("/inquiry/{category}/{inquiryWord}")
-    public ApiResponseDto inquirySimpleCategory(@PathVariable("category") String category,@PathVariable("inquiryWord") String inquiryWord
-                                                , @RequestParam(defaultValue = "1") int page,@RequestParam(defaultValue = "10") int size
-    ) {
-        long startTime = System.currentTimeMillis();
-
-
+    public ApiResponseDto inquirySimpleCategory(@PathVariable("category") String category,@PathVariable("inquiryWord") String inquiryWord,@RequestParam(defaultValue = "1") int page,@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) Long cachedCount) {
         Pageable pageable = PageRequest.of(page-1,size);
-        BookSearchPagingResDto bookSearchPagingResDto= bookService.inquirySimpleCategory(InquiryCategory.getCategory(category),inquiryWord,pageable);
-
-        long stopTime = System.currentTimeMillis();
-        log.info("코드 실행 시간: " + (stopTime - startTime));
-
+        BookSearchPagingResDto bookSearchPagingResDto= bookService.inquirySimpleCategory(InquiryCategory.getCategory(category),inquiryWord,pageable,cachedCount);
         return ApiResponseDto.createRes(ErrorCode.SUC, bookSearchPagingResDto);
     }
 

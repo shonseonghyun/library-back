@@ -15,9 +15,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,11 +29,10 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public BookSearchPagingResDto inquirySimpleCategory(InquiryCategory category, String inquiryWord,Pageable pageable) {
-        Page<BookSearchResponseDto.Response> pageResult = bookRepository.findBooksBySimpleCategory(category,inquiryWord,pageable);
+    public BookSearchPagingResDto inquirySimpleCategory(InquiryCategory category, String inquiryWord,Pageable pageable,Long cachedCount) {
+        Page<BookSearchResponseDto.Response> pageResult = bookRepository.findBooksBySimpleCategory(category,inquiryWord,pageable,cachedCount);
         List<BookSearchResponseDto.Response> responseList=pageResult.getContent();
         int totalCount = (int)pageResult.getTotalElements(); //총 갯수
-        int currentPage=pageResult.getPageable().getPageNumber(); //총 페이지수
         return new BookSearchPagingResDto(totalCount,responseList);
     }
 
