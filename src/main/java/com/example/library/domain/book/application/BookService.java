@@ -2,13 +2,12 @@ package com.example.library.domain.book.application;
 
 import com.example.library.domain.book.application.dto.BookModifiyReqDto;
 import com.example.library.domain.book.application.dto.UserInquiryBookResDto;
-import com.example.library.domain.book.domain.dto.BookSearchResponseDto;
+import com.example.library.domain.book.domain.dto.BookSearchPagingResDto;
 import com.example.library.domain.book.enums.InquiryCategory;
-
-import java.util.List;
+import org.springframework.data.domain.Pageable;
 
 public interface BookService {
-    List<BookSearchResponseDto.Response> inquirySimpleCategory(InquiryCategory category, String inquiryWord);
+    BookSearchPagingResDto inquirySimpleCategory(InquiryCategory category, String inquiryWord, Pageable pageable);
     BookModifiyReqDto add(BookModifiyReqDto bookModifiyReqDto);
     UserInquiryBookResDto inquiryBook(Long bookNo);
 }

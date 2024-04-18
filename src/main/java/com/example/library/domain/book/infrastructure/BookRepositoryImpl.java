@@ -8,8 +8,12 @@ import com.example.library.domain.book.enums.InquiryCategory;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.BookNotFoundException;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -36,13 +40,23 @@ public class BookRepositoryImpl implements BookRepository {
     }
 
     @Override
-    public List<BookSearchResponseDto.Response> findBooksBySimpleCategory(InquiryCategory category, String inquiryWord) {
-        List<BookSearchResponseDto.Response> result = jpaQueryFactory.select(new QBookSearchResponseDto_Response(bookEntity.bookCode,bookEntity.bookName,bookEntity.bookAuthor,bookEntity.pubDt,bookEntity.bookState,bookEntity.bookImage))
+    public Page<BookSearchResponseDto.Response> findBooksBySimpleCategory(InquiryCategory category, String inquiryWord, Pageable pageable) {
+        JPQLQuery<BookSearchResponseDto.Response> query=jpaQueryFactory.select(
+                    new QBookSearchResponseDto_Response(bookEntity.bookCode,bookEntity.bookName,bookEntity.bookAuthor,bookEntity.pubDt,bookEntity.bookState,bookEntity.bookImage)
+                )
                 .from(bookEntity)
                 .where(getSearchCategory(category,inquiryWord))
-                .fetch()
-                ;
-        return result;
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+        ;
+        
+        //데이터 조회
+        List<BookSearchResponseDto.Response> content = query.fetch();
+        
+        //총 갯수
+        Long totalCount = query.fetchCount();
+
+        return new PageImpl<>(content,pageable,totalCount);
     }
 
     private BooleanExpression getSearchCategory(InquiryCategory category, String inquiryWord){

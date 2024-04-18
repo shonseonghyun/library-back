@@ -4,6 +4,7 @@ import com.example.library.domain.book.application.BookService;
 import com.example.library.domain.book.application.dto.BookModifiyReqDto;
 import com.example.library.domain.book.application.dto.UserInquiryBookResDto;
 import com.example.library.domain.book.domain.BookEntity;
+import com.example.library.domain.book.domain.dto.BookSearchPagingResDto;
 import com.example.library.domain.book.domain.dto.BookSearchResponseDto;
 import com.example.library.domain.book.domain.repository.BookRepository;
 import com.example.library.domain.book.enums.BookState;
@@ -13,6 +14,10 @@ import com.example.library.domain.rent.application.event.RentedBookEvent;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,9 +31,12 @@ public class BookServiceImpl implements BookService {
 
 
     @Override
-    public List<BookSearchResponseDto.Response> inquirySimpleCategory(InquiryCategory category, String inquiryWord) {
-        List<BookSearchResponseDto.Response> responses = bookRepository.findBooksBySimpleCategory(category,inquiryWord);
-        return responses;
+    public BookSearchPagingResDto inquirySimpleCategory(InquiryCategory category, String inquiryWord,Pageable pageable) {
+        Page<BookSearchResponseDto.Response> pageResult = bookRepository.findBooksBySimpleCategory(category,inquiryWord,pageable);
+        List<BookSearchResponseDto.Response> responseList=pageResult.getContent();
+        int totalCount = (int)pageResult.getTotalElements(); //총 갯수
+        int currentPage=pageResult.getPageable().getPageNumber(); //총 페이지수
+        return new BookSearchPagingResDto(totalCount,responseList);
     }
 
     @Override

@@ -15,5 +15,5 @@ import java.util.Optional;
 public interface BookRepository {
     BookEntity findByBookNo(Long bookNo);
     BookEntity save(BookEntity book);
-    List<BookSearchResponseDto.Response> findBooksBySimpleCategory(InquiryCategory category, String inquiryWord);
+    Page<BookSearchResponseDto.Response> findBooksBySimpleCategory(InquiryCategory category, String inquiryWord,Pageable pageable);
 }
