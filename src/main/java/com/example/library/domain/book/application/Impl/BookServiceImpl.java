@@ -68,6 +68,13 @@ public class BookServiceImpl implements BookService {
         bookRepository.save(bookEntity);
     }
 
+    @Override
+    @Transactional
+    public void removeBook(Long bookNo) {
+        BookEntity selectedBook = bookRepository.findByBookNo(bookNo);
+        bookRepository.delete(selectedBook);
+    }
+
     @EventListener
     public void rentSuc(RentedBookEvent evt){
         BookEntity selectedBook = bookRepository.findByBookNo(evt.getBookNo());

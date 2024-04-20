@@ -11,4 +11,5 @@ public interface BookService {
     BookSearchPagingResDto inquirySimpleCategory(InquiryCategory category, String inquiryWord, Pageable pageable,Long cachedCount);
     UserInquiryBookResDto inquiryBook(Long bookNo);
     void regBook(BookRegReqDto bookRegReqDto, MultipartFile file);
+    void removeBook(Long bookNo);
 }

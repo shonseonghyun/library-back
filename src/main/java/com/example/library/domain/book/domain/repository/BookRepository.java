@@ -16,4 +16,5 @@ public interface BookRepository {
     BookEntity findByBookNo(Long bookNo);
     BookEntity save(BookEntity book);
     Page<BookSearchResponseDto.Response> findBooksBySimpleCategory(InquiryCategory category, String inquiryWord,Pageable pageable,Long cachedCount);
+    void delete(BookEntity book);
 }

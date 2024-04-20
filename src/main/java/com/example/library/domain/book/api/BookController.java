@@ -32,22 +32,16 @@ public class BookController {
         return ApiResponseDto.createRes(ErrorCode.SUC, bookSearchPagingResDto);
     }
 
-//    @PutMapping("/update/{bookCode}")
-//    public ApiResponseDto update(@Valid @RequestBody BookDto bookDto, @PathVariable("bookCode") Long bookCode) {
-//        BookDto book = bookService.update(bookDto, bookCode);
-//        return ApiResponseDto.createRes(ErrorCode.SUC, bookDto);
-//    }
-
-//    @DeleteMapping("/delete/{bookCode}")
-//    public ApiResponseDto delete(@PathVariable("bookCode") Long bookCode) {
-//        bookService.delete(bookCode);
-//        return ApiResponseDto.createRes(ErrorCode.SUC);
-//    }
-
     @GetMapping("/{bookNo}")
     public ApiResponseDto inquiryBook(@PathVariable("bookNo") Long bookNo){
         UserInquiryBookResDto userInquiryBookResDto = bookService.inquiryBook(bookNo);
         return ApiResponseDto.createRes(ErrorCode.SUC,userInquiryBookResDto);
+    }
+
+    @DeleteMapping("/{bookNo}")
+    public ApiResponseDto removeBook(@PathVariable("bookNo") Long bookNo){
+        bookService.removeBook(bookNo);
+        return ApiResponseDto.createRes(ErrorCode.SUC);
     }
 
     @PostMapping(value = "/reg")

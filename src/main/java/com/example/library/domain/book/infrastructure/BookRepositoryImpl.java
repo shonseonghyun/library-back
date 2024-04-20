@@ -59,6 +59,11 @@ public class BookRepositoryImpl implements BookRepository {
         return new PageImpl<>(content,pageable,totalCount);
     }
 
+    @Override
+    public void delete(BookEntity book) {
+        bookRepository.delete(book);
+    }
+
     private BooleanExpression getSearchCategory(InquiryCategory category, String inquiryWord){
         if(InquiryCategory.BOOK_NAME.equals(category)){
             return bookEntity.bookName.contains(inquiryWord);
