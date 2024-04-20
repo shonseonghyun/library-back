@@ -28,7 +28,6 @@ class ReviewServiceImplTest {
                         .bookName("테스트책1")
                         .isbn("1234")
                         .bookAuthor("저자1")
-                        .bookImage("http://asd.com")
                         .bookContent("책 내용")
                         .bookPublisher("출판사1")
                         .bookLocation("A1")

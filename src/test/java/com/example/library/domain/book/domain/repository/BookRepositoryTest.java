@@ -27,7 +27,6 @@ class BookRepositoryTest {
         BookEntity bookEntity = BookEntity.builder()
                 .bookAuthor("author")
                 .bookContent("content")
-                .bookImage("asd")
                 .bookLocation("A1")
                 .bookState(BookState.RENT_UNAVAILABLE)
                 .bookPublisher("pub")

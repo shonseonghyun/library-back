@@ -16,11 +16,13 @@ public class HeartResponseDto {
         String regDt;
         String bookAuthor;
         String bookPublisher;
-        String bookImage;
+//        String bookImage;
 
         @Builder
         @QueryProjection
-        public Response(Long heartNo, Long userNo, Long bookCode, String bookName, String regTm, String regDt, String bookAuthor, String bookPublisher, String bookImage) {
+        public Response(Long heartNo, Long userNo, Long bookCode, String bookName, String regTm, String regDt, String bookAuthor, String bookPublisher
+//                , String bookImage
+        ) {
             this.heartNo = heartNo;
             this.userNo = userNo;
             this.bookCode = bookCode;
@@ -29,7 +31,7 @@ public class HeartResponseDto {
             this.regDt = regDt;
             this.bookAuthor = bookAuthor;
             this.bookPublisher = bookPublisher;
-            this.bookImage = bookImage;
+//            this.bookImage = bookImage;
         }
     }
 }

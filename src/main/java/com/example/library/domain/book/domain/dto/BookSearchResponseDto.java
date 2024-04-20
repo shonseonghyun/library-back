@@ -16,17 +16,19 @@ public class BookSearchResponseDto {
         String bookAuthor;
         String pubDt;
         BookState bookState;
-        String bookImage;
+//        String bookImage;
 
         @Builder
         @QueryProjection
-        public Response(Long bookNo, String bookName, String bookAuthor, String pubDt, BookState bookState, String bookImage) {
+        public Response(Long bookNo, String bookName, String bookAuthor, String pubDt, BookState bookState
+//                        ,String bookImage
+        ) {
             this.bookNo = bookNo;
             this.bookName = bookName;
             this.bookAuthor = bookAuthor;
             this.pubDt = pubDt;
             this.bookState = bookState;
-            this.bookImage = bookImage;
+//            this.bookImage = bookImage;
         }
     }
 }

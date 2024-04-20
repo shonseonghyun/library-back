@@ -28,7 +28,7 @@ public class UserInquiryBookResDto {
 
     private String bookImage;
 
-    public UserInquiryBookResDto(BookEntity bookEntity) {
+    private UserInquiryBookResDto(BookEntity bookEntity) {
         this.bookNo = bookEntity.getBookCode();
         this.bookName = bookEntity.getBookName();
         this.bookAuthor = bookEntity.getBookAuthor();
@@ -38,7 +38,6 @@ public class UserInquiryBookResDto {
         this.isbn = bookEntity.getIsbn();
         this.pubDt = bookEntity.getPubDt();
         this.bookLocation = bookEntity.getBookLocation();
-        this.bookImage = bookEntity.getBookImage();
     }
 
     public static UserInquiryBookResDto from (BookEntity bookEntity){

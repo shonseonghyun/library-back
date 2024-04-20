@@ -1,10 +1,10 @@
 package com.example.library.domain.book.api;
 
 import com.example.library.domain.RestDocsSupport;
+import com.example.library.domain.book.application.BookService;
 import com.example.library.domain.book.application.dto.UserInquiryBookResDto;
 import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.book.enums.BookState;
-import com.example.library.domain.book.application.BookService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -29,7 +29,6 @@ class BookControllerTest extends RestDocsSupport {
                 .bookCode(1L)
                 .bookAuthor("author")
                 .bookContent("content")
-                .bookImage("asd")
                 .bookLocation("A1")
                 .bookState(BookState.RENT_UNAVAILABLE)
                 .bookPublisher("pub")
