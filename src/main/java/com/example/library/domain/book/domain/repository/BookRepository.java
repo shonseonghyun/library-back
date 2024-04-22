@@ -1,7 +1,6 @@
 package com.example.library.domain.book.domain.repository;
 
 import com.example.library.domain.book.domain.BookEntity;
-import com.example.library.domain.book.domain.BookImageEntity;
 import com.example.library.domain.book.domain.dto.BookSearchResponseDto;
 import com.example.library.domain.book.enums.InquiryCategory;
 import org.springframework.data.domain.Page;
