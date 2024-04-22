@@ -55,6 +55,7 @@ public class BookServiceImpl implements BookService {
         //이미지 엔티티 생성
         String newFileName = fileService.getNewFileName(file);
         String uploadFilePath = fileService.getUploadFilePath();
+        fileService.uploadFile(file,uploadFilePath,newFileName);
 
         BookImageEntity bookImageEntity = BookImageEntity.builder()
                 .originalFileName(file.getOriginalFilename())

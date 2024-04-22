@@ -55,6 +55,9 @@ public enum ErrorCode {
     //Return
     BOOK_NOT_FOUND_AMONG_BOOKS_ON_RENT("L01","대여 중인 도서 중 해당 도서는 존재하지 않습니다.대여한 책이 맞는지 확인 바랍니다."),
 
+    //File
+    UPLOAD_FILE_FAIL("F01","이미지 업로드 실패하였습니다."),
+
     //
     SEARCH_THROUGHPUT_EXCEEDED_EXCEPTION("S01","서버 접속량이 많습니다. 잠시 후 재시도 부탁드립니다."),
 

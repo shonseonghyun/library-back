@@ -42,9 +42,12 @@ public class BookRepositoryImpl implements BookRepository {
     @Override
     public Page<BookSearchResponseDto.Response> findBooksBySimpleCategory(InquiryCategory category, String inquiryWord, Pageable pageable,Long cachedCount) {
         JPQLQuery<BookSearchResponseDto.Response> query=jpaQueryFactory.select(
-                    new QBookSearchResponseDto_Response(bookEntity.bookCode,bookEntity.bookName,bookEntity.bookAuthor,bookEntity.pubDt,bookEntity.bookState)
+                    new QBookSearchResponseDto_Response(bookEntity.bookCode,bookEntity.bookName,bookEntity.bookAuthor,bookEntity.pubDt,bookEntity.bookState
+                            ,bookEntity.bookImage.originalFileName,bookEntity.bookImage.fileSize,bookEntity.bookImage.filePath,bookEntity.bookImage.newFileName
+                    )
                 )
                 .from(bookEntity)
+                .join(bookEntity.bookImage)
                 .where(getSearchCategory(category,inquiryWord))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
