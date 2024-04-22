@@ -46,8 +46,8 @@ public class BookController {
 
     @PostMapping(value = "/reg")
     public ApiResponseDto regBook(@RequestPart BookRegReqDto bookRegReqDto ,@RequestPart(value = "file") MultipartFile file) throws IOException {
-        bookService.regBook(bookRegReqDto,file);
-        return ApiResponseDto.createRes(ErrorCode.SUC);
+        Long bookNo = bookService.regBook(bookRegReqDto,file);
+        return ApiResponseDto.createRes(ErrorCode.SUC,bookNo);
     }
 
 }

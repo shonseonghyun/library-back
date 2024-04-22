@@ -165,6 +165,9 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
             UserEntity userEntityBySocialLogin = CustomOAuthAttributes.toEntity(socialLoginType, customOAuthAttributes.getOAuthUserInfo());
             UserEntity savedUserEntityBySocialLogin = userRepository.save(userEntityBySocialLogin);
 
+            Events.raise(new UserJoinedEvent(savedUserEntityBySocialLogin.getUserNo()));
+            Events.raise(new SendedMailEvent(new MailDto(savedUserEntityBySocialLogin.getUserNo(), MailType.MAIL_JOIN)));
+
             return new CustomOAuth2User(
                         Collections.singleton(new SimpleGrantedAuthority("ROLE")),
                         oAuth2User.getAttributes(),

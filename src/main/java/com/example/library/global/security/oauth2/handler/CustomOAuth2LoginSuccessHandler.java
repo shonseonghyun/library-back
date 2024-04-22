@@ -1,11 +1,9 @@
 package com.example.library.global.security.oauth2.handler;
 
-import com.example.library.domain.user.dto.UserLoginResDto;
 import com.example.library.domain.user.entity.UserEntity;
 import com.example.library.domain.user.service.UserService;
 import com.example.library.global.security.oauth2.principal.CustomOAuth2User;
 import com.example.library.global.utils.JwtUtil;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;

@@ -48,7 +48,7 @@ public class BookServiceImpl implements BookService {
 
     @Override
     @Transactional
-    public void regBook(BookRegReqDto bookRegReqDto, MultipartFile file) {
+    public Long regBook(BookRegReqDto bookRegReqDto, MultipartFile file) {
         //도서 엔티티 생성
         BookEntity bookEntity = bookRegReqDto.toBookEntity();
 
@@ -65,7 +65,9 @@ public class BookServiceImpl implements BookService {
                 ;
 
         bookEntity.setBookImage(bookImageEntity);
-        bookRepository.save(bookEntity);
+
+        BookEntity savedBookEntity = bookRepository.save(bookEntity);
+        return savedBookEntity.getBookCode();
     }
 
     @Override

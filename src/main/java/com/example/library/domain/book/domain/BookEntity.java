@@ -52,19 +52,12 @@ public class BookEntity extends ModifiedEntity {
     @Column(nullable = false)
     private String bookLocation;
 
-//    case1) BookEntity가 주인
-//    @OneToOne(cascade = CascadeType.PERSIST)
-//    @JoinColumn(name="img_no")
-//    private BookImageEntity bookImage;
-
-    //case2) BookImageEntity가 주인 -> @oneToMany 될 가능성 존재하여 case2 선택
-    @OneToOne(mappedBy = "book" ,cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "book",cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
     private BookImageEntity bookImage;
 
-    //양방향 연관관계 편의 메소드
     public void setBookImage(BookImageEntity bookImageEntity){
-            bookImageEntity.setBookCase1(this);
-            this.bookImage= bookImageEntity;
+        this.bookImage= bookImageEntity;
+        bookImageEntity.setBook(this);
     }
 
     public void rentSuc(){
