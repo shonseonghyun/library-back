@@ -20,8 +20,8 @@ public class BookImageEntity extends BaseEntity {
     @Column(name = "img_no")
     private Long imgNo;
 
-    @OneToOne
-    @JoinColumn(name="book_no",nullable = false)
+    @OneToOne(fetch = FetchType.LAZY,optional = false)
+    @JoinColumn(name="book_no")
     private BookEntity book;
 
     private String originalFileName;

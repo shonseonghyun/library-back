@@ -9,8 +9,6 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
 @Slf4j
 @Entity
@@ -24,7 +22,6 @@ import org.hibernate.annotations.OnDeleteAction;
 public class BookEntity extends ModifiedEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @OnDelete(action = OnDeleteAction.CASCADE)
     private Long bookCode;
 
     @Column(nullable = false)
@@ -55,6 +52,7 @@ public class BookEntity extends ModifiedEntity {
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "book",cascade = {CascadeType.PERSIST,CascadeType.REMOVE})
     private BookImageEntity bookImage;
 
+    //연관관계 편의메소드
     public void setBookImage(BookImageEntity bookImageEntity){
         this.bookImage= bookImageEntity;
         bookImageEntity.setBook(this);

@@ -1,7 +1,6 @@
 package com.example.library.domain.book.infrastructure;
 
 import com.example.library.domain.book.domain.BookEntity;
-import com.example.library.domain.book.domain.BookImageEntity;
 import com.example.library.domain.book.domain.dto.BookSearchResponseDto;
 import com.example.library.domain.book.domain.dto.QBookSearchResponseDto_Response;
 import com.example.library.domain.book.domain.repository.BookRepository;
@@ -27,7 +26,6 @@ public class BookRepositoryImpl implements BookRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
     private final SpringDataJpaBookRepository bookRepository;
-    private final SpringDataJpaBookImageRepository bookImageRepository;
 
     @Override
     public BookEntity findByBookNo(Long bookNo) {

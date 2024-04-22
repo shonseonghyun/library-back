@@ -4,6 +4,7 @@ import com.example.library.domain.book.application.BookService;
 import com.example.library.domain.book.application.dto.BookRegReqDto;
 import com.example.library.domain.book.application.dto.UserInquiryBookResDto;
 import com.example.library.domain.book.domain.dto.BookSearchPagingResDto;
+import com.example.library.domain.book.domain.repository.BookRepository;
 import com.example.library.domain.book.enums.InquiryCategory;
 import com.example.library.exception.ErrorCode;
 import com.example.library.global.response.ApiResponseDto;
@@ -24,6 +25,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class BookController {
     private final BookService bookService;
+    private final BookRepository bookRepository;
 
     @GetMapping("/inquiry/{category}/{inquiryWord}")
     public ApiResponseDto inquirySimpleCategory(@PathVariable("category") String category,@PathVariable("inquiryWord") String inquiryWord,@RequestParam(defaultValue = "1") int page,@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) Long cachedCount) {

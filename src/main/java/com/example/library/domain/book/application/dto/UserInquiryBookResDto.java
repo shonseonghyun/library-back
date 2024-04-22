@@ -4,8 +4,6 @@ import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.book.enums.BookState;
 import lombok.Getter;
 
-import java.util.Date;
-
 @Getter
 public class UserInquiryBookResDto {
     private Long bookNo;
@@ -26,7 +24,7 @@ public class UserInquiryBookResDto {
 
     private String bookLocation;
 
-    private String bookImage;
+    private BookImageResDto bookImage;
 
     private UserInquiryBookResDto(BookEntity bookEntity) {
         this.bookNo = bookEntity.getBookCode();
@@ -38,6 +36,7 @@ public class UserInquiryBookResDto {
         this.isbn = bookEntity.getIsbn();
         this.pubDt = bookEntity.getPubDt();
         this.bookLocation = bookEntity.getBookLocation();
+        this.bookImage= BookImageResDto.from(bookEntity.getBookImage());
     }
 
     public static UserInquiryBookResDto from (BookEntity bookEntity){
