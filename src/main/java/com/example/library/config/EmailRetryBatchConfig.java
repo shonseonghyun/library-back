@@ -1,8 +1,8 @@
 package com.example.library.config;
 
-import com.example.library.global.mail.mailHistory.MailDto;
-import com.example.library.global.mail.mailHistory.MailHistoryEntity;
-import com.example.library.global.mail.mailHistory.MailService;
+import com.example.library.global.mail.domain.mail.application.dto.MailDto;
+import com.example.library.global.mail.domain.mail.domain.mailHistory.MailHistoryEntity;
+import com.example.library.global.mail.domain.mail.application.MailService;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

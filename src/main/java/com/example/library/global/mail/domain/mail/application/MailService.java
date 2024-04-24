@@ -1,14 +1,16 @@
-package com.example.library.global.mail.mailHistory;
+package com.example.library.global.mail.domain.mail.application;
 
 import com.example.library.domain.user.domain.UserEntity;
-import com.example.library.domain.user.infrastructure.repository.SpringDataJpaUserRepository;
+import com.example.library.domain.user.domain.repository.UserRepository;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.MailTypeNotFoundException;
-import com.example.library.exception.exceptions.UserNotFoundException;
-import com.example.library.global.event.SendedMailEvent;
-import com.example.library.global.mail.enums.MailType;
-import com.example.library.global.mail.mailForm.entity.MailEntity;
-import com.example.library.global.mail.mailForm.repository.MailRepository;
+import com.example.library.global.mail.domain.mail.application.dto.MailDto;
+import com.example.library.global.mail.domain.mail.application.event.SendedMailEvent;
+import com.example.library.global.mail.domain.mail.domain.mailHistory.MailHistoryEntity;
+import com.example.library.global.mail.domain.mail.infrastructure.mailHistory.MailHistoryRepository;
+import com.example.library.global.mail.domain.mail.enums.MailType;
+import com.example.library.global.mail.domain.mail.domain.mailForm.MailEntity;
+import com.example.library.global.mail.domain.mail.infrastructure.mailForm.MailRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.mail.MailException;
@@ -25,8 +27,8 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class MailService {
 
     private final JavaMailSender javaMailSender;
+    private final UserRepository userRepository;
     private final MailHistoryRepository mailHistoryRepository;
-    private final SpringDataJpaUserRepository springDataJpaUserRepository;
     private final MailRepository mailRepository;
 
     public MailHistoryEntity sendMailAndSave(MailDto mailDto){
@@ -44,7 +46,7 @@ public class MailService {
                     "O"
             );
         }else{
-            selectedUser = springDataJpaUserRepository.findByUserNo(mailDto.getUserNo()).orElseThrow(()->new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
+            selectedUser = userRepository.findByUserNo(mailDto.getUserNo());
             content = mailDto.getMailType().getContent(selectedUser.getUserId(),mailEntity.getMailContent());
             mailDto = new MailDto(mailDto.getUserNo(),
                     selectedUser.getUserEmail(),

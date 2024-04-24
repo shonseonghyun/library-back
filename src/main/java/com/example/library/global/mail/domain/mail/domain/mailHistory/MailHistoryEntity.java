@@ -1,9 +1,8 @@
-package com.example.library.global.mail.mailHistory;
+package com.example.library.global.mail.domain.mail.domain.mailHistory;
 
-import com.example.library.domain.book.domain.converter.BookStateConverter;
 import com.example.library.global.entityListener.Entity.BaseEntity;
-import com.example.library.global.mail.enums.MailType;
-import com.example.library.global.mail.mailHistory.enums.MailTypeConverter;
+import com.example.library.global.mail.domain.mail.enums.MailType;
+import com.example.library.global.mail.domain.mail.domain.mailHistory.converter.MailTypeConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

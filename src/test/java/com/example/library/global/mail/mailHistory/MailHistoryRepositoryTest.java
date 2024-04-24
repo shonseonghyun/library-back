@@ -1,6 +1,9 @@
 package com.example.library.global.mail.mailHistory;
 
 import com.example.library.config.QuerydslConfig;
+import com.example.library.global.mail.domain.mail.domain.mailHistory.MailHistoryEntity;
+import com.example.library.global.mail.domain.mail.enums.MailType;
+import com.example.library.global.mail.domain.mail.infrastructure.mailHistory.MailHistoryRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +24,7 @@ class MailHistoryRepositoryTest {
         MailHistoryEntity mailHistoryEntity = MailHistoryEntity.builder()
                 .userNo(1L)
                 .content("content")
-                .type("type")
+                .mailType(MailType.MAIL_EXTEND)
                 .email("sunghyun7895@naver.com")
                 .build()
                 ;

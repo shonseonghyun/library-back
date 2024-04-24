@@ -9,7 +9,7 @@ import com.example.library.domain.heart.application.event.CheckUserExistEvent;
 import com.example.library.domain.user.application.event.UserDeletedEvent;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.HeartBookAlreadyException;
-import com.example.library.global.Events;
+import com.example.library.global.event.Events;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;

@@ -1,4 +1,4 @@
-package com.example.library.global.mail.mailForm.entity;
+package com.example.library.global.mail.domain.mail.domain.mailForm;
 
 import jakarta.persistence.*;
 import lombok.*;

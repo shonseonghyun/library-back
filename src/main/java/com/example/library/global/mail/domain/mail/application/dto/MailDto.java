@@ -1,6 +1,7 @@
-package com.example.library.global.mail.mailHistory;
+package com.example.library.global.mail.domain.mail.application.dto;
 
-import com.example.library.global.mail.enums.MailType;
+import com.example.library.global.mail.domain.mail.domain.mailHistory.MailHistoryEntity;
+import com.example.library.global.mail.domain.mail.enums.MailType;
 import lombok.Getter;
 
 @Getter

@@ -1,8 +1,7 @@
 package com.example.library.test;
 
 import com.example.library.config.QuerydslConfig;
-import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
-import com.example.library.global.mail.mailForm.entity.MailEntity;
+import com.example.library.global.mail.domain.mail.domain.mailForm.MailEntity;
 import com.example.library.global.mail.mailForm.entity.QMailEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;

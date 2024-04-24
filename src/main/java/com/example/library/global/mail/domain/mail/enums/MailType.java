@@ -1,4 +1,4 @@
-package com.example.library.global.mail.enums;
+package com.example.library.global.mail.domain.mail.enums;
 
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.MailTypeNotFoundException;

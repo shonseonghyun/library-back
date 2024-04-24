@@ -1,4 +1,4 @@
-package com.example.library.global;
+package com.example.library.global.event;
 
 import lombok.Setter;
 import org.springframework.context.ApplicationEventPublisher;

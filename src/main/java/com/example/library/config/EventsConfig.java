@@ -1,6 +1,6 @@
 package com.example.library.config;
 
-import com.example.library.global.Events;
+import com.example.library.global.event.Events;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.ApplicationContext;

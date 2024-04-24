@@ -1,6 +1,6 @@
-package com.example.library.global.mail.mailForm.repository;
+package com.example.library.global.mail.domain.mail.infrastructure.mailForm;
 
-import com.example.library.global.mail.mailForm.entity.MailEntity;
+import com.example.library.global.mail.domain.mail.domain.mailForm.MailEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
