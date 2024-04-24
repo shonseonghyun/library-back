@@ -10,8 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
-public class DateFormatListener {
-
+public class ModifiedDateFormatListener {
     @PrePersist
     public void prePersist(Object obj){
         BaseEntity baseEntity = (BaseEntity) obj;

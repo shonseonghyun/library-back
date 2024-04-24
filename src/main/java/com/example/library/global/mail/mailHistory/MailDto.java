@@ -35,12 +35,19 @@ public class MailDto {
         this.flg = flg;
     }
 
+    //이메일 재발송 배치 위한 생성자
+    public MailDto(String email, MailType type, String content) {
+        this.email=email;
+        this.mailType=type;
+        this.content=content;
+    }
+
     public MailHistoryEntity toEntity() {
         return MailHistoryEntity.builder()
                 .userNo(userNo)
                 .email(email)
                 .content(content)
-                .type(mailType.getType())
+                .mailType(mailType)
                 .flg(flg)
                 .build()
                 ;

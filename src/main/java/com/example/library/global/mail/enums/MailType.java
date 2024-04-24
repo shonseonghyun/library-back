@@ -1,8 +1,12 @@
 package com.example.library.global.mail.enums;
 
+import com.example.library.exception.ErrorCode;
+import com.example.library.exception.exceptions.MailTypeNotFoundException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.Arrays;
 
 @Getter
 @AllArgsConstructor
@@ -61,4 +65,10 @@ public enum MailType implements MailContentInterface{
     private final String type;
     private final String subject;
 
+    public static MailType getMailType(String dbData) {
+        return  Arrays.stream(MailType.values())
+                .filter(mailType -> mailType.getType().equals(dbData))
+                .findFirst()
+                .orElseThrow(()->new MailTypeNotFoundException(ErrorCode.MAIL_TYPE_NOT_FOUND));
+    }
 }

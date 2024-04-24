@@ -65,7 +65,7 @@ public class MailService {
         return mailHistoryRepository.save(mailDto.toEntity());
     }
 
-    private void send(MailDto mailDto){
+    public void send(MailDto mailDto){
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(mailDto.getEmail());
         simpleMailMessage.setSubject(mailDto.getMailType().getSubject());
