@@ -1,11 +1,10 @@
-package com.example.library.domain.review.entity;
+package com.example.library.domain.review.domain;
 
 import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.user.entity.UserEntity;
 import com.example.library.global.entityListener.Entity.ModifiedEntity;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.BatchSize;
 import org.hibernate.annotations.NotFound;
 import org.hibernate.annotations.NotFoundAction;
 

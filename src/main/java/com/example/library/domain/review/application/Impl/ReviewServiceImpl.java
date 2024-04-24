@@ -1,18 +1,17 @@
-package com.example.library.domain.review.service.Impl;
+package com.example.library.domain.review.application.Impl;
 
 import com.example.library.domain.book.domain.BookEntity;
-import com.example.library.domain.book.infrastructure.SpringDataJpaBookRepository;
+import com.example.library.domain.book.domain.repository.BookRepository;
 import com.example.library.domain.rent.domain.RentRepository;
-import com.example.library.domain.review.dto.ReviewWriteReqDto;
-import com.example.library.domain.review.entity.ReviewEntity;
-import com.example.library.domain.review.repository.ReviewRepository;
-import com.example.library.domain.review.service.ReviewService;
-import com.example.library.domain.review.service.dto.BookReviewResDto;
-import com.example.library.domain.review.service.dto.UserReviewsResDto;
+import com.example.library.domain.review.application.ReviewService;
+import com.example.library.domain.review.application.dto.BookReviewResDto;
+import com.example.library.domain.review.application.dto.ReviewWriteReqDto;
+import com.example.library.domain.review.application.dto.UserReviewsResDto;
+import com.example.library.domain.review.domain.ReviewEntity;
+import com.example.library.domain.review.domain.repository.ReviewRepository;
 import com.example.library.domain.user.entity.UserEntity;
 import com.example.library.domain.user.repository.UserRepository;
 import com.example.library.exception.ErrorCode;
-import com.example.library.exception.exceptions.BookNotFoundException;
 import com.example.library.exception.exceptions.ReviewWriteUnavailableException;
 import com.example.library.exception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -32,13 +31,13 @@ public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
     private final UserRepository userRepository;
     private final RentRepository rentRepository;
-    private final SpringDataJpaBookRepository bookRepository;
+    private final BookRepository bookRepository;
 
     @Override
     @Transactional
     public void writeReview(ReviewWriteReqDto reviewWriteReqDto, Long userNo, Long bookNo) {
         UserEntity selectedUser = userRepository.findByUserNo(userNo).orElseThrow(()->new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
-        BookEntity selectedBook =bookRepository.findByBookCode(bookNo).orElseThrow(() -> new BookNotFoundException(ErrorCode.BOOKCODE_NOT_FOUND));
+        BookEntity selectedBook =bookRepository.findByBookNo(bookNo);
         Integer count = rentRepository.findRentHistoryCountWithReturn(userNo,bookNo);
         if(count>0){
             ReviewEntity review = ReviewEntity.builder()

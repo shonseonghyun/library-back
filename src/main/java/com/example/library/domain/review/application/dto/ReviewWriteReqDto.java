@@ -1,4 +1,4 @@
-package com.example.library.domain.review.dto;
+package com.example.library.domain.review.application.dto;
 
 import jakarta.validation.constraints.NotNull;
 import lombok.*;

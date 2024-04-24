@@ -1,15 +1,14 @@
-package com.example.library.domain.review.repository;
+package com.example.library.domain.review.infrastructure.repository;
 
-import com.example.library.domain.review.entity.ReviewEntity;
+import com.example.library.domain.review.domain.ReviewEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
-import java.util.Optional;
 
-public interface ReviewRepository extends JpaRepository<ReviewEntity, Long> {
+public interface SpringDataJpaReviewRepository extends JpaRepository<ReviewEntity, Long> {
     @Query(
             value = "select s from ReviewEntity s " +
                     "join fetch s.book n " +

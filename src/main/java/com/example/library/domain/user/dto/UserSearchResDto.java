@@ -1,6 +1,6 @@
 package com.example.library.domain.user.dto;
 
-import com.example.library.domain.review.entity.ReviewEntity;
+import com.example.library.domain.review.domain.ReviewEntity;
 import com.example.library.domain.user.enums.SocialLoginType;
 import com.example.library.domain.user.enums.UserGrade;
 import com.example.library.domain.user.entity.UserEntity;

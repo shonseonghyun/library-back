@@ -1,8 +1,8 @@
-package com.example.library.domain.review.service;
+package com.example.library.domain.review.application;
 
-import com.example.library.domain.review.dto.ReviewWriteReqDto;
-import com.example.library.domain.review.service.dto.BookReviewResDto;
-import com.example.library.domain.review.service.dto.UserReviewsResDto;
+import com.example.library.domain.review.application.dto.ReviewWriteReqDto;
+import com.example.library.domain.review.application.dto.BookReviewResDto;
+import com.example.library.domain.review.application.dto.UserReviewsResDto;
 import org.springframework.data.domain.PageRequest;
 
 import java.util.List;

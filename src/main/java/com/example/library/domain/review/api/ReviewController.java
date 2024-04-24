@@ -1,9 +1,9 @@
-package com.example.library.domain.review.controller;
+package com.example.library.domain.review.api;
 
-import com.example.library.domain.review.dto.ReviewWriteReqDto;
-import com.example.library.domain.review.service.ReviewService;
-import com.example.library.domain.review.service.dto.BookReviewResDto;
-import com.example.library.domain.review.service.dto.UserReviewsResDto;
+import com.example.library.domain.review.application.dto.ReviewWriteReqDto;
+import com.example.library.domain.review.application.ReviewService;
+import com.example.library.domain.review.application.dto.BookReviewResDto;
+import com.example.library.domain.review.application.dto.UserReviewsResDto;
 import com.example.library.exception.ErrorCode;
 import com.example.library.global.response.ApiResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;

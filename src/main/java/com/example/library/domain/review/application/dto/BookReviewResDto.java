@@ -1,7 +1,6 @@
-package com.example.library.domain.review.service.dto;
+package com.example.library.domain.review.application.dto;
 
-import com.example.library.domain.review.entity.ReviewEntity;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.example.library.domain.review.domain.ReviewEntity;
 import lombok.Getter;
 
 @Getter

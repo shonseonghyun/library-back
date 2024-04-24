@@ -1,7 +1,7 @@
-package com.example.library.domain.review.service.dto;
+package com.example.library.domain.review.application.dto;
 
 
-import com.example.library.domain.review.entity.ReviewEntity;
+import com.example.library.domain.review.domain.ReviewEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
