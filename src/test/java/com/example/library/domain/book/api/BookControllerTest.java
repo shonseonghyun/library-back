@@ -4,6 +4,8 @@ import com.example.library.domain.RestDocsSupport;
 import com.example.library.domain.book.application.BookService;
 import com.example.library.domain.book.application.dto.UserInquiryBookResDto;
 import com.example.library.domain.book.domain.BookEntity;
+import com.example.library.domain.book.domain.BookImageEntity;
+import com.example.library.domain.book.domain.repository.BookRepository;
 import com.example.library.domain.book.enums.BookState;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -21,6 +23,9 @@ class BookControllerTest extends RestDocsSupport {
     @MockBean
     private BookService bookService;
 
+    @MockBean
+    private BookRepository bookRepository;
+
     @Test
     @WithMockUser(username = "테스트_최고관리자", authorities = {"0"}) //권한 부여
     void 도서정보조회() throws Exception {
@@ -34,6 +39,7 @@ class BookControllerTest extends RestDocsSupport {
                 .bookPublisher("pub")
                 .isbn("1234")
                 .bookName("도서제목")
+                .bookImage(new BookImageEntity(1L,null,"s","s","s",1L))
                 .build()
                 ;
 

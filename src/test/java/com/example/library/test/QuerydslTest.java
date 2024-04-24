@@ -2,7 +2,7 @@ package com.example.library.test;
 
 import com.example.library.config.QuerydslConfig;
 import com.example.library.global.mail.domain.mail.domain.mailForm.MailEntity;
-import com.example.library.global.mail.mailForm.entity.QMailEntity;
+import com.example.library.global.mail.domain.mail.domain.mailForm.QMailEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
@@ -39,7 +39,6 @@ public class QuerydslTest {
     @Test
     void 저장성공확인(){
         //given
-//        QMailEntity mail = new QMailEntity("mail");
         QMailEntity mail = new QMailEntity("mailEntity");
 
         MailEntity mailEntity = jpaQueryFactory.selectFrom(mail)

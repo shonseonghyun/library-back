@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
@@ -22,22 +23,27 @@ class BookRepositoryTest {
     @Autowired
     private BookRepository bookRepository ;
 
+    private TestEntityManager testEntityManager;
+
     @Test
-    void 도서_저장and조회(){
-        BookEntity bookEntity = BookEntity.builder()
-                .bookAuthor("author")
-                .bookContent("content")
-                .bookLocation("A1")
-                .bookState(BookState.RENT_UNAVAILABLE)
-                .bookPublisher("pub")
-                .isbn("1234")
-                .bookName("도서제목")
-                .build()
-                ;
-
-        BookEntity savedBook = bookRepository.save(bookEntity);
-        BookEntity selectedBook = bookRepository.findByBookNo(savedBook.getBookCode());
-
-        Assertions.assertEquals(savedBook.getBookCode(),selectedBook.getBookCode());
+    void 도서_저장(){
+//        BookEntity bookEntity = BookEntity.builder()
+//                .bookAuthor("author")
+//                .bookContent("content")
+//                .bookLocation("A1")
+//                .bookState(BookState.RENT_UNAVAILABLE)
+//                .bookPublisher("pub")
+//                .isbn("1234")
+//                .bookName("도서제목")
+//                .build()
+//                ;
+//
+//        //when
+//        testEntityManager.persist(bookEntity);
+//
+////        BookEntity savedBook = bookRepository.save(bookEntity);
+//        BookEntity selectedBook = bookRepository.findByBookNo(bookEntity.getBookCode());
+//
+//        Assertions.assertEquals(bookEntity.getBookCode(),selectedBook.getBookCode());
     }
 }

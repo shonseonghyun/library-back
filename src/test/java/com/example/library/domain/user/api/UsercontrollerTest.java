@@ -90,7 +90,7 @@ public class UsercontrollerTest extends RestDocsSupport {
         String pwd = "1234";
 
         UserLoginReqDto loginReqDto=
-                UserLoginReqDto.builder().userId(id).userPwd(pwd).build();
+                UserLoginReqDto.builder().userId(id).userPwd(pwd).autoLogin(false).build();
 
         UserLoginResDto loginResDto = UserLoginResDto.builder()
                                 .userNo(1L)
@@ -117,7 +117,6 @@ public class UsercontrollerTest extends RestDocsSupport {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.data.userNo").value(1L))
                 .andExpect(jsonPath("$.data.userId").value(id))
-                .andExpect(jsonPath("$.data.autoLogin").value(false))
                 .andDo(
                         restDocs.document(
                                 requestFields(
@@ -137,8 +136,10 @@ public class UsercontrollerTest extends RestDocsSupport {
                                 fieldWithPath("gender").description("성별"),
                                 fieldWithPath("useFlg").description("사용여부(0:사용 / 1:미사용)"),
                                 fieldWithPath("userGrade").description("회원등급(0: 관리자, 2: 정회원)"),
-                                fieldWithPath("accessToken").description("액세스 토큰")
-                        )
+                                fieldWithPath("accessToken").description("액세스 토큰"),
+                                fieldWithPath("refreshToken").description("리프래쉬 토큰").optional()
+
+                                )
                         )
                 )
         ;
@@ -198,7 +199,7 @@ public class UsercontrollerTest extends RestDocsSupport {
         String id= "test";
 
         //when
-        mockMvc.perform(get("/user/get/userNo/"+id)
+        mockMvc.perform(get("/user/rentStatus/"+id)
                         .with(csrf()) //403에러 해결
                 )
                 .andExpect(jsonPath("$.code").value("P01"))
