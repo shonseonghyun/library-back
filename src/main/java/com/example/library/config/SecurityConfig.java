@@ -1,7 +1,7 @@
 package com.example.library.config;
 
 import com.example.library.domain.user.enums.UserGrade;
-import com.example.library.domain.user.service.UserService;
+import com.example.library.domain.user.application.UserService;
 import com.example.library.global.security.login.filter.JwtExceptionFilter;
 import com.example.library.global.security.login.filter.JwtFilter;
 import lombok.RequiredArgsConstructor;

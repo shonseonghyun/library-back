@@ -1,7 +1,7 @@
 package com.example.library.domain.user.dto;
 
-import com.example.library.domain.user.dto.UserLoginResDto;
-import com.example.library.domain.user.entity.UserEntity;
+import com.example.library.domain.user.application.dto.UserLoginResDto;
+import com.example.library.domain.user.domain.UserEntity;
 import com.example.library.global.utils.JwtUtil;
 import org.junit.jupiter.api.Test;
 

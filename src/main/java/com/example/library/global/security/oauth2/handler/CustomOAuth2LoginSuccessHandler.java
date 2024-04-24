@@ -1,7 +1,7 @@
 package com.example.library.global.security.oauth2.handler;
 
-import com.example.library.domain.user.entity.UserEntity;
-import com.example.library.domain.user.service.UserService;
+import com.example.library.domain.user.domain.UserEntity;
+import com.example.library.domain.user.application.UserService;
 import com.example.library.global.security.oauth2.principal.CustomOAuth2User;
 import com.example.library.global.utils.JwtUtil;
 import jakarta.servlet.ServletException;

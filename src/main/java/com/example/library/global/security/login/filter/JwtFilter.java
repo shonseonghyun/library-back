@@ -1,7 +1,7 @@
 package com.example.library.global.security.login.filter;
 
 import com.example.library.domain.user.enums.UserGrade;
-import com.example.library.domain.user.service.UserService;
+import com.example.library.domain.user.application.UserService;
 import com.example.library.global.utils.JwtUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

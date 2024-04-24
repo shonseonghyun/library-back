@@ -4,7 +4,7 @@ import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.book.enums.BookState;
 import com.example.library.domain.review.domain.ReviewEntity;
 import com.example.library.domain.review.infrastructure.repository.SpringDataJpaReviewRepository;
-import com.example.library.domain.user.entity.UserEntity;
+import com.example.library.domain.user.domain.UserEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

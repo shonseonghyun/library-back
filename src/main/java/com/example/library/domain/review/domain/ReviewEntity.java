@@ -1,7 +1,7 @@
 package com.example.library.domain.review.domain;
 
 import com.example.library.domain.book.domain.BookEntity;
-import com.example.library.domain.user.entity.UserEntity;
+import com.example.library.domain.user.domain.UserEntity;
 import com.example.library.global.entityListener.Entity.ModifiedEntity;
 import jakarta.persistence.*;
 import lombok.*;

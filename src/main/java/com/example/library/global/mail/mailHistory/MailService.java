@@ -1,7 +1,7 @@
 package com.example.library.global.mail.mailHistory;
 
-import com.example.library.domain.user.entity.UserEntity;
-import com.example.library.domain.user.repository.UserRepository;
+import com.example.library.domain.user.domain.UserEntity;
+import com.example.library.domain.user.infrastructure.repository.SpringDataJpaUserRepository;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.MailTypeNotFoundException;
 import com.example.library.exception.exceptions.UserNotFoundException;
@@ -26,7 +26,7 @@ public class MailService {
 
     private final JavaMailSender javaMailSender;
     private final MailHistoryRepository mailHistoryRepository;
-    private final UserRepository userRepository;
+    private final SpringDataJpaUserRepository springDataJpaUserRepository;
     private final MailRepository mailRepository;
 
     public MailHistoryEntity sendMailAndSave(MailDto mailDto){
@@ -44,7 +44,7 @@ public class MailService {
                     "O"
             );
         }else{
-            selectedUser = userRepository.findByUserNo(mailDto.getUserNo()).orElseThrow(()->new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
+            selectedUser = springDataJpaUserRepository.findByUserNo(mailDto.getUserNo()).orElseThrow(()->new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
             content = mailDto.getMailType().getContent(selectedUser.getUserId(),mailEntity.getMailContent());
             mailDto = new MailDto(mailDto.getUserNo(),
                     selectedUser.getUserEmail(),

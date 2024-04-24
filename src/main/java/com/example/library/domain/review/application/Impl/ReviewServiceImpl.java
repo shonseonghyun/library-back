@@ -9,8 +9,8 @@ import com.example.library.domain.review.application.dto.ReviewWriteReqDto;
 import com.example.library.domain.review.application.dto.UserReviewsResDto;
 import com.example.library.domain.review.domain.ReviewEntity;
 import com.example.library.domain.review.domain.repository.ReviewRepository;
-import com.example.library.domain.user.entity.UserEntity;
-import com.example.library.domain.user.repository.UserRepository;
+import com.example.library.domain.user.domain.UserEntity;
+import com.example.library.domain.user.infrastructure.repository.SpringDataJpaUserRepository;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.ReviewWriteUnavailableException;
 import com.example.library.exception.exceptions.UserNotFoundException;
@@ -29,14 +29,14 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ReviewServiceImpl implements ReviewService {
     private final ReviewRepository reviewRepository;
-    private final UserRepository userRepository;
+    private final SpringDataJpaUserRepository springDataJpaUserRepository;
     private final RentRepository rentRepository;
     private final BookRepository bookRepository;
 
     @Override
     @Transactional
     public void writeReview(ReviewWriteReqDto reviewWriteReqDto, Long userNo, Long bookNo) {
-        UserEntity selectedUser = userRepository.findByUserNo(userNo).orElseThrow(()->new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
+        UserEntity selectedUser = springDataJpaUserRepository.findByUserNo(userNo).orElseThrow(()->new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
         BookEntity selectedBook =bookRepository.findByBookNo(bookNo);
         Integer count = rentRepository.findRentHistoryCountWithReturn(userNo,bookNo);
         if(count>0){

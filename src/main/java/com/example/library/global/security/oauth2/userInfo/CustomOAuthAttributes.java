@@ -4,7 +4,7 @@ import com.example.library.global.security.oauth2.userInfo.OAuthUserInfo.userInf
 import com.example.library.global.security.oauth2.userInfo.OAuthUserInfo.userInfos.KakaoOAuthUserInfo;
 import com.example.library.global.security.oauth2.userInfo.OAuthUserInfo.userInfos.NaverOAuthUserInfo;
 import com.example.library.global.security.oauth2.userInfo.OAuthUserInfo.OAuthUserInfo;
-import com.example.library.domain.user.entity.UserEntity;
+import com.example.library.domain.user.domain.UserEntity;
 import com.example.library.domain.user.enums.SocialLoginType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
