@@ -1,7 +1,7 @@
 package com.example.library.domain.heart.application;
 
 import com.example.library.domain.heart.domain.Heart;
-import com.example.library.domain.heart.domain.HeartRepository;
+import com.example.library.domain.heart.domain.repository.HeartRepository;
 import com.example.library.domain.heart.domain.dto.HeartResponseDto;
 import com.example.library.domain.heart.application.dto.UserSelectHeartResDto;
 import com.example.library.domain.heart.application.event.CheckBookExistEvent;

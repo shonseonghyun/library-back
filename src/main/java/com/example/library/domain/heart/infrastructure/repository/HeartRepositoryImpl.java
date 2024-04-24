@@ -1,12 +1,11 @@
-package com.example.library.domain.heart.infrastructure;
+package com.example.library.domain.heart.infrastructure.repository;
 
 import com.example.library.domain.heart.domain.Heart;
-import com.example.library.domain.heart.domain.HeartRepository;
+import com.example.library.domain.heart.domain.repository.HeartRepository;
 import com.example.library.domain.heart.domain.dto.HeartResponseDto;
 import com.example.library.domain.heart.domain.dto.QHeartResponseDto_Response;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.HeartBookNotFoundException;
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

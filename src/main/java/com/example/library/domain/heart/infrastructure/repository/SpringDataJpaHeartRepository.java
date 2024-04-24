@@ -1,4 +1,4 @@
-package com.example.library.domain.heart.infrastructure;
+package com.example.library.domain.heart.infrastructure.repository;
 
 import com.example.library.domain.heart.domain.Heart;
 import org.springframework.data.jpa.repository.JpaRepository;
