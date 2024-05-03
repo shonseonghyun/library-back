@@ -1,8 +1,9 @@
-package com.example.library.config;
+package com.example.library.config.batch;
 
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.global.event.Events;
 import com.example.library.global.mail.domain.mail.application.event.SendedMailEvent;
+import com.example.library.global.mail.domain.mail.domain.mailHistory.MailHistoryEntity;
 import com.example.library.global.mail.domain.mail.enums.MailType;
 import com.example.library.global.mail.domain.mail.application.dto.MailDto;
 import jakarta.persistence.EntityManagerFactory;
@@ -29,7 +30,7 @@ import java.util.Map;
 @Configuration
 @RequiredArgsConstructor
 //@ConditionalOnProperty(name = "spring.batch.job.name", havingValue = "overDueRegJob")
-public class JobConfig {
+public class OverdueRegBatchConfig {
     private final EntityManagerFactory entityManagerFactory;
 
     private int chunkSize = 10;
@@ -56,9 +57,17 @@ public class JobConfig {
     @StepScope
     public JpaPagingItemReader<RentManagerEntity> rentManagerReader(@Value("#{jobParameters[nowDt]}") String nowDt){
         log.info("rentManagerReader start");
+
+        //override 통한 문제 해결
+        JpaPagingItemReader<RentManagerEntity> reader = new JpaPagingItemReader<RentManagerEntity>() {
+            @Override
+            public int getPage() {
+                return 0;
+            }
+        };
+
         Map<String,Object> parameterMap =new HashMap<String,Object>();
         parameterMap.put("nowDt",nowDt);
-        JpaPagingItemReader<RentManagerEntity> reader = new JpaPagingItemReader<>();
         reader.setPageSize(chunkSize);
         reader.setName("jpaPagingItemReader");
         reader.setEntityManagerFactory(entityManagerFactory);

@@ -1,8 +1,9 @@
-package com.example.library.config;
+package com.example.library.config.batch;
 
+import com.example.library.annotation.Timer;
+import com.example.library.global.mail.domain.mail.application.MailService;
 import com.example.library.global.mail.domain.mail.application.dto.MailDto;
 import com.example.library.global.mail.domain.mail.domain.mailHistory.MailHistoryEntity;
-import com.example.library.global.mail.domain.mail.application.MailService;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,6 +34,7 @@ public class EmailRetryBatchConfig {
     private final MailService mailService;
     private int chunkSize=1;
 
+    @Timer
     @Bean
     public Job emailRetryJob(PlatformTransactionManager transactionManager, JobRepository jobRepository){
         return new JobBuilder("emailRetryJob",jobRepository)
@@ -56,11 +58,18 @@ public class EmailRetryBatchConfig {
     public JpaPagingItemReader<MailHistoryEntity> emailRetryReader(@Value("#{jobParameters[nowDt]}") String nowDt){
         log.info("emailRetryReader start");
 
+        //override 통한 문제 해결
+        JpaPagingItemReader<MailHistoryEntity> reader = new JpaPagingItemReader<MailHistoryEntity>() {
+            @Override
+            public int getPage() {
+                return 0;
+            }
+        };
+
         //쿼리 내 매개변수 저장
         Map<String,Object> parameterMap = new HashMap<>();
         parameterMap.put("nowDt",nowDt);
 
-        JpaPagingItemReader<MailHistoryEntity> reader =  new JpaPagingItemReader<>();
         reader.setPageSize(chunkSize);
         reader.setParameterValues(parameterMap);
         reader.setName("emailRetryReader");
@@ -74,7 +83,7 @@ public class EmailRetryBatchConfig {
         log.info("emailRetryProcessor start");
         return item -> {
             log.info("이메일 재발송 처리");
-
+            log.info("HistoryNo {}, ",item.getHistoryNo());
             //이메일 발송
             try{
                 mailService.send(new MailDto(item.getEmail(),item.getMailType(),item.getContent()));
@@ -98,11 +107,11 @@ public class EmailRetryBatchConfig {
         writer.setEntityManagerFactory(entityManagerFactory);
 
         return writer;
-//        return list->{
-//            for(MailHistoryEntity mailHistory:list){
-//                log.info(mailHistory.toString());
-//            }
-//        };
+        //        return list->{
+        //            for(MailHistoryEntity mailHistory:list){
+        //                log.info(mailHistory.toString());
+        //            }
+        //        };
     }
 
 
