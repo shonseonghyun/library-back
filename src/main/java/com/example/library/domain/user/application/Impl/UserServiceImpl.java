@@ -1,5 +1,7 @@
 package com.example.library.domain.user.application.Impl;
 
+import com.example.library.annotation.NeedNotify;
+import com.example.library.annotation.Timer;
 import com.example.library.domain.heart.application.event.CheckUserExistEvent;
 import com.example.library.domain.user.application.dto.*;
 import com.example.library.domain.user.domain.UserEntity;
@@ -48,6 +50,9 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     private final BCryptPasswordEncoder encoder;
     private final UserOpenFeignClient userOpenFeignClient;
 
+    @Override
+    @Timer
+    @NeedNotify(type = MailType.MAIL_JOIN)
     @Transactional
     public void join(UserJoinReqDto userJoinReqDto) {
         UserEntity user = UserEntity.createOfficialUser()
@@ -67,6 +72,9 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
         Events.raise(new SendedMailEvent(new MailDto(user.getUserNo(), MailType.MAIL_JOIN)));
     }
 
+    @Override
+    @Timer
+    @NeedNotify(type = MailType.MAIL_LOGIN)
     @Transactional
     public UserLoginResDto login(UserLoginReqDto userLoginReqDto) {
         String refreshToken = null;
@@ -84,6 +92,7 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     }
 
     @Override
+    @Timer
     @Transactional
     public void doAutoLogin(UserEntity selectedUser,String refreshToken){
         log.info("자동 로그인 설정");
@@ -119,6 +128,7 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     }
 
     @Override
+    @NeedNotify(type = MailType.MAIL_DELETE)
     @Transactional
     public void delete(Long userNo) {
         UserEntity selectedUser = getUserEntityByUserNo(userNo);

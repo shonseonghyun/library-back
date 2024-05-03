@@ -80,6 +80,10 @@ dependencies {
 	//2023.03.26 openFeign by son
 	implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 
+	//2024.04.25 aop by son
+	implementation 'org.springframework.boot:spring-boot-starter-aop'
+
+
 	//2024.03.28 QueryDsl by son
 	implementation "com.querydsl:querydsl-jpa:${queryDslVersion}:jakarta"
 	implementation "com.querydsl:querydsl-core:${queryDslVersion}"

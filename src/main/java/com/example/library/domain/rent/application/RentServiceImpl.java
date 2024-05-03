@@ -1,5 +1,6 @@
 package com.example.library.domain.rent.application;
 
+import com.example.library.annotation.NeedNotify;
 import com.example.library.domain.rent.application.event.CheckedRentBookAvailableEvent;
 import com.example.library.domain.rent.application.event.RentedBookEvent;
 import com.example.library.domain.rent.application.event.ReturnedBookEvent;
@@ -34,6 +35,7 @@ public class RentServiceImpl implements RentService{
 
     //두 개의 에그리거트가 변경되므로 응용서비스에 각각 변경되야할 각 애그리거트로 진행
     @Override
+    @NeedNotify(type = MailType.MAIL_RENT)
     @Transactional
     public void rentBook(Long userNo,Long bookNo) {
         RentManager rentManager = rentRepository.findRentManagerByUserNo(userNo);
@@ -46,6 +48,7 @@ public class RentServiceImpl implements RentService{
     }
     
     @Override
+    @NeedNotify(type = MailType.MAIL_RETURN)
     @Transactional //외부API 도서 상태 변경 롤백에 대한 처리를 모르므로 유지
     public void returnBook(Long userNo, Long bookNo) {
         RentManager rentManager = rentRepository.findRentManagerWithRentedBookHistory(userNo,bookNo);
@@ -56,6 +59,7 @@ public class RentServiceImpl implements RentService{
     }
 
     @Override
+    @NeedNotify(type = MailType.MAIL_EXTEND)
     @Transactional //익셉션은 다 잡았다는 가정 하에 해낭 어노테이션 주석
     public void extendBook(Long userNo,Long bookNo){
         RentManager rentManager = rentRepository.findRentManagerWithRentedBookHistory(userNo,bookNo);

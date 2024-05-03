@@ -65,14 +65,6 @@ public class UserController {
         return ApiResponseDto.createRes(ErrorCode.SUC,userRentStatusResDtos);
     }
 
-//    //내가 작성한 리뷰
-//    @GetMapping("/get/{userNo}/review")
-//    public ApiResponseDto getReviewsOfUser(@PathVariable Long userNo,@RequestParam("page") Integer page,@RequestParam("size") Integer size) {
-////        List<UserReviewsResDto> userReviewsResDtos= userService.getReviewsOfUser(userNo,page,size);
-////        List<UserReviewsResDto> userReviewsResDtos= userService.getReviewsOfUser(userNo,page,size);
-//        return ApiResponseDto.createRes(ErrorCode.SUC,userService.getReviewsOfUser(userNo,page,size));
-//    }
-
     @GetMapping("/userId/{userId}/exist")
     public ApiResponseDto checkExistUserId(@PathVariable String userId){
         boolean existFlg = userService.checkExistUserId(userId);
