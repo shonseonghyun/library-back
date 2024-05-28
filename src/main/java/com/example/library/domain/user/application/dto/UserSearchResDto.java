@@ -31,6 +31,14 @@ public class UserSearchResDto {
 
     private UserGrade userGrade;
 
+    private String createdDt;
+
+    private String createdTm;
+
+    private String modifiedDt;
+
+    private String modifiedTm;
+
     public UserSearchResDto(UserEntity user) {
         this.userNo = user.getUserNo();
         this.userId = user.getUserId();
@@ -42,7 +50,10 @@ public class UserSearchResDto {
         this.useFlg = user.getUseFlg();
         this.userGrade = user.getUserGrade();
         this.providerId = user.getProviderId();
-
+        this.createdDt=user.getCreatedDt();
+        this.createdTm = user.getCreatedTm();
+        this.modifiedDt=user.getModifiedDt();
+        this.modifiedTm= user.getModifiedTm();
     }
 
     public UserSearchResDto
