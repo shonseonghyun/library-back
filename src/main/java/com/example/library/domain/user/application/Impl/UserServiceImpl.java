@@ -119,11 +119,11 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     public UserSearchResDto update(Long userNo, UserUpdateDto userUpdateDto) {
         UserEntity selectedUser = getUserEntityByUserNo(userNo);
         selectedUser.setUserPwd(encoder.encode(userUpdateDto.getUserPwd()));
-        selectedUser.setUserName(userUpdateDto.getUserName());
-        selectedUser.setTel(userUpdateDto.getTel());
-        selectedUser.setUserEmail(userUpdateDto.getEmail());
+//        selectedUser.setUserName(userUpdateDto.getUserName());
+//        selectedUser.setTel(userUpdateDto.getTel());
+//        selectedUser.setUserEmail(userUpdateDto.getEmail());
         selectedUser.setGender(userUpdateDto.getGender());
-        selectedUser.setUseFlg(userUpdateDto.getUseFlg());
+//        selectedUser.setUseFlg(userUpdateDto.getUseFlg());
         return UserSearchResDto.from(selectedUser);
     }
 

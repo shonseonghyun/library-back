@@ -12,16 +12,16 @@ public class UserUpdateDto {
     @NotNull
     private String userPwd;
 
-    @NotNull
-    private String userName;
+//    @NotNull
+//    private String userName;
 
-    private String tel;
+//    private String tel;
 
-    @NotNull
-    private String email;
+//    @NotNull
+//    private String email;
 
     @NotNull
     private String gender;
 
-    private Integer useFlg;
+//    private Integer useFlg;
 }
