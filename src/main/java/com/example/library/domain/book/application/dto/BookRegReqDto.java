@@ -32,7 +32,7 @@ public class BookRegReqDto {
                 .bookPublisher(this.bookPublisher)
                 .bookState(BookState.RENT_AVAILABLE)
                 .isbn(this.isbn)
-                .pubDt(this.pubDt)
+                .pubDt(this.pubDt.replaceAll("-",""))
                 .bookLocation(this.bookLocation)
                 .build()
                 ;
