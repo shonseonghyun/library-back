@@ -41,7 +41,7 @@ public class UserController {
         return ApiResponseDto.createRes(ErrorCode.SUC, userLoginResDto);
     }
 
-    @PostMapping("/get/mypage")
+    @PostMapping("/myPage")
     public ApiResponseDto getUserByUserNo(@RequestBody Map<String,Long> map) {
         UserSearchResDto userSearchResDto = userService.getUserByUserNo(map.get("userNo"));
         return ApiResponseDto.createRes(ErrorCode.SUC, userSearchResDto);

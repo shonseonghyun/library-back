@@ -3,6 +3,7 @@ package com.example.library.domain.user.application.dto;
 import com.example.library.domain.user.enums.SocialLoginType;
 import com.example.library.domain.user.enums.UserGrade;
 import com.example.library.domain.user.domain.UserEntity;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import lombok.ToString;
 @Getter
 @AllArgsConstructor
 @Builder
+@JsonInclude(JsonInclude.Include.NON_NULL) // Null 값인 필드 제외
 public class UserLoginResDto {
     private Long userNo;
 
