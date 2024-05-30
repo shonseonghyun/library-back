@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface SpringDataJpaReviewRepository extends JpaRepository<ReviewEntity, Long> {
     @Query(
@@ -26,4 +27,7 @@ public interface SpringDataJpaReviewRepository extends JpaRepository<ReviewEntit
                                  "and s.book.bookCode=:bookNo"
                          )
     List<ReviewEntity> findFetchJoinReviewsByBookNo(Long bookNo);
+
+    Optional<ReviewEntity> findByUserUserNoAndBookBookCode(Long userNo,Long bookNo);
+    Optional<ReviewEntity> findByReviewNo(Long reviewNo);
 }

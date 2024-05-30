@@ -35,4 +35,8 @@ public class ReviewEntity extends ModifiedEntity {
 
     @Column(nullable = false)
     private String reviewContent;
+
+    public void updateReview(String updateContent){
+        setReviewContent(updateContent);
+    }
 }

@@ -4,14 +4,14 @@ import com.example.library.domain.book.domain.BookEntity;
 import com.example.library.domain.book.domain.repository.BookRepository;
 import com.example.library.domain.rent.domain.RentRepository;
 import com.example.library.domain.review.application.ReviewService;
-import com.example.library.domain.review.application.dto.BookReviewResDto;
-import com.example.library.domain.review.application.dto.ReviewWriteReqDto;
-import com.example.library.domain.review.application.dto.UserReviewsResDto;
+import com.example.library.domain.review.application.dto.*;
 import com.example.library.domain.review.domain.ReviewEntity;
 import com.example.library.domain.review.domain.repository.ReviewRepository;
 import com.example.library.domain.user.domain.UserEntity;
 import com.example.library.domain.user.infrastructure.repository.SpringDataJpaUserRepository;
 import com.example.library.exception.ErrorCode;
+import com.example.library.exception.exceptions.ReviewAlreadyExistsByBookNoException;
+import com.example.library.exception.exceptions.ReviewNotFoundException;
 import com.example.library.exception.exceptions.ReviewWriteUnavailableException;
 import com.example.library.exception.exceptions.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
@@ -36,8 +36,15 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     @Transactional
     public void writeReview(ReviewWriteReqDto reviewWriteReqDto, Long userNo, Long bookNo) {
+        //도서 당 1회 리뷰 작성 체크
+        reviewRepository.findByUserUserNoAndBookBookCode(userNo,bookNo)
+                .ifPresent(a-> {
+                    throw new ReviewAlreadyExistsByBookNoException(ErrorCode.REVIEW_ALREADY_WRITE);
+                });
+
         UserEntity selectedUser = springDataJpaUserRepository.findByUserNo(userNo).orElseThrow(()->new UserNotFoundException(ErrorCode.USERNO_NOT_FOUND));
         BookEntity selectedBook =bookRepository.findByBookNo(bookNo);
+
         Integer count = rentRepository.findRentHistoryCountWithReturn(userNo,bookNo);
         if(count>0){
             ReviewEntity review = ReviewEntity.builder()
@@ -56,15 +63,22 @@ public class ReviewServiceImpl implements ReviewService {
         reviewRepository.deleteById(reviewNo);
     }
 
+    
+    //작성한 리뷰 + ( 작성해야할 리뷰)
     @Override
     @Transactional(readOnly = true)
-    public List<UserReviewsResDto> getReviewsOfUser(Long userNo,PageRequest pageRequest) {
+    public UserReviewsResDtoWithTotalCnt getReviewsOfUser(Long userNo,PageRequest pageRequest) {
         Page<ReviewEntity> list = reviewRepository.findFetchJoinReviewsByUserNo(userNo,pageRequest);
         List<ReviewEntity> reviewEntities = list.getContent();
+        Long totalCnt = list.getTotalElements();
         List<UserReviewsResDto> userReviewsResDtos = reviewEntities.stream()
                 .map(reviewEntity -> UserReviewsResDto.from(reviewEntity))
                 .collect(Collectors.toList());
-        return userReviewsResDtos;
+
+        return UserReviewsResDtoWithTotalCnt.builder()
+                .reviewList(userReviewsResDtos)
+                .totalCnt(totalCnt)
+                .build();
     }
 
     @Override
@@ -74,5 +88,14 @@ public class ReviewServiceImpl implements ReviewService {
         List<BookReviewResDto> bookReviewResDtos = list.stream().map(BookReviewResDto::from)
                 .collect(Collectors.toList());
         return bookReviewResDtos;
+    }
+
+    @Override
+    @Transactional
+    public void updateReview(Long reviewNo, UpdateReviewReqDto updateReviewReqDto) {
+        ReviewEntity selectedReview= reviewRepository.findByReviewNo(reviewNo)
+                .orElseThrow(()-> new ReviewNotFoundException(ErrorCode.REVIEW_NOT_FOUND));
+        selectedReview.updateReview(updateReviewReqDto.getUpdateReviewContent());
+        reviewRepository.save(selectedReview);
     }
 }

@@ -1,20 +1,21 @@
 package com.example.library.domain.review.api;
 
-import com.example.library.domain.review.application.dto.ReviewWriteReqDto;
+import com.example.library.domain.review.application.dto.*;
 import com.example.library.domain.review.application.ReviewService;
-import com.example.library.domain.review.application.dto.BookReviewResDto;
-import com.example.library.domain.review.application.dto.UserReviewsResDto;
 import com.example.library.exception.ErrorCode;
 import com.example.library.global.response.ApiResponseDto;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
+@Slf4j
 @RestController
 @RequestMapping("/review")
 @Tag(name = "review")
@@ -28,8 +29,18 @@ public class ReviewController {
         return ApiResponseDto.createRes(ErrorCode.SUC);
     }
 
+    @PutMapping("/{reviewNo}")
+    public ApiResponseDto updateReview(@PathVariable("reviewNo") Long reviewNo
+            , @RequestBody UpdateReviewReqDto updateReviewReqDto
+//            ,@RequestBody Map<String,String> map
+    ) {
+        log.info("ss");
+        reviewService.updateReview(reviewNo,updateReviewReqDto);
+        return ApiResponseDto.createRes(ErrorCode.SUC);
+    }
+
     @DeleteMapping("/{reviewNo}")
-    public ApiResponseDto deleteReview(  @PathVariable("reviewNo") Long reviewNo ) {
+    public ApiResponseDto deleteReview(@PathVariable("reviewNo") Long reviewNo) {
         reviewService.deleteReview(reviewNo);
         return ApiResponseDto.createRes(ErrorCode.SUC);
     }
@@ -37,8 +48,8 @@ public class ReviewController {
     @GetMapping("/user/{userNo}")
     public ApiResponseDto getReviewsOfUser(@PathVariable Long userNo,@RequestParam("page") Integer page,@RequestParam("size") Integer size) {
         PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDt","createdTm").descending());
-        List<UserReviewsResDto> userReviewsResDtos = reviewService.getReviewsOfUser(userNo,pageRequest);
-        return ApiResponseDto.createRes(ErrorCode.SUC, userReviewsResDtos);
+        UserReviewsResDtoWithTotalCnt userReviewsResDtosWithTotalCnt = reviewService.getReviewsOfUser(userNo,pageRequest);
+        return ApiResponseDto.createRes(ErrorCode.SUC, userReviewsResDtosWithTotalCnt);
     }
 
     @GetMapping("/book/{bookNo}")

@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -29,6 +30,11 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     }
 
     @Override
+    public Optional<ReviewEntity> findByUserUserNoAndBookBookCode(Long userNo, Long bookNo) {
+        return springDataJpaReviewRepository.findByUserUserNoAndBookBookCode(userNo,bookNo);
+    }
+
+    @Override
     public ReviewEntity save(ReviewEntity reviewEntity) {
         return springDataJpaReviewRepository.save(reviewEntity);
     }
@@ -36,5 +42,10 @@ public class ReviewRepositoryImpl implements ReviewRepository {
     @Override
     public void deleteById(Long reviewNo) {
         springDataJpaReviewRepository.deleteById(reviewNo);
+    }
+
+    @Override
+    public Optional<ReviewEntity> findByReviewNo(Long reviewNo) {
+        return springDataJpaReviewRepository.findByReviewNo(reviewNo);
     }
 }

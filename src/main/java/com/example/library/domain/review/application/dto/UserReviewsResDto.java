@@ -13,6 +13,8 @@ public class UserReviewsResDto {
     private Long reviewNo;
     private Long bookNo;
     private String bookName;
+    private String uploadFilePath;
+    private String uploadFileName;
     private String reviewContent;
     private String regDt;
     private String regTm;
@@ -25,6 +27,8 @@ public class UserReviewsResDto {
                 .reviewContent(reviewEntity.getReviewContent())
                 .regDt(reviewEntity.getCreatedDt())
                 .regTm(reviewEntity.getCreatedTm())
+                .uploadFilePath(reviewEntity.getBook().getBookImage().getFilePath())
+                .uploadFileName(reviewEntity.getBook().getBookImage().getNewFileName())
                 .build();
     }
 }

@@ -11,6 +11,7 @@ import com.example.library.domain.book.domain.repository.BookRepository;
 import com.example.library.domain.book.enums.InquiryCategory;
 import com.example.library.domain.rent.application.event.CheckedRentBookAvailableEvent;
 import com.example.library.domain.rent.application.event.RentedBookEvent;
+import com.example.library.domain.rent.application.event.ReturnedBookEvent;
 import com.example.library.global.file.FileService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -91,7 +92,7 @@ public class BookServiceImpl implements BookService {
     }
 
     @EventListener
-    public void returnSuc(CheckedRentBookAvailableEvent evt){
+    public void returnSuc(ReturnedBookEvent evt){
         BookEntity selectedBook = bookRepository.findByBookNo(evt.getBookNo());
         selectedBook.returnSuc();
     }
