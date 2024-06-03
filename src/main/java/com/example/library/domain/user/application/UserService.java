@@ -11,7 +11,7 @@ public interface UserService {
     UserLoginResDto login(UserLoginReqDto userLoginReqDto);
     UserSearchResDto getUserByUserNo(Long userNo);
     UserGrade getUserGrade(String userId);
-    UserSearchResDto update(Long userNo, UserUpdateDto userUpdateDto);
+    UserSearchResDto update(Long userNo, UserUpdateReqDto userUpdateReqDto);
     void delete(Long userNo);
     List<UserRentStatusResDto> getCurrentRentStatus(Long userNo);
     boolean checkExistUserId(String userId);

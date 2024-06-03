@@ -48,8 +48,8 @@ public class UserController {
     }
 
     @PutMapping("/update/{userNo}")
-    public ApiResponseDto update(@PathVariable("userNo") Long userNo,@Valid @RequestBody UserUpdateDto userUpdateDto) {
-        UserSearchResDto userSearchResDto = userService.update(userNo, userUpdateDto);
+    public ApiResponseDto update(@PathVariable("userNo") Long userNo,@Valid @RequestBody UserUpdateReqDto userUpdateReqDto) {
+        UserSearchResDto userSearchResDto = userService.update(userNo, userUpdateReqDto);
         return ApiResponseDto.createRes(ErrorCode.SUC, userSearchResDto);
     }
 

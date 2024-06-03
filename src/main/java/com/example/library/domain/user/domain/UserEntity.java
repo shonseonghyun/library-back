@@ -1,5 +1,6 @@
 package com.example.library.domain.user.domain;
 
+import com.example.library.annotation.Merge;
 import com.example.library.domain.user.domain.converter.SocialLoginTypeConverter;
 import com.example.library.domain.user.domain.converter.UserGradeConverter;
 import com.example.library.domain.user.enums.SocialLoginType;
@@ -26,12 +27,14 @@ public class UserEntity extends ModifiedEntity {
     @Column(nullable = false, unique = true)
     private String userId;
 
+    @Merge
     @Column(nullable = false)
     private String userPwd;
 
     @Column(nullable = false)
     private String userName;
 
+    @Merge(ignoreNull = false)
     private String tel;
 
     @Column(nullable = false, name = "email")
@@ -43,6 +46,7 @@ public class UserEntity extends ModifiedEntity {
     @Column(name = "provider_id")
     private String providerId;
 
+    @Merge
     private String gender;
 
     @Column(nullable = false)

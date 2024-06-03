@@ -7,21 +7,15 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserUpdateDto {
+public class UserUpdateReqDto {
 
-    @NotNull
     private String userPwd;
 
-//    @NotNull
-//    private String userName;
+    private String tel;
 
-//    private String tel;
-
-//    @NotNull
-//    private String email;
-
-    @NotNull
     private String gender;
 
-//    private Integer useFlg;
+    private String email;
+
+    private Integer useFlg;
 }

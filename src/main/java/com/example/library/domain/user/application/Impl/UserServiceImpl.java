@@ -23,6 +23,7 @@ import com.example.library.global.response.ApiResponseDto;
 import com.example.library.global.security.oauth2.principal.CustomOAuth2User;
 import com.example.library.global.security.oauth2.userInfo.CustomOAuthAttributes;
 import com.example.library.global.utils.JwtUtil;
+import com.example.library.global.utils.MergeUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
@@ -116,14 +117,26 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
 
     @Override
     @Transactional
-    public UserSearchResDto update(Long userNo, UserUpdateDto userUpdateDto) {
+    public UserSearchResDto update(Long userNo, UserUpdateReqDto userUpdateReqDto) {
         UserEntity selectedUser = getUserEntityByUserNo(userNo);
-        selectedUser.setUserPwd(encoder.encode(userUpdateDto.getUserPwd()));
-//        selectedUser.setUserName(userUpdateDto.getUserName());
-//        selectedUser.setTel(userUpdateDto.getTel());
-//        selectedUser.setUserEmail(userUpdateDto.getEmail());
-        selectedUser.setGender(userUpdateDto.getGender());
-//        selectedUser.setUseFlg(userUpdateDto.getUseFlg());
+
+        String encodingPwd =
+                userUpdateReqDto.getUserPwd()==null || userUpdateReqDto.getUserPwd().replace(" ","").length()==0
+                        ? null : encoder.encode(userUpdateReqDto.getUserPwd())
+                ;
+
+        String tel=
+                userUpdateReqDto.getTel()==null || userUpdateReqDto.getTel().replace(" ","").length()==0
+                        ? null : userUpdateReqDto.getTel()
+                ;
+
+        UserEntity targetUser= UserEntity.createOfficialUser()
+                .userPwd(encodingPwd)
+                .tel(tel)
+                .gender(userUpdateReqDto.getGender())
+                .build();
+
+        MergeUtil.merge(selectedUser,targetUser);
         return UserSearchResDto.from(selectedUser);
     }
 
