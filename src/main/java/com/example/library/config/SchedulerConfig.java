@@ -47,7 +47,7 @@ public class SchedulerConfig {
 //        log.info("연체 대상 등록 스케줄러 end");
 //    }
 
-    @Scheduled(cron = "0 * * * * *" , zone = "Asia/Seoul") //1분마다
+    @Scheduled(cron = "0 18 * * * *" , zone = "Asia/Seoul") //1분마다
     public void emailRetryScheduler() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
         log.info("이메일 재발송 스케줄러 start");
 

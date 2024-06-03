@@ -136,8 +136,8 @@ public class UsercontrollerTest extends RestDocsSupport {
                                 fieldWithPath("gender").description("성별"),
                                 fieldWithPath("useFlg").description("사용여부(0:사용 / 1:미사용)"),
                                 fieldWithPath("userGrade").description("회원등급(0: 관리자, 2: 정회원)"),
-                                fieldWithPath("accessToken").description("액세스 토큰"),
-                                fieldWithPath("refreshToken").description("리프래쉬 토큰").optional()
+                                fieldWithPath("accessToken").description("액세스 토큰")
+//                                fieldWithPath("refreshToken").description("리프래쉬 토큰").optional()
 
                                 )
                         )
