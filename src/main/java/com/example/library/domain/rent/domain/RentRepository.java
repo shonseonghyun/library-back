@@ -1,5 +1,6 @@
 package com.example.library.domain.rent.domain;
 
+import com.example.library.domain.rent.domain.dto.RentHistoryResponseDto;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 
 import java.util.List;
@@ -9,6 +10,8 @@ public interface RentRepository {
     RentManager findRentManagerByUserNo(Long userNo); //RentManager get
     RentManager findRentManagerWithRentedBookHistory(Long userNo, Long book); //RentManager + history on rent
     List<RentStatusResponseDto.Response> findUserRentStatus(Long userNo);
+    List<RentHistoryResponseDto.Response> findUserRentHistory(Long userNo);
     void deleteByUserNo(Long userNo);
     Integer findRentHistoryCountWithReturn(Long userNo, Long bookNo);
+
 }

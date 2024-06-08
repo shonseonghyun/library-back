@@ -6,6 +6,7 @@ import com.example.library.domain.rent.application.event.RentedBookEvent;
 import com.example.library.domain.rent.application.event.ReturnedBookEvent;
 import com.example.library.domain.rent.domain.RentManager;
 import com.example.library.domain.rent.domain.RentRepository;
+import com.example.library.domain.rent.domain.dto.RentHistoryResponseDto;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import com.example.library.domain.user.application.event.UserDeletedEvent;
 import com.example.library.domain.user.application.event.UserJoinedEvent;
@@ -75,9 +76,9 @@ public class RentServiceImpl implements RentService{
         return rentStatusResponseDtoList;
     }
 
-    public List<RentStatusResponseDto.Response> getRentHistory(Long userNo){
-        List<RentStatusResponseDto.Response> rentStatusResponseDtoList = rentRepository.findUserRentStatus(userNo);
-        return rentStatusResponseDtoList;
+    public List<RentHistoryResponseDto.Response> getRentHistory(Long userNo){
+        List<RentHistoryResponseDto.Response> rentHistoryResponseDtoList = rentRepository.findUserRentHistory(userNo);
+        return rentHistoryResponseDtoList;
     }
 
     @Async

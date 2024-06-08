@@ -1,6 +1,7 @@
 package com.example.library.domain.rent.api;
 
 import com.example.library.domain.rent.application.RentService;
+import com.example.library.domain.rent.domain.dto.RentHistoryResponseDto;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import com.example.library.exception.ErrorCode;
 import com.example.library.global.response.ApiResponseDto;
@@ -43,8 +44,8 @@ public class RentController {
 
     @GetMapping("/rent/rentHistory/user/{userNo}")
     public ApiResponseDto getRentHistory(@PathVariable Long userNo){
-        List<RentStatusResponseDto.Response> lists = rentService.get(userNo);
-        return ApiResponseDto.createRes(ErrorCode.SUC);
+        List<RentHistoryResponseDto.Response> list = rentService.getRentHistory(userNo);
+        return ApiResponseDto.createRes(ErrorCode.SUC,list);
     }
 
 

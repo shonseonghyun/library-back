@@ -3,7 +3,9 @@ package com.example.library.domain.rent.infrastructure.repository;
 import com.example.library.domain.rent.domain.RentHistory;
 import com.example.library.domain.rent.domain.RentManager;
 import com.example.library.domain.rent.domain.RentRepository;
+import com.example.library.domain.rent.domain.dto.QRentHistoryResponseDto_Response;
 import com.example.library.domain.rent.domain.dto.QRentStatusResponseDto_Response;
+import com.example.library.domain.rent.domain.dto.RentHistoryResponseDto;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
@@ -93,6 +95,20 @@ public class RentRepositoryImpl implements RentRepository {
                 .innerJoin(bookEntity)
                 .on(rentHistoryEntity.bookNo.eq(bookEntity.bookCode))
                 .fetch()
+                ;
+        return result;
+    }
+
+    @Override
+    public List<RentHistoryResponseDto.Response> findUserRentHistory(Long userNo) {
+        List<RentHistoryResponseDto.Response> result =
+                jpaQueryFactory.select(new QRentHistoryResponseDto_Response(rentHistoryEntity.bookNo,bookEntity.bookName,rentHistoryEntity.rentDt,rentHistoryEntity.haveToReturnDt,rentHistoryEntity.returnDt,rentHistoryEntity.extensionFlg,rentHistoryEntity.rentState))
+                        .from(rentHistoryEntity)
+                        .where(rentHistoryEntity.userNo.eq(userNo))
+                        .where(rentHistoryEntity.rentState.notIn(RentState.ON_RENT))
+                        .innerJoin(bookEntity)
+                        .on(rentHistoryEntity.bookNo.eq(bookEntity.bookCode))
+                        .fetch()
                 ;
         return result;
     }
