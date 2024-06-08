@@ -1,5 +1,6 @@
 package com.example.library.domain.user.infrastructure;
 
+import com.example.library.domain.user.application.dto.UserRentHistoryResDto;
 import com.example.library.domain.user.application.dto.UserRentStatusResDto;
 import com.example.library.global.response.ApiResponseDto;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -13,5 +14,8 @@ public interface UserOpenFeignClient {
 
     @GetMapping("/rent/currentRentStatus/user/{userNo}")
     public ApiResponseDto<List<UserRentStatusResDto>> getCurrentRentStatus(@PathVariable Long userNo);
+
+    @GetMapping("/rent/rentHistory/user/{userNo}")
+    public ApiResponseDto<List<UserRentHistoryResDto>> getRentHistory(@PathVariable Long userNo);
 
 }

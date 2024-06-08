@@ -65,6 +65,12 @@ public class UserController {
         return ApiResponseDto.createRes(ErrorCode.SUC,userRentStatusResDtos);
     }
 
+    @GetMapping("/rentHistory/{userNo}")
+    public ApiResponseDto getRentHistory(@PathVariable Long userNo){
+
+        return ApiResponseDto.createRes(ErrorCode.SUC);
+    }
+
     @GetMapping("/userId/{userId}/exist")
     public ApiResponseDto checkExistUserId(@PathVariable String userId){
         boolean existFlg = userService.checkExistUserId(userId);

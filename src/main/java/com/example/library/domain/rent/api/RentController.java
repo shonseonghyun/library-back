@@ -41,5 +41,11 @@ public class RentController {
         return ApiResponseDto.createRes(ErrorCode.SUC,lists);
     }
 
+    @GetMapping("/rent/rentHistory/user/{userNo}")
+    public ApiResponseDto getRentHistory(@PathVariable Long userNo){
+        List<RentStatusResponseDto.Response> lists = rentService.get(userNo);
+        return ApiResponseDto.createRes(ErrorCode.SUC);
+    }
+
 
 }

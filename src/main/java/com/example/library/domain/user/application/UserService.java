@@ -17,4 +17,5 @@ public interface UserService {
     boolean checkExistUserId(String userId);
     String reissueAccessTokenWithRefreshToken(String refreshToken);
     void doAutoLogin(UserEntity selectedUser,String refreshToken);
+    List<UserRentHistoryResDto> getRentHistory(Long userNo);
 }

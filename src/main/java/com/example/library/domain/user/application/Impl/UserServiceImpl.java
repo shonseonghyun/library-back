@@ -101,6 +101,11 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
         userRepository.save(selectedUser);
     }
 
+    @Override
+    public List<UserRentHistoryResDto> getHistoryStatus(Long userNo) {
+        return null;
+    }
+
     private boolean matchPassWord(String inputPwd,String dbPwd){
         if(!encoder.matches(inputPwd, dbPwd)) {
             throw new PasswordDifferentException(ErrorCode.PASSWORD_DIFFERNET);
@@ -216,6 +221,12 @@ public class UserServiceImpl implements UserService, OAuth2UserService<OAuth2Use
     public List<UserRentStatusResDto> getCurrentRentStatus(Long userNo){
         UserEntity selectedUser = getUserEntityByUserNo(userNo);
         ApiResponseDto<List<UserRentStatusResDto>> response = userOpenFeignClient.getCurrentRentStatus(userNo);
+        return response.getData();
+    }
+
+    public List<UserRentHistoryResDto> getRentHistory(Long userNo){
+        UserEntity selectedUser = getUserEntityByUserNo(userNo);
+        ApiResponseDto<List<UserRentHistoryResDto>> response = userOpenFeignClient.getRentHistory(userNo);
         return response.getData();
     }
 

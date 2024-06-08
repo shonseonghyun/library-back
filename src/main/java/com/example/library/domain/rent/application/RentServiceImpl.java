@@ -75,6 +75,11 @@ public class RentServiceImpl implements RentService{
         return rentStatusResponseDtoList;
     }
 
+    public List<RentStatusResponseDto.Response> getRentHistory(Long userNo){
+        List<RentStatusResponseDto.Response> rentStatusResponseDtoList = rentRepository.findUserRentStatus(userNo);
+        return rentStatusResponseDtoList;
+    }
+
     @Async
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
