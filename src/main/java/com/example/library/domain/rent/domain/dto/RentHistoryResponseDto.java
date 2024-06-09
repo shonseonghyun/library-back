@@ -14,18 +14,18 @@ public class RentHistoryResponseDto {
         private Long bookNo;
         private String bookName;
         private String rentDt;
-        private String haveReturnDt;
+        private String haveToReturnDt;
         private String returnDt;
         private boolean extensionFlg;
         private RentState rentState;
 
         @Builder
         @QueryProjection
-        public Response(Long bookNo, String bookName, String rentDt, String haveReturnDt, String returnDt, boolean extensionFlg, RentState rentState) {
+        public Response(Long bookNo, String bookName, String rentDt, String haveToReturnDt, String returnDt, boolean extensionFlg, RentState rentState) {
             this.bookNo = bookNo;
             this.bookName = bookName;
             this.rentDt = rentDt;
-            this.haveReturnDt = haveReturnDt;
+            this.haveToReturnDt = haveToReturnDt;
             this.returnDt = returnDt;
             this.extensionFlg = extensionFlg;
             this.rentState = rentState;

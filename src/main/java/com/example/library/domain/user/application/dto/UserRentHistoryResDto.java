@@ -10,7 +10,7 @@ public class UserRentHistoryResDto {
     private Long bookNo;
     private String bookName;
     private String rentDt;
-    private String haveReturnDt;
+    private String haveToReturnDt;
     private String returnDt;
     private boolean extensionFlg;
     private RentState rentState;

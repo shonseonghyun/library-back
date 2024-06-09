@@ -67,8 +67,8 @@ public class UserController {
 
     @GetMapping("/rentHistory/{userNo}")
     public ApiResponseDto getRentHistory(@PathVariable Long userNo){
-
-        return ApiResponseDto.createRes(ErrorCode.SUC);
+        List<UserRentHistoryResDto> userRentHistoryResDtos = userService.getRentHistory(userNo);
+        return ApiResponseDto.createRes(ErrorCode.SUC,userRentHistoryResDtos);
     }
 
     @GetMapping("/userId/{userId}/exist")
