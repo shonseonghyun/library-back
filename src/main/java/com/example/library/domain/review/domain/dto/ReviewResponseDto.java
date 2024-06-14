@@ -19,11 +19,11 @@ public class ReviewResponseDto {
         String regTm;
         String reviewContent;
         String uploadFileName;
-        String uploadFilepath;
+        String uploadFilePath;
 
         @Builder
         @QueryProjection
-        public Response(Long reviewNo, Long bookNo, String bookName, String regDt, String regTm, String reviewContent, String uploadFileName, String uploadFilepath) {
+        public Response(Long reviewNo, Long bookNo, String bookName, String regDt, String regTm, String reviewContent, String uploadFileName, String uploadFilePath) {
             this.reviewNo = reviewNo;
             this.bookNo = bookNo;
             this.bookName = bookName;
@@ -31,7 +31,7 @@ public class ReviewResponseDto {
             this.regTm = regTm;
             this.reviewContent = reviewContent;
             this.uploadFileName = uploadFileName;
-            this.uploadFilepath = uploadFilepath;
+            this.uploadFilePath = uploadFilePath;
         }
     }
 }

@@ -4,6 +4,7 @@ import com.example.library.domain.book.domain.QBookEntity;
 import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.review.domain.QReviewEntity;
 import com.example.library.domain.review.domain.ReviewEntity;
+import com.example.library.domain.review.domain.dto.QReviewResponseDto_Response;
 import com.example.library.domain.review.domain.dto.ReviewResponseDto;
 import com.example.library.domain.review.domain.repository.ReviewRepository;
 import com.querydsl.core.Tuple;
@@ -14,6 +15,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
@@ -22,6 +24,8 @@ import java.util.Objects;
 import java.util.Optional;
 import static com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity.rentHistoryEntity;
 import static com.example.library.domain.book.domain.QBookEntity.bookEntity;
+import static com.example.library.domain.review.domain.QReviewEntity.reviewEntity;
+
 
 @Slf4j
 @Repository
@@ -44,13 +48,13 @@ public class ReviewRepositoryImpl implements ReviewRepository {
 //    group by book_no
 //    ;
     @Override
-    public Page<ReviewEntity> findReviewsByUserNo(Long userNo, Pageable pageable, Long cachedCount) {
-        List result = jpaQueryFactory.select(bookEntity)
+    public Page<ReviewResponseDto.Response> findReviewsByUserNo(Long userNo, Pageable pageable, Long cachedCount) {
+        JPQLQuery<ReviewResponseDto.Response> query = jpaQueryFactory.select(new QReviewResponseDto_Response(reviewEntity.reviewNo,bookEntity.bookCode,bookEntity.bookName, reviewEntity.createdDt, reviewEntity.createdTm, reviewEntity.reviewContent,bookEntity.bookImage.newFileName,bookEntity.bookImage.filePath))
                 .from(bookEntity)
                 .join(bookEntity.bookImage)
-                .leftJoin(QReviewEntity.reviewEntity)
-                .on(QReviewEntity.reviewEntity.book.bookCode.eq(bookEntity.bookCode))
-                .on(QReviewEntity.reviewEntity.user.userNo.eq(userNo))
+                .leftJoin(reviewEntity)
+                .on(reviewEntity.book.bookCode.eq(bookEntity.bookCode))
+                .on(reviewEntity.user.userNo.eq(userNo))
                 .where(bookEntity.bookCode.in(
                         jpaQueryFactory.select(rentHistoryEntity.bookNo)
                                 .from(rentHistoryEntity)
@@ -58,10 +62,15 @@ public class ReviewRepositoryImpl implements ReviewRepository {
                                 .groupBy(rentHistoryEntity.bookNo)
                                 .fetch()
                 ))
-                .fetch()
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 ;
 
-        return null;
+        List<ReviewResponseDto.Response> content = query.fetch();
+
+        long totalCount = cachedCount != null ? cachedCount : query.fetchCount();
+
+        return new PageImpl<>(content,pageable,totalCount);
     }
 
     @Override

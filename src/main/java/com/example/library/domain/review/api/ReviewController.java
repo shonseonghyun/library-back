@@ -48,8 +48,8 @@ public class ReviewController {
     @GetMapping("/user/{userNo}")
     public ApiResponseDto getReviewsOfUser(@PathVariable Long userNo,@RequestParam(defaultValue = "1",name="page") Integer page,@RequestParam(defaultValue = "10",name="size") Integer size,@RequestParam(required = false,name = "cachedCount") Long cachedCount) {
         Pageable pageable = PageRequest.of(page-1, size);
-        UserReviewsResDtoWithTotalCnt userReviewsResDtosWithTotalCnt = reviewService.getReviewsOfUser(userNo,pageable,cachedCount);
-        return ApiResponseDto.createRes(ErrorCode.SUC, userReviewsResDtosWithTotalCnt);
+        ReviewPagingResDto reviewPagingResDto = reviewService.getReviewsOfUser(userNo,pageable,cachedCount);
+        return ApiResponseDto.createRes(ErrorCode.SUC, reviewPagingResDto);
     }
 
     @GetMapping("/book/{bookNo}")

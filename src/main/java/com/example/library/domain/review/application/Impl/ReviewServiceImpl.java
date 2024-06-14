@@ -6,6 +6,7 @@ import com.example.library.domain.rent.domain.RentRepository;
 import com.example.library.domain.review.application.ReviewService;
 import com.example.library.domain.review.application.dto.*;
 import com.example.library.domain.review.domain.ReviewEntity;
+import com.example.library.domain.review.domain.dto.ReviewResponseDto;
 import com.example.library.domain.review.domain.repository.ReviewRepository;
 import com.example.library.domain.user.domain.UserEntity;
 import com.example.library.domain.user.infrastructure.repository.SpringDataJpaUserRepository;
@@ -68,20 +69,22 @@ public class ReviewServiceImpl implements ReviewService {
     //작성한 리뷰 + ( 작성해야할 리뷰)
     @Override
     @Transactional(readOnly = true)
-    public UserReviewsResDtoWithTotalCnt getReviewsOfUser(Long userNo, Pageable pageable, Long cachedCount) {
-        reviewRepository.findReviewsByUserNo(userNo,pageable,cachedCount);
+    public ReviewPagingResDto getReviewsOfUser(Long userNo, Pageable pageable, Long cachedCount) {
+        Page<ReviewResponseDto.Response> pageResult = reviewRepository.findReviewsByUserNo(userNo,pageable,cachedCount);
+        List<ReviewResponseDto.Response> responseList = pageResult.getContent();
+        int totalCount = (int)pageResult.getTotalElements();
+        return new ReviewPagingResDto(totalCount,responseList);
+//        Page<ReviewEntity> list = reviewRepository.findFetchJoinReviewsByUserNo(userNo,pageable);
+//        List<ReviewEntity> reviewEntities = list.getContent();
+//        Long totalCnt = list.getTotalElements();
+//        List<UserReviewsResDto> userReviewsResDtos = reviewEntities.stream()
+//                .map(reviewEntity -> UserReviewsResDto.from(reviewEntity))
+//                .collect(Collectors.toList());
 
-        Page<ReviewEntity> list = reviewRepository.findFetchJoinReviewsByUserNo(userNo,pageable);
-        List<ReviewEntity> reviewEntities = list.getContent();
-        Long totalCnt = list.getTotalElements();
-        List<UserReviewsResDto> userReviewsResDtos = reviewEntities.stream()
-                .map(reviewEntity -> UserReviewsResDto.from(reviewEntity))
-                .collect(Collectors.toList());
-
-        return UserReviewsResDtoWithTotalCnt.builder()
-                .reviewList(userReviewsResDtos)
-                .totalCnt(totalCnt)
-                .build();
+//        return UserReviewsResDtoWithTotalCnt.builder()
+//                .reviewList(userReviewsResDtos)
+//                .totalCnt(totalCnt)
+//                .build();
     }
 
     @Override
