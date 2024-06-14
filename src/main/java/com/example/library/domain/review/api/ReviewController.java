@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,7 +35,6 @@ public class ReviewController {
             , @RequestBody UpdateReviewReqDto updateReviewReqDto
 //            ,@RequestBody Map<String,String> map
     ) {
-        log.info("ss");
         reviewService.updateReview(reviewNo,updateReviewReqDto);
         return ApiResponseDto.createRes(ErrorCode.SUC);
     }
@@ -46,9 +46,9 @@ public class ReviewController {
     }
 
     @GetMapping("/user/{userNo}")
-    public ApiResponseDto getReviewsOfUser(@PathVariable Long userNo,@RequestParam("page") Integer page,@RequestParam("size") Integer size) {
-        PageRequest pageRequest = PageRequest.of(page, size, Sort.by("createdDt","createdTm").descending());
-        UserReviewsResDtoWithTotalCnt userReviewsResDtosWithTotalCnt = reviewService.getReviewsOfUser(userNo,pageRequest);
+    public ApiResponseDto getReviewsOfUser(@PathVariable Long userNo,@RequestParam(defaultValue = "1",name="page") Integer page,@RequestParam(defaultValue = "10",name="size") Integer size,@RequestParam(required = false,name = "cachedCount") Long cachedCount) {
+        Pageable pageable = PageRequest.of(page-1, size);
+        UserReviewsResDtoWithTotalCnt userReviewsResDtosWithTotalCnt = reviewService.getReviewsOfUser(userNo,pageable,cachedCount);
         return ApiResponseDto.createRes(ErrorCode.SUC, userReviewsResDtosWithTotalCnt);
     }
 

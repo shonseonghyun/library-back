@@ -1,5 +1,6 @@
 package com.example.library.domain.heart.domain.dto;
 
+import com.example.library.domain.book.application.dto.BookImageResDto;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.*;
 
@@ -16,13 +17,12 @@ public class HeartResponseDto {
         String regDt;
         String bookAuthor;
         String bookPublisher;
-//        String bookImage;
+        BookImageResDto bookImage = new BookImageResDto();
+
 
         @Builder
         @QueryProjection
-        public Response(Long heartNo, Long userNo, Long bookCode, String bookName, String regTm, String regDt, String bookAuthor, String bookPublisher
-//                , String bookImage
-        ) {
+        public Response(Long heartNo, Long userNo, Long bookCode, String bookName, String regTm, String regDt, String bookAuthor, String bookPublisher, String originalFileName,Long fileSize,String filePath,String newFileName) {
             this.heartNo = heartNo;
             this.userNo = userNo;
             this.bookCode = bookCode;
@@ -31,7 +31,12 @@ public class HeartResponseDto {
             this.regDt = regDt;
             this.bookAuthor = bookAuthor;
             this.bookPublisher = bookPublisher;
-//            this.bookImage = bookImage;
+
+            //이미지
+            this.bookImage.setFilePath(filePath);
+            this.bookImage.setNewFileName(newFileName);
+            this.bookImage.setOriginalFileName(originalFileName);
+            this.bookImage.setFileSize(fileSize);
         }
     }
 }

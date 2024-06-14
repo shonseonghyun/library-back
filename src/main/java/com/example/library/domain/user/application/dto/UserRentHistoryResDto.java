@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class UserRentHistoryResDto {
+    private Long historyNo;
     private Long bookNo;
     private String bookName;
     private String rentDt;

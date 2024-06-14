@@ -18,6 +18,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -67,8 +68,10 @@ public class ReviewServiceImpl implements ReviewService {
     //작성한 리뷰 + ( 작성해야할 리뷰)
     @Override
     @Transactional(readOnly = true)
-    public UserReviewsResDtoWithTotalCnt getReviewsOfUser(Long userNo,PageRequest pageRequest) {
-        Page<ReviewEntity> list = reviewRepository.findFetchJoinReviewsByUserNo(userNo,pageRequest);
+    public UserReviewsResDtoWithTotalCnt getReviewsOfUser(Long userNo, Pageable pageable, Long cachedCount) {
+        reviewRepository.findReviewsByUserNo(userNo,pageable,cachedCount);
+
+        Page<ReviewEntity> list = reviewRepository.findFetchJoinReviewsByUserNo(userNo,pageable);
         List<ReviewEntity> reviewEntities = list.getContent();
         Long totalCnt = list.getTotalElements();
         List<UserReviewsResDto> userReviewsResDtos = reviewEntities.stream()

@@ -29,7 +29,7 @@ public class HeartRepositoryImpl implements HeartRepository {
 
     @Override
     public List<HeartResponseDto.Response> findHeartsByUserNo(Long heartNo,Long userNo,int pageSize) {
-        List<HeartResponseDto.Response> result = jpaQueryFactory.select(new QHeartResponseDto_Response(heart.heartNo,heart.userNo,heart.bookNo,bookEntity.bookName,heart.createdTm, heart.createdTm, bookEntity.bookAuthor,bookEntity.bookPublisher))
+        List<HeartResponseDto.Response> result = jpaQueryFactory.select(new QHeartResponseDto_Response(heart.heartNo,heart.userNo,heart.bookNo,bookEntity.bookName,heart.createdTm, heart.createdTm, bookEntity.bookAuthor,bookEntity.bookPublisher,bookEntity.bookImage.originalFileName,bookEntity.bookImage.fileSize,bookEntity.bookImage.filePath,bookEntity.bookImage.newFileName))
                 .from(heart)
                 .where(
                         heart.userNo.eq(userNo),

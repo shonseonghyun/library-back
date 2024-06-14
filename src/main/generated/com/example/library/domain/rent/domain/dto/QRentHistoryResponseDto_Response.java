@@ -13,8 +13,8 @@ public class QRentHistoryResponseDto_Response extends ConstructorExpression<Rent
 
     private static final long serialVersionUID = -826398942L;
 
-    public QRentHistoryResponseDto_Response(com.querydsl.core.types.Expression<Long> bookNo, com.querydsl.core.types.Expression<String> bookName, com.querydsl.core.types.Expression<String> rentDt, com.querydsl.core.types.Expression<String> haveReturnDt, com.querydsl.core.types.Expression<String> returnDt, com.querydsl.core.types.Expression<Boolean> extensionFlg, com.querydsl.core.types.Expression<com.example.library.domain.rent.enums.RentState> rentState) {
-        super(RentHistoryResponseDto.Response.class, new Class<?>[]{long.class, String.class, String.class, String.class, String.class, boolean.class, com.example.library.domain.rent.enums.RentState.class}, bookNo, bookName, rentDt, haveReturnDt, returnDt, extensionFlg, rentState);
+    public QRentHistoryResponseDto_Response(com.querydsl.core.types.Expression<Long> historyNo, com.querydsl.core.types.Expression<Long> bookNo, com.querydsl.core.types.Expression<String> bookName, com.querydsl.core.types.Expression<String> rentDt, com.querydsl.core.types.Expression<String> haveToReturnDt, com.querydsl.core.types.Expression<String> returnDt, com.querydsl.core.types.Expression<Boolean> extensionFlg, com.querydsl.core.types.Expression<com.example.library.domain.rent.enums.RentState> rentState) {
+        super(RentHistoryResponseDto.Response.class, new Class<?>[]{long.class, long.class, String.class, String.class, String.class, String.class, boolean.class, com.example.library.domain.rent.enums.RentState.class}, historyNo, bookNo, bookName, rentDt, haveToReturnDt, returnDt, extensionFlg, rentState);
     }
 
 }

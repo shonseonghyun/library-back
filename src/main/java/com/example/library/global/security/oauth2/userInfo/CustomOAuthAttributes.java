@@ -41,6 +41,7 @@ public class CustomOAuthAttributes {
                 .userName(oAuthUserInfo.getName())
                 .providerId(oAuthUserInfo.getProviderId())
                 .provider(socialLoginType)
+                .useFlg(0)
                 .build();
     }
 

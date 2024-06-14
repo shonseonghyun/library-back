@@ -13,9 +13,9 @@ import java.util.List;
 public interface UserOpenFeignClient {
 
     @GetMapping("/rent/currentRentStatus/user/{userNo}")
-    public ApiResponseDto<List<UserRentStatusResDto>> getCurrentRentStatus(@PathVariable Long userNo);
+    public ApiResponseDto<List<UserRentStatusResDto>> getCurrentRentStatus(@PathVariable("userNo") Long userNo);
 
     @GetMapping("/rent/rentHistory/user/{userNo}")
-    public ApiResponseDto<List<UserRentHistoryResDto>> getRentHistory(@PathVariable Long userNo);
+    public ApiResponseDto<List<UserRentHistoryResDto>> getRentHistory(@PathVariable("userNo") Long userNo);
 
 }

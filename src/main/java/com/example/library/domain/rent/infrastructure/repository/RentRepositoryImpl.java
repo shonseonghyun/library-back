@@ -102,7 +102,7 @@ public class RentRepositoryImpl implements RentRepository {
     @Override
     public List<RentHistoryResponseDto.Response> findUserRentHistory(Long userNo) {
         List<RentHistoryResponseDto.Response> result =
-                jpaQueryFactory.select(new QRentHistoryResponseDto_Response(rentHistoryEntity.bookNo,bookEntity.bookName,rentHistoryEntity.rentDt,rentHistoryEntity.haveToReturnDt,rentHistoryEntity.returnDt,rentHistoryEntity.extensionFlg,rentHistoryEntity.rentState))
+                jpaQueryFactory.select(new QRentHistoryResponseDto_Response(rentHistoryEntity.historyNo,rentHistoryEntity.bookNo,bookEntity.bookName,rentHistoryEntity.rentDt,rentHistoryEntity.haveToReturnDt,rentHistoryEntity.returnDt,rentHistoryEntity.extensionFlg,rentHistoryEntity.rentState))
                         .from(rentHistoryEntity)
                         .where(rentHistoryEntity.userNo.eq(userNo))
                         .where(rentHistoryEntity.rentState.notIn(RentState.ON_RENT))

@@ -28,7 +28,7 @@ public class BookController {
     private final BookRepository bookRepository;
 
     @GetMapping("/inquiry/{category}/{inquiryWord}")
-    public ApiResponseDto inquirySimpleCategory(@PathVariable("category") String category,@PathVariable("inquiryWord") String inquiryWord,@RequestParam(defaultValue = "1") int page,@RequestParam(defaultValue = "10") int size, @RequestParam(required = false) Long cachedCount) {
+    public ApiResponseDto inquirySimpleCategory(@PathVariable("category") String category,@PathVariable("inquiryWord") String inquiryWord,@RequestParam(defaultValue = "1",name = "page") int page,@RequestParam(defaultValue = "10",name="size") int size, @RequestParam(required = false,name = "cachedCount") Long cachedCount) {
         Pageable pageable = PageRequest.of(page-1,size);
         BookSearchPagingResDto bookSearchPagingResDto= bookService.inquirySimpleCategory(InquiryCategory.getCategory(category),inquiryWord,pageable,cachedCount);
         return ApiResponseDto.createRes(ErrorCode.SUC, bookSearchPagingResDto);
@@ -47,7 +47,7 @@ public class BookController {
     }
 
     @PostMapping(value = "/reg")
-    public ApiResponseDto regBook(@RequestPart BookRegReqDto bookRegReqDto ,@RequestPart(value = "file") MultipartFile file) throws IOException {
+    public ApiResponseDto regBook(@RequestPart(value="bookRegReqDto") BookRegReqDto bookRegReqDto ,@RequestPart(value = "file") MultipartFile file) throws IOException {
         Long bookNo = bookService.regBook(bookRegReqDto,file);
         return ApiResponseDto.createRes(ErrorCode.SUC,bookNo);
     }

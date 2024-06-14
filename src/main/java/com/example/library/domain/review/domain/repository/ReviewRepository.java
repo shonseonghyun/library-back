@@ -9,6 +9,7 @@ import java.util.Optional;
 
 public interface ReviewRepository {
     Page<ReviewEntity> findFetchJoinReviewsByUserNo(Long userNo, Pageable pageable);
+    Page<ReviewEntity> findReviewsByUserNo(Long userNo, Pageable pageable,Long cachedCount);
     List<ReviewEntity> findFetchJoinReviewsByBookNo(Long bookNo);
     Optional<ReviewEntity> findByUserUserNoAndBookBookCode(Long userNo,Long bookNo);
     ReviewEntity save(ReviewEntity reviewEntity);

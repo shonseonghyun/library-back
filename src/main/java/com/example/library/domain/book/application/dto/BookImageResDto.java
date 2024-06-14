@@ -12,7 +12,6 @@ public class BookImageResDto {
     Long fileSize;
     String filePath;
     String newFileName;
-    String reactFilePath;
 
     public static BookImageResDto from(BookImageEntity bookImageEntity){
         return BookImageResDto.builder()

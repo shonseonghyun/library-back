@@ -11,6 +11,7 @@ public class RentHistoryResponseDto {
     @Getter
     @NoArgsConstructor
     public static class Response{
+        private Long historyNo;
         private Long bookNo;
         private String bookName;
         private String rentDt;
@@ -21,7 +22,8 @@ public class RentHistoryResponseDto {
 
         @Builder
         @QueryProjection
-        public Response(Long bookNo, String bookName, String rentDt, String haveToReturnDt, String returnDt, boolean extensionFlg, RentState rentState) {
+        public Response(Long historyNo,Long bookNo, String bookName, String rentDt, String haveToReturnDt, String returnDt, boolean extensionFlg, RentState rentState) {
+            this.historyNo = historyNo;
             this.bookNo = bookNo;
             this.bookName = bookName;
             this.rentDt = rentDt;
