@@ -11,8 +11,12 @@ jobs:
     name: create properties
     runs-on: ubuntu-latest
     steps:
-      - run: ls -lrt
       - run: pwd
+      - run: ls -lrt
+      - uses: actions/checkout@v3
+      - run: ls -lrt
+      - run: cat .github/workflows/first.yml
+      
       - run: mkdir ./src/main/resources/properties
       
       - run: touch ./src/main/resources/properties/fileUpload.properties
