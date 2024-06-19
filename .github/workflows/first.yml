@@ -30,10 +30,17 @@ jobs:
       - run: touch ./src/main/resources/properties/oauth2.properties
       - run: echo "${{secrets.OAUTH2}}" > ./src/main/resources/properties/oauth2.properties
 
+
+      # 테스트
+      - run: touch ./src/main/resources/test.properties
+      - run: echo "${{secrets.OAUTH2}}" > ./src/main/resources/test.properties
+
+
+
       - run: ls -lrt ./src/main/resources/properties
 
       - uses: actions/upload-artifact@v3
         with:
           name: properties
-          path: ./src/main/resources/properties/*
+          path: ./src/main/resources/test.properties
 
