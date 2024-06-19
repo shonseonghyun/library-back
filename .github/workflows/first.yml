@@ -31,7 +31,7 @@ jobs:
       - run: echo "${{secrets.OAUTH2}}" > ./src/main/resources/properties/oauth2.properties
       
       - run: ls -lrt ./src/main/resources/properties
-      - run: cat ./src/main/resources/properties/oauth2.properites
+      - run: cat ./src/main/resources/properties/oauth2.properties
       
 
       - uses: actions/upload-artifact@v3
