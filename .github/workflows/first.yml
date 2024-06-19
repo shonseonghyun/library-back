@@ -11,6 +11,7 @@ jobs:
     name: create properties
     runs-on: ubuntu-latest
     steps:
+      - run: pwd
       - run: mkdir ./src/main/resources/properties
       
       - run: touch ./src/main/resources/properties/fileUpload.properties
