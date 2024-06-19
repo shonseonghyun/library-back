@@ -30,5 +30,4 @@ jobs:
       - run: touch ./src/main/resources/properties/oauth2.properties
       - run: echo "${{secrets.OAUTH2}}" > ./src/main/resources/properties/oauth2.properties
 
-      - run: cd ./src/main/resources/properties
-      - run: ls -lrt
+      - run: ls -lrt ./src/main/resources/properties
