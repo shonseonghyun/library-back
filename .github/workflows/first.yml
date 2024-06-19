@@ -1,16 +1,29 @@
-name: Our First Workflow
-on: push
+name: Java CI with Gradle
+
+on: 
+  push: 
+    branches: [ "sunghyun-develop" ]
+  pull_request: 
+    branches: [ "sunghyun-develop" ]
+    
 jobs:
-  echo:
-    runs-on: ubuntu-latest #최신 우분투 실행
-    steps:
-      - run: echo 'Hello, GiHub Actions!'
-  pwd-ls: 
-    name: PWD & LS
+  build:
+    name: create properties
     runs-on: ubuntu-latest
     steps:
-      - name: Pring working directory
-        run: pwd
-      - name: List files
-        run: ls -al
+      - run: mkdir ./src/main/resources/properties
       
+      - run: touch ./src/main/resources/properties/fileUpload.properties
+      - run: echo "${{secrets.FILEUPLOAD}}" > ./src/main/resources/properties/fileUpload.properties
+      
+      - run: touch ./src/main/resources/properties/fileUpload.properties
+      - run: echo "${{secrets.DATASOURCE}}" > ./src/main/resources/properties/datasource.properties
+      
+      - run: touch ./src/main/resources/properties/fileUpload.properties
+      - run: echo "${{secrets.LOGGING}}" > ./src/main/resources/properties/logging.properties
+      
+      - run: touch ./src/main/resources/properties/fileUpload.properties
+      - run: echo "${{secrets.MAIL}}" > ./src/main/resources/properties/mail.properties
+      
+      - run: touch ./src/main/resources/properties/oauth2.properties
+      - run: echo "${{secrets.OAUTH2}}" > ./src/main/resources/properties/oauth2.properties
