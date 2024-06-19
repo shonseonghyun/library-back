@@ -35,5 +35,5 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: properties
-          path: ./src/main/resources/properties/
+          path: ./src/main/resources/properties/*
 
