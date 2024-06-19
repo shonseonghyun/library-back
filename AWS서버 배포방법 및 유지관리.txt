@@ -26,7 +26,7 @@
 
 	5-6. docker images 명령어를 통해 추출된 이미지 확인
 
-6. /home/docker/docker_compose 경로에 docker-compose.yml 확인 후 실행. 
+6. /home/docker/docker_compose 경로에 docker-compose.yml 확인 후 실행.
 (그 전에 'docker ps' 명령어로 컨테이너 확인) > 컴포즈 실행 명령어는 'docker-compose up -d', 실행 중단 명령어는 'docker-compose down'
 
 7. 컨테이너 구동 확인 후 해당 컨테이너 이미지를 파일로 보관하고 싶을땐 /home/docker/images 경로로 이동.
@@ -36,4 +36,4 @@
 
 9. 나중에 이미지파일 압축해제 하고싶으면 'docker load < {이미지파일.tar}' 명령어 실행.
 
-10. 자동배포 테스트 텍스트 키키2ㄴㄴ
+10. 자동배포 테스트 텍스트 키키2ㄴㄴㄴ
