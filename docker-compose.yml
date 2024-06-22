@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  library-back:
+    container_name: library-back
+    build: .
+    ports:
+      - "8000:8000"
+    image: "sunghyun7895/library:latest"
+    restart: "always"
+#    networks:
+#      - library_net
+#
+#  jenkins:
+#    container_name: jenkins
+#    build: jenkins/jenkins:jdk17
+#    volumes:
+#      - /home/jenkins:/var/jenkins_home"
+#      - /var/run/docker.sock:/var/run/docker.sock
+#    ports:
+#      - "8080:8080"
+#    restart: "always"
+#    networks:
+#      - library_net
+#
+#networks:
+#  library_net:
+#    driver: bridge
+#    external: true
