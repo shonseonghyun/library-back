@@ -48,8 +48,8 @@ public class CustomOAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSucc
 
     private String getRedirectUrl(String accessToken){
         return "http://44.213.131.145/api/user/login/oauth"
-                + "?" +
-                "accessToken=" + accessToken + "&"
+                + "?"
+                + "accessToken=" + accessToken + "&"
                 ;
     }
 
