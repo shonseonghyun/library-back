@@ -28,9 +28,10 @@ public class FileService {
     public String getUploadFilePath(){
         String folderPath = LocalDate.now().format(DateTimeFormatter.ofPattern("/yyyy/MM/dd"));
         String uploadFolderPath = uploadPath+folderPath;
+        uploadFolderPath = uploadFolderPath.replace("/",File.separator);
 
         //폴더 생성
-        File uploadFolder = new File(uploadPath,folderPath);
+        File uploadFolder = new File(uploadPath.replace("/",File.separator),folderPath.replace("/",File.separator));
         if(uploadFolder.exists() == false){
             uploadFolder.mkdirs();
         }
