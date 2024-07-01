@@ -33,7 +33,9 @@ public class FileService {
         //폴더 생성
         File uploadFolder = new File(uploadPath.replace("/",File.separator),folderPath.replace("/",File.separator));
         if(uploadFolder.exists() == false){
+            log.info(uploadFolder.toString() + " 폴더 생성 진행");
             uploadFolder.mkdirs();
+            log.info(uploadFolder.toString() + " 폴더 생성 완료");
         }
 
         // 폴더
