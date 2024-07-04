@@ -48,6 +48,12 @@ public enum MailType implements MailContentInterface{
             return String.format(contentForm, userId);
         }
     },
+    MAIL_OVERDUE_CLEAR("OVERDUE_CLEAR","연체자 해제 알림 발송") {
+        @Override
+        public String getContent(String userId, String contentForm) {
+            return String.format(contentForm, userId);
+        }
+    },
     MAIL_OVERDUE_REMOVE("OVERDUE_REMOVE","연체자 해제 알림 발송") {
         @Override
         public String getContent(String userId, String contentForm) {
