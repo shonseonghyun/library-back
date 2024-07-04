@@ -47,9 +47,9 @@ public class CustomOAuth2LoginSuccessHandler extends SimpleUrlAuthenticationSucc
     }
 
     private String getRedirectUrl(String accessToken){
-        return "http://localhost:3000/api/user/login/oauth"
-                + "?" +
-                "accessToken=" + accessToken + "&"
+        return "http://44.213.131.145/api/user/login/oauth"
+                + "?"
+                + "accessToken=" + accessToken + "&"
                 ;
     }
 
