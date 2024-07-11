@@ -1,6 +1,7 @@
 package com.example.library.config;
 
 import com.example.library.config.batch.EmailRetryBatchConfig;
+import com.example.library.config.batch.OverdueClearBatchConfig;
 import com.example.library.config.batch.OverdueRegBatchConfig;
 import com.example.library.global.utils.DateUtil;
 import lombok.RequiredArgsConstructor;
@@ -33,18 +34,18 @@ public class SchedulerConfig {
     private final PlatformTransactionManager manager;
     private final JobRepository jobRepository;
 
-    @Scheduled(cron = "0 * * * * *" , zone = "Asia/Seoul") //1분마다
-    public void overDueRegScheduler() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
-        log.info("연체 대상 등록 스케줄러 start");
-
-        JobParameters jobParameters= new JobParametersBuilder()
-                .addString("nowDt", DateUtil.getDate())
-                .addLong("time",new Date().getTime()) //여러번 돌수 있게 세팅
-                .toJobParameters();
-        jobLauncher.run(overdueRegBatchConfig.overDueRegJob(manager,jobRepository),jobParameters);
-
-        log.info("연체 대상 등록 스케줄러 end");
-    }
+//    @Scheduled(cron = "0 * * * * *" , zone = "Asia/Seoul") //1분마다
+//    public void overDueRegScheduler() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
+//        log.info("연체 대상 등록 스케줄러 start");
+//
+//        JobParameters jobParameters= new JobParametersBuilder()
+//                .addString("nowDt", DateUtil.getDate())
+//                .addLong("time",new Date().getTime()) //여러번 돌수 있게 세팅
+//                .toJobParameters();
+//        jobLauncher.run(overdueRegBatchConfig.overDueRegJob(manager,jobRepository),jobParameters);
+//
+//        log.info("연체 대상 등록 스케줄러 end");
+//    }
 
     @Scheduled(cron = "0 * * * * *" , zone = "Asia/Seoul") //1분마다
     public void overDueClearScheduler() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
@@ -56,21 +57,21 @@ public class SchedulerConfig {
                 .toJobParameters();
         jobLauncher.run(overdueClearBatchConfig.overdueClearJob(manager,jobRepository),jobParameters);
 
-        log.info("연체 대상 해제 스케줄러 start");
+        log.info("연체 대상 해제 스케줄러 end");
     }
 
-    @Scheduled(cron = "0 18 * * * *" , zone = "Asia/Seoul") //1분마다
-    public void emailRetryScheduler() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
-        log.info("이메일 재발송 스케줄러 start");
-
-        JobParameters jobParameters= new JobParametersBuilder()
-                .addString("nowDt", DateUtil.getDate())
-                .addLong("time",new Date().getTime())//여러번 돌수 있게 세팅
-                .toJobParameters();
-        jobLauncher.run(emailRetryBatchConfig.emailRetryJob(manager,jobRepository),jobParameters);
-
-        log.info("이메일 재발송 스케줄러 end");
-    }
+//    @Scheduled(cron = "0 18 * * * *" , zone = "Asia/Seoul") //1분마다
+//    public void emailRetryScheduler() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {
+//        log.info("이메일 재발송 스케줄러 start");
+//
+//        JobParameters jobParameters= new JobParametersBuilder()
+//                .addString("nowDt", DateUtil.getDate())
+//                .addLong("time",new Date().getTime())//여러번 돌수 있게 세팅
+//                .toJobParameters();
+//        jobLauncher.run(emailRetryBatchConfig.emailRetryJob(manager,jobRepository),jobParameters);
+//
+//        log.info("이메일 재발송 스케줄러 end");
+//    }
 
 //    @Scheduled(cron = "0 * * * * *" , zone = "Asia/Seoul") //1분마다
 //    public void doTest() throws JobInstanceAlreadyCompleteException, JobExecutionAlreadyRunningException, JobParametersInvalidException, JobRestartException {

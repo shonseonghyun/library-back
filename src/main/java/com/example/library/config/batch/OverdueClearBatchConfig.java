@@ -1,5 +1,7 @@
-package com.example.library.config;
+package com.example.library.config.batch;
 
+import com.example.library.config.batch.custom.reader.CustomJpaPagingItemReader;
+import com.example.library.domain.rent.domain.RentRepository;
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.global.event.Events;
 import com.example.library.global.mail.domain.mail.application.dto.MailDto;
@@ -16,22 +18,19 @@ import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.batch.item.database.JpaItemWriter;
-import org.springframework.batch.item.database.JpaPagingItemReader;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class OverdueClearBatchConfig {
     private final EntityManagerFactory entityManagerFactory;
+    private final RentRepository rentRepository;
 
-    private int chunkSize = 10;
+    private int chunkSize = 2; //pagesize
 
     @Bean
     public Job overdueClearJob(PlatformTransactionManager transactionManager, JobRepository jobRepository){
@@ -53,43 +52,9 @@ public class OverdueClearBatchConfig {
 
     @Bean
     @StepScope
-    public JpaPagingItemReader<RentManagerEntity> overdueRentClearManagerReader(@Value("#{jobParameters[nowDt]}") String nowDt){
+    public CustomJpaPagingItemReader overdueRentClearManagerReader(@Value("#{jobParameters[nowDt]}") String nowDt){
         log.info("rentManagerReader 처리");
-
-        //override 통한 문제 해결
-        JpaPagingItemReader<RentManagerEntity> reader = new JpaPagingItemReader<RentManagerEntity>() {
-            @Override
-            public int getPage() {
-                return 0;
-            }
-        };
-
-        Map<String,Object> parameterMap =new HashMap<String,Object>();
-        parameterMap.put("nowDt",nowDt);
-        reader.setPageSize(chunkSize);
-        reader.setName("overdueRentManagerReader");
-        reader.setEntityManagerFactory(entityManagerFactory);
-        reader.setParameterValues(parameterMap);
-        reader.setQueryString(
-                "select c from RentManagerEntity c " +
-                "where managerNo in ( " +
-                        "select  managerNo From RentHistoryEntity " +
-                        "where managerNo in ( " +
-                                "select rm.managerNo from RentManagerEntity rm " +
-                                "where rm.overdueFlg = true " +
-                                "and not exists " +
-                                        "(" +
-                                                "select 1 from RentHistoryEntity rh " +
-                                                "where rm.managerNo = rh.managerNo "  +
-                                                "and rentState= 1 "  +
-		                                    ") " +
-	                                ") "+
-                            "and rentState=3 " +
-                            "group by managerNo " +
-                            "having date_Add(str_to_date(max(returnDt),'%Y%m%d'),interval +7 Day) =  date_format(now(), '%Y-%m-%d') " +
-                 ")"
-        );
-
+        CustomJpaPagingItemReader reader =  new CustomJpaPagingItemReader(rentRepository,chunkSize);
         return reader;
     }
 

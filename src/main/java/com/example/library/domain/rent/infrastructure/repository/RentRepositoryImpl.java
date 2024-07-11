@@ -8,19 +8,31 @@ import com.example.library.domain.rent.domain.dto.QRentStatusResponseDto_Respons
 import com.example.library.domain.rent.domain.dto.RentHistoryResponseDto;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import com.example.library.domain.rent.enums.RentState;
+import com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity;
+import com.example.library.domain.rent.infrastructure.entity.QRentManagerEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.BookOnRentException;
 import com.example.library.exception.exceptions.RentManagerNotFoudException;
+import com.querydsl.core.Tuple;
+import com.querydsl.core.types.ConstantImpl;
+import com.querydsl.core.types.Ops;
+import com.querydsl.core.types.dsl.DateExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringTemplate;
+import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 
 import static com.example.library.domain.book.domain.QBookEntity.bookEntity;
 import static com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity.rentHistoryEntity;
+import static com.example.library.domain.rent.infrastructure.entity.QRentManagerEntity.rentManagerEntity;
 
 @Repository
 @RequiredArgsConstructor
@@ -86,6 +98,8 @@ public class RentRepositoryImpl implements RentRepository {
         ;
     }
 
+
+
     @Override
     public List<RentStatusResponseDto.Response> findUserRentStatus(Long userNo) {
         List<RentStatusResponseDto.Response> result = jpaQueryFactory.select(new QRentStatusResponseDto_Response(rentHistoryEntity.bookNo,bookEntity.bookName,rentHistoryEntity.rentDt,rentHistoryEntity.haveToReturnDt,rentHistoryEntity.extensionFlg))
@@ -117,6 +131,40 @@ public class RentRepositoryImpl implements RentRepository {
     public void deleteByUserNo(Long userNo) {
         rentManagerRepository.deleteByUserNo(userNo);
         rentHistoryRepository.deleteByUserNo(userNo);
+    }
+
+    @Override
+    public List<Tuple> getOverdueClearList(int pageSize) {
+        QRentHistoryEntity subRentHistory = new QRentHistoryEntity("subRentHistory");
+
+        return jpaQueryFactory.select(rentManagerEntity.managerNo,rentHistoryEntity.returnDt.max())
+                .from(rentManagerEntity)
+                .join(rentHistoryEntity)
+                .on(rentManagerEntity.managerNo.eq(rentHistoryEntity.managerNo))
+                .where(
+                        rentManagerEntity.overdueFlg.eq(true)
+                        .and(
+                                JPAExpressions
+                                        .select(subRentHistory).from(subRentHistory)
+                                        .where(subRentHistory.rentState.eq(RentState.ON_OVERDUE),subRentHistory.managerNo.eq(rentManagerEntity.managerNo))
+                                        .notExists()
+                        )
+                        .and(rentHistoryEntity.rentState.eq(RentState.OVERDUE_RETURN))
+                )
+                .groupBy(rentManagerEntity.managerNo)
+                .orderBy(rentManagerEntity.managerNo.desc())
+                .offset(0)
+                .limit(pageSize)
+                .fetch()
+                ;
+    }
+
+    @Override
+    public RentManagerEntity findRentManagerEntityByManagerNo(Long managerNo) {
+        RentManagerEntity rentManagerEntity = rentManagerRepository.findByManagerNo(managerNo)
+                .orElseThrow(()->new RentManagerNotFoudException(ErrorCode.RENTMANAGER_USERNO_NOT_FOUND));
+
+        return rentManagerEntity;
     }
 
     private RentManager convert(RentManagerEntity entity){

@@ -32,7 +32,7 @@ import java.util.Map;
 public class OverdueRegBatchConfig {
     private final EntityManagerFactory entityManagerFactory;
 
-    private int chunkSize = 10;
+    private int chunkSize = 2;
 
     @Bean
     public Job overDueRegJob(PlatformTransactionManager transactionManager, JobRepository jobRepository){
@@ -60,7 +60,7 @@ public class OverdueRegBatchConfig {
         //override 통한 문제 해결
         JpaPagingItemReader<RentManagerEntity> reader = new JpaPagingItemReader<RentManagerEntity>() {
             @Override
-            public int getPage() {
+            public int getPage() { //초기값 page 세팅하는 부분
                 return 0;
             }
         };
@@ -78,7 +78,9 @@ public class OverdueRegBatchConfig {
                             "select distinct(userNo) from RentHistoryEntity " +
                                 "where rentState=0 and haveToReturnDt< :nowDt" +
                         ") " +
-                        "and overdueFlg=false order by c.managerNo");
+                        "and overdueFlg=false " +
+                        "order by c.managerNo"
+        );
         return reader;
     }
 

@@ -11,8 +11,9 @@ import java.util.Arrays;
 @AllArgsConstructor
 public enum RentState {
     ON_RENT(0,"대여 중"),
-    NORMAL_RETURN(1,"정상 반납"),
-    OVERDUE_RETURN(2,"연체 반납")
+    ON_OVERDUE(1,"연체 중"),
+    NORMAL_RETURN(2,"정상 반납"),
+    OVERDUE_RETURN(3,"연체 반납")
     ;
 
     private final Integer stateNum;

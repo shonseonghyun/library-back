@@ -7,5 +7,6 @@ import java.util.Optional;
 
 public interface SpringDataJpaRentManagerRepository extends JpaRepository<RentManagerEntity,Long> {
     Optional<RentManagerEntity> findByUserNo(Long userNo);
+    Optional<RentManagerEntity> findByManagerNo(Long managerNo);
     void deleteByUserNo(Long userNo);
 }
