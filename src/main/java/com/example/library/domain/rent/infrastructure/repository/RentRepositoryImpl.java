@@ -24,7 +24,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.example.library.domain.book.domain.QBookEntity.bookEntity;
-import static com.example.library.domain.heart.domain.QHeart.heart;
 import static com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity.rentHistoryEntity;
 import static com.example.library.domain.rent.infrastructure.entity.QRentManagerEntity.rentManagerEntity;
 
@@ -96,15 +95,13 @@ public class RentRepositoryImpl implements RentRepository {
 
     @Override
     public List<RentStatusResponseDto.Response> findUserRentStatus(Long userNo) {
-        List<RentStatusResponseDto.Response> result = jpaQueryFactory.select(new QRentStatusResponseDto_Response(rentHistoryEntity.bookNo,bookEntity.bookName,rentHistoryEntity.rentDt,rentHistoryEntity.haveToReturnDt,rentHistoryEntity.extensionFlg))
+        return jpaQueryFactory.select(new QRentStatusResponseDto_Response(rentHistoryEntity.bookNo,bookEntity.bookName,rentHistoryEntity.rentDt,rentHistoryEntity.haveToReturnDt,rentHistoryEntity.extensionFlg))
                 .from(rentHistoryEntity)
                 .where(rentHistoryEntity.userNo.eq(userNo))
-                .where(rentHistoryEntity.rentState.eq(RentState.ON_RENT))
+                .where(rentHistoryEntity.rentState.in(RentState.ON_RENT,RentState.ON_OVERDUE))
                 .innerJoin(bookEntity)
                 .on(rentHistoryEntity.bookNo.eq(bookEntity.bookCode))
-                .fetch()
-                ;
-        return result;
+                .fetch();
     }
 
     @Override
