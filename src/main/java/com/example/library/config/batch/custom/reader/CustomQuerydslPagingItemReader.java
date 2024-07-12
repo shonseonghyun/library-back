@@ -14,11 +14,11 @@ import static com.example.library.domain.rent.infrastructure.entity.QRentHistory
 import static com.example.library.domain.rent.infrastructure.entity.QRentManagerEntity.rentManagerEntity;
 
 @RequiredArgsConstructor
-public class CustomJpaPagingItemReader extends AbstractPagingItemReader<OverdueClearUserDto> {
+public class CustomQuerydslPagingItemReader extends AbstractPagingItemReader<OverdueClearUserDto> {
 
     private final RentRepository rentRepository;
 
-    public CustomJpaPagingItemReader(RentRepository rentRepository,int pageSize){
+    public CustomQuerydslPagingItemReader(RentRepository rentRepository, int pageSize){
         this.rentRepository = rentRepository;
         setPageSize(pageSize);
     }

@@ -1,7 +1,7 @@
 package com.example.library.config.batch;
 
 import com.example.library.config.batch.custom.dto.OverdueClearUserDto;
-import com.example.library.config.batch.custom.reader.CustomJpaPagingItemReader;
+import com.example.library.config.batch.custom.reader.CustomQuerydslPagingItemReader;
 import com.example.library.domain.rent.domain.RentRepository;
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.global.event.Events;
@@ -57,9 +57,8 @@ public class OverdueClearBatchConfig {
     }
 
     @Bean
-    public CustomJpaPagingItemReader overdueClearRentManagerReader(){
-        log.info("rentManagerReader 처리");
-        CustomJpaPagingItemReader reader =  new CustomJpaPagingItemReader(rentRepository,chunkSize);
+    public CustomQuerydslPagingItemReader overdueClearRentManagerReader(){
+        CustomQuerydslPagingItemReader reader =  new CustomQuerydslPagingItemReader(rentRepository,chunkSize);
         return reader;
     }
 
