@@ -36,4 +36,8 @@ public class RentHistoryEntity {
 
     @Convert(converter = RentStateConverter.class)
     private RentState rentState;
+
+    public void setRentState(RentState rentState) {
+        this.rentState = rentState;
+    }
 }

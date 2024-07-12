@@ -2,6 +2,8 @@ package com.example.library.domain.rent.domain;
 
 import com.example.library.domain.rent.domain.dto.RentHistoryResponseDto;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
+import com.example.library.domain.rent.enums.RentState;
+import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
 import com.querydsl.core.Tuple;
 
 import java.util.List;
@@ -17,4 +19,6 @@ public interface RentRepository {
     //연체중인 도서를 모두 반환한 유저
     List<Tuple> getOverdueClearList(int pageSize);
 
+    //RentState 값을 통한 RentHistory 리스트 for Batch
+    List<RentHistoryEntity> getRentHistoryEntityByRentState(RentState rentState, Long lastHistoryNo,String nowDt,int pageSize);
 }

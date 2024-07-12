@@ -15,6 +15,7 @@ import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.BookOnRentException;
 import com.example.library.exception.exceptions.RentManagerNotFoudException;
 import com.querydsl.core.Tuple;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 import static com.example.library.domain.book.domain.QBookEntity.bookEntity;
+import static com.example.library.domain.heart.domain.QHeart.heart;
 import static com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity.rentHistoryEntity;
 import static com.example.library.domain.rent.infrastructure.entity.QRentManagerEntity.rentManagerEntity;
 
@@ -150,6 +152,32 @@ public class RentRepositoryImpl implements RentRepository {
                 .fetch()
                 ;
     }
+
+    @Override
+    public List<RentHistoryEntity> getRentHistoryEntityByRentState(RentState rentState, Long lastHistoryNo,String nowDt,int pageSize) {
+        return jpaQueryFactory.selectFrom(rentHistoryEntity)
+                .join(rentManagerEntity)
+                .on(rentHistoryEntity.managerNo.eq(rentManagerEntity.managerNo))
+                .where(
+                        rentManagerEntity.overdueFlg.eq(false),
+                        rentHistoryEntity.haveToReturnDt.lt(nowDt),
+                        rentHistoryEntity.returnDt.isNull(),
+                        rentHistoryEntity.rentState.eq(rentState),
+                        ltHistoryNo(lastHistoryNo)
+                )
+                .limit(pageSize)
+                .orderBy(rentHistoryEntity.historyNo.desc())
+                .fetch();
+    }
+
+    private BooleanExpression ltHistoryNo(Long historyNo){
+        if(historyNo==null){
+            return null;
+        }
+        return rentHistoryEntity.historyNo.lt(historyNo);
+    }
+
+
 
     private RentManager convert(RentManagerEntity entity){
         return RentManager.by(entity);
