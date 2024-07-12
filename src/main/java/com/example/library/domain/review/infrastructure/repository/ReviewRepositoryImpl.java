@@ -1,17 +1,13 @@
 package com.example.library.domain.review.infrastructure.repository;
 
-import com.example.library.domain.book.domain.QBookEntity;
 import com.example.library.domain.rent.enums.RentState;
-import com.example.library.domain.review.domain.QReviewEntity;
 import com.example.library.domain.review.domain.ReviewEntity;
 import com.example.library.domain.review.domain.dto.QReviewResponseDto_Response;
 import com.example.library.domain.review.domain.dto.ReviewResponseDto;
 import com.example.library.domain.review.domain.repository.ReviewRepository;
-import com.querydsl.core.Tuple;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
@@ -20,14 +16,13 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import static com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity.rentHistoryEntity;
+
 import static com.example.library.domain.book.domain.QBookEntity.bookEntity;
+import static com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity.rentHistoryEntity;
 import static com.example.library.domain.review.domain.QReviewEntity.reviewEntity;
 
 
-@Slf4j
 @Repository
 @RequiredArgsConstructor
 public class ReviewRepositoryImpl implements ReviewRepository {

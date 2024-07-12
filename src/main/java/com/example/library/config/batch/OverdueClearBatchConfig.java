@@ -1,5 +1,6 @@
 package com.example.library.config.batch;
 
+import com.example.library.config.batch.custom.dto.OverdueClearUserDto;
 import com.example.library.config.batch.custom.reader.CustomJpaPagingItemReader;
 import com.example.library.domain.rent.domain.RentRepository;
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
@@ -23,6 +24,11 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -42,39 +48,68 @@ public class OverdueClearBatchConfig {
 
     public Step overdueClearStep(PlatformTransactionManager transactionManager, JobRepository jobRepository){
         return new StepBuilder("overdueClearStep",jobRepository)
-                .<RentManagerEntity, RentManagerEntity>chunk(chunkSize,transactionManager)
-                .reader(overdueRentClearManagerReader(null))
-                .processor(overdueRentClearManagerProcessor())
-                .writer(overdueRentClearManagerWriter())
+                .<OverdueClearUserDto, RentManagerEntity>chunk(chunkSize,transactionManager)
+                .reader(overdueClearRentManagerReader())
+                .processor(overdueClearRentManagerProcessor(null))
+                .writer(overdueClearRentManagerWriter())
                 .build()
                 ;
     }
 
     @Bean
-    @StepScope
-    public CustomJpaPagingItemReader overdueRentClearManagerReader(@Value("#{jobParameters[nowDt]}") String nowDt){
+    public CustomJpaPagingItemReader overdueClearRentManagerReader(){
         log.info("rentManagerReader 처리");
         CustomJpaPagingItemReader reader =  new CustomJpaPagingItemReader(rentRepository,chunkSize);
         return reader;
     }
 
     @Bean
-    public ItemProcessor<RentManagerEntity,RentManagerEntity> overdueRentClearManagerProcessor(){
+    @StepScope
+    public ItemProcessor<OverdueClearUserDto,RentManagerEntity> overdueClearRentManagerProcessor(@Value("#{jobParameters[nowDt]}") String nowDt){
         log.info("rentManagerProcessor 처리");
         return item -> {
-            log.info(item.toString());
-            log.info("ItemProcessor 처리 진행");
-            item.setOverdueFlg(false);
-            Events.raise(new SendedMailEvent(new MailDto(item.getUserNo(), MailType.MAIL_OVERDUE_CLEAR)));
-            return item;
+            if(isSameTodayAfter7DaysFromLastReturnDate(nowDt,item.getReturnDt())){ //연체된 도서 중 최대 반납일의 7일 경과 후가 오늘 인 경우 연체 해제 진행
+                log.info("managerNo[{}] 연체 해제 성공",item.getRentManagerEntity().getManagerNo());
+
+                item.getRentManagerEntity().setOverdueFlg(false);
+                Events.raise(new SendedMailEvent(new MailDto(item.getRentManagerEntity().getUserNo(), MailType.MAIL_OVERDUE_CLEAR)));
+                return item.getRentManagerEntity();
+            }
+            else{
+                log.info("managerNo[{}] 연체 해제 패스",item.getRentManagerEntity().getManagerNo());
+                log.info("연체도서 반납일자[{}] + 7일 > 금일일자[{}] ",item.getReturnDt(),nowDt);
+                return null;
+            }
         };
     }
 
     @Bean
-    public JpaItemWriter<RentManagerEntity> overdueRentClearManagerWriter(){
-        log.info("rentManagerWriter start");
+    public JpaItemWriter<RentManagerEntity> overdueClearRentManagerWriter(){
         JpaItemWriter<RentManagerEntity> writer = new JpaItemWriter<>();
         writer.setEntityManagerFactory(entityManagerFactory);
         return writer;
+    }
+
+    private boolean isSameTodayAfter7DaysFromLastReturnDate(String today,String returnDt) {
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
+
+        //반납일자
+        Date strToDt = null;
+        try {
+            strToDt = formatter.parse(returnDt);
+        } catch (ParseException e) {
+            throw new RuntimeException(e);
+        }
+
+        //반납일자로부터 +7일 날자 계산
+        cal.setTime(strToDt);
+        cal.add(Calendar.DAY_OF_MONTH,+7);
+        Date after7Days = cal.getTime();
+
+        //반납일자로부터 +7일 string형식
+        String after7DaysStr = formatter.format(after7Days);
+
+        return today.equals(after7DaysStr);
     }
 }

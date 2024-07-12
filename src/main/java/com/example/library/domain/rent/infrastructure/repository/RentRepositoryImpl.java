@@ -9,25 +9,17 @@ import com.example.library.domain.rent.domain.dto.RentHistoryResponseDto;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import com.example.library.domain.rent.enums.RentState;
 import com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity;
-import com.example.library.domain.rent.infrastructure.entity.QRentManagerEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.BookOnRentException;
 import com.example.library.exception.exceptions.RentManagerNotFoudException;
 import com.querydsl.core.Tuple;
-import com.querydsl.core.types.ConstantImpl;
-import com.querydsl.core.types.Ops;
-import com.querydsl.core.types.dsl.DateExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-import java.time.LocalDateTime;
-import java.util.Date;
 import java.util.List;
 
 import static com.example.library.domain.book.domain.QBookEntity.bookEntity;
@@ -137,7 +129,7 @@ public class RentRepositoryImpl implements RentRepository {
     public List<Tuple> getOverdueClearList(int pageSize) {
         QRentHistoryEntity subRentHistory = new QRentHistoryEntity("subRentHistory");
 
-        return jpaQueryFactory.select(rentManagerEntity.managerNo,rentHistoryEntity.returnDt.max())
+        return jpaQueryFactory.select(rentManagerEntity,rentHistoryEntity.returnDt.max())
                 .from(rentManagerEntity)
                 .join(rentHistoryEntity)
                 .on(rentManagerEntity.managerNo.eq(rentHistoryEntity.managerNo))
@@ -157,14 +149,6 @@ public class RentRepositoryImpl implements RentRepository {
                 .limit(pageSize)
                 .fetch()
                 ;
-    }
-
-    @Override
-    public RentManagerEntity findRentManagerEntityByManagerNo(Long managerNo) {
-        RentManagerEntity rentManagerEntity = rentManagerRepository.findByManagerNo(managerNo)
-                .orElseThrow(()->new RentManagerNotFoudException(ErrorCode.RENTMANAGER_USERNO_NOT_FOUND));
-
-        return rentManagerEntity;
     }
 
     private RentManager convert(RentManagerEntity entity){
