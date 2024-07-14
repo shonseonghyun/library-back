@@ -1,13 +1,18 @@
 package com.example.library.config.batch;
 
 import com.example.library.config.batch.custom.dto.OverdueClearUserDto;
-import com.example.library.config.batch.custom.reader.CustomQuerydslPagingItemReader;
-import com.example.library.domain.rent.domain.RentRepository;
+import com.example.library.config.batch.custom.reader.CustomQuerydslZeroOffsetPagingItemReader;
+import com.example.library.domain.rent.enums.RentState;
+import com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.global.event.Events;
 import com.example.library.global.mail.domain.mail.application.dto.MailDto;
 import com.example.library.global.mail.domain.mail.application.event.SendedMailEvent;
 import com.example.library.global.mail.domain.mail.enums.MailType;
+import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.NumberPath;
+import com.querydsl.jpa.JPAExpressions;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +27,7 @@ import org.springframework.batch.item.database.JpaItemWriter;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.expression.Expression;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import java.text.ParseException;
@@ -29,14 +35,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import static com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity.rentHistoryEntity;
+import static com.example.library.domain.rent.infrastructure.entity.QRentManagerEntity.rentManagerEntity;
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class OverdueClearBatchConfig {
     private final EntityManagerFactory entityManagerFactory;
-    private final RentRepository rentRepository;
 
-    private int chunkSize = 2; //pagesize
+    private final int chunkSize = 2; //pageSize
 
     @Bean
     public Job overdueClearJob(PlatformTransactionManager transactionManager, JobRepository jobRepository){
@@ -57,9 +65,33 @@ public class OverdueClearBatchConfig {
     }
 
     @Bean
-    public CustomQuerydslPagingItemReader overdueClearRentManagerReader(){
-        CustomQuerydslPagingItemReader reader =  new CustomQuerydslPagingItemReader(rentRepository,chunkSize);
-        return reader;
+    public CustomQuerydslZeroOffsetPagingItemReader<OverdueClearUserDto> overdueClearRentManagerReader(){
+        //서브쿼리를 위한 Q엔티티
+        QRentHistoryEntity subRentHistory = new QRentHistoryEntity("subRentHistory");
+
+        return new CustomQuerydslZeroOffsetPagingItemReader<>(entityManagerFactory,chunkSize
+                ,queryFactory -> queryFactory.select(Projections.fields(OverdueClearUserDto.class,
+                        rentManagerEntity.managerNo,
+                        rentManagerEntity.userNo,
+                        rentManagerEntity.currentRentNumber,
+                        rentManagerEntity.overdueFlg,
+                        rentHistoryEntity.returnDt.max().as("returnDt")))
+                        .from(rentManagerEntity)
+                        .join(rentHistoryEntity)
+                        .on(rentManagerEntity.managerNo.eq(rentHistoryEntity.managerNo))
+                        .where(
+                                rentManagerEntity.overdueFlg.eq(true)
+                                        .and(
+                                                JPAExpressions
+                                                        .select(subRentHistory).from(subRentHistory)
+                                                        .where(subRentHistory.rentState.eq(RentState.ON_OVERDUE),subRentHistory.managerNo.eq(rentManagerEntity.managerNo))
+                                                        .notExists()
+                                        )
+                                        .and(rentHistoryEntity.rentState.eq(RentState.OVERDUE_RETURN))
+                        )
+                        .groupBy(rentManagerEntity.managerNo)
+                        .orderBy(rentManagerEntity.managerNo.desc())
+        );
     }
 
     @Bean
@@ -68,14 +100,22 @@ public class OverdueClearBatchConfig {
         log.info("rentManagerProcessor 처리");
         return item -> {
             if(isSameTodayAfter7DaysFromLastReturnDate(nowDt,item.getReturnDt())){ //연체된 도서 중 최대 반납일의 7일 경과 후가 오늘 인 경우 연체 해제 진행
-                log.info("managerNo[{}] 연체 해제 성공",item.getRentManagerEntity().getManagerNo());
+                log.info("managerNo[{}] 연체 해제 성공",item.getManagerNo());
 
-                item.getRentManagerEntity().setOverdueFlg(false);
-                Events.raise(new SendedMailEvent(new MailDto(item.getRentManagerEntity().getUserNo(), MailType.MAIL_OVERDUE_CLEAR)));
-                return item.getRentManagerEntity();
+                RentManagerEntity selectedRentManagerEntity = RentManagerEntity.builder()
+                        .managerNo(item.getManagerNo())
+                        .userNo(item.getUserNo())
+                        .currentRentNumber(item.getCurrentRentNumber())
+                        .overdueFlg(item.isOverdueFlg())
+                        .build()
+                        ;
+
+                selectedRentManagerEntity.setOverdueFlg(false);
+                Events.raise(new SendedMailEvent(new MailDto(item.getUserNo(), MailType.MAIL_OVERDUE_CLEAR)));
+                return selectedRentManagerEntity;
             }
             else{
-                log.info("managerNo[{}] 연체 해제 패스",item.getRentManagerEntity().getManagerNo());
+                log.info("managerNo[{}] 연체 해제 패스",item.getManagerNo());
                 log.info("연체도서 반납일자[{}] + 7일 > 금일일자[{}] ",item.getReturnDt(),nowDt);
                 return null;
             }
@@ -94,7 +134,7 @@ public class OverdueClearBatchConfig {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyyMMdd");
 
         //반납일자
-        Date strToDt = null;
+        Date strToDt;
         try {
             strToDt = formatter.parse(returnDt);
         } catch (ParseException e) {

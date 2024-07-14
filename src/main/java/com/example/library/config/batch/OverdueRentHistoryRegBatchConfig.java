@@ -20,6 +20,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
+import static com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity.rentHistoryEntity;
+import static com.example.library.domain.rent.infrastructure.entity.QRentManagerEntity.rentManagerEntity;
+
 @Slf4j
 @Configuration
 @RequiredArgsConstructor
@@ -49,8 +52,19 @@ public class OverdueRentHistoryRegBatchConfig {
 
     @Bean
     @StepScope
-    public CustomQuerydslNoOffsetPagingItemReader overdueRentHistoryRegReader(@Value("#{jobParameters[nowDt]}") String nowDt){
-        return new CustomQuerydslNoOffsetPagingItemReader(rentRepository,nowDt,chunkSize);
+    public CustomQuerydslNoOffsetPagingItemReader<RentHistoryEntity> overdueRentHistoryRegReader(@Value("#{jobParameters[nowDt]}") String nowDt){
+        return new CustomQuerydslNoOffsetPagingItemReader<>(entityManagerFactory,nowDt,chunkSize,
+                queryFactory->queryFactory.selectFrom(rentHistoryEntity)
+                        .join(rentManagerEntity)
+                        .on(rentHistoryEntity.managerNo.eq(rentManagerEntity.managerNo))
+                        .where(
+                                rentManagerEntity.overdueFlg.eq(false),
+                                rentHistoryEntity.haveToReturnDt.lt(nowDt),
+                                rentHistoryEntity.returnDt.isNull(),
+                                rentHistoryEntity.rentState.eq(RentState.ON_RENT),
+                                ltHistoryNo(lastHistoryNo)
+                        )
+                        .orderBy(rentHistoryEntity.historyNo.desc()));
     }
 
     @Bean
