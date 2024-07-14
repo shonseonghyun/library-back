@@ -1,12 +1,18 @@
 package com.example.library.config.batch.custom.dto;
 
-import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 
-@Getter
+@Data
 @AllArgsConstructor
 public class OverdueClearUserDto {
-    RentManagerEntity rentManagerEntity;
-    String returnDt;
+    private Long managerNo;
+
+    private Long userNo;
+
+    private int currentRentNumber;
+
+    private boolean overdueFlg;
+
+    private String returnDt;
 }

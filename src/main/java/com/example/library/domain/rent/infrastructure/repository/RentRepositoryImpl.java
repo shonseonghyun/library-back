@@ -8,15 +8,12 @@ import com.example.library.domain.rent.domain.dto.QRentStatusResponseDto_Respons
 import com.example.library.domain.rent.domain.dto.RentHistoryResponseDto;
 import com.example.library.domain.rent.domain.dto.RentStatusResponseDto;
 import com.example.library.domain.rent.enums.RentState;
-import com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentHistoryEntity;
 import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
 import com.example.library.exception.ErrorCode;
 import com.example.library.exception.exceptions.BookOnRentException;
 import com.example.library.exception.exceptions.RentManagerNotFoudException;
-import com.querydsl.core.Tuple;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -25,7 +22,6 @@ import java.util.List;
 
 import static com.example.library.domain.book.domain.QBookEntity.bookEntity;
 import static com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity.rentHistoryEntity;
-import static com.example.library.domain.rent.infrastructure.entity.QRentManagerEntity.rentManagerEntity;
 
 @Repository
 @RequiredArgsConstructor
@@ -124,48 +120,53 @@ public class RentRepositoryImpl implements RentRepository {
         rentHistoryRepository.deleteByUserNo(userNo);
     }
 
-    @Override
-    public List<Tuple> getOverdueClearList(int pageSize) {
-        QRentHistoryEntity subRentHistory = new QRentHistoryEntity("subRentHistory");
+//    @Override
+//    public List<OverdueClearUserDto> getOverdueClearList(int pageSize) {
+//        QRentHistoryEntity subRentHistory = new QRentHistoryEntity("subRentHistory");
+//
+//        return jpaQueryFactory.select(Projections.fields(OverdueClearUserDto.class,
+//                        rentManagerEntity.managerNo,
+//                        rentManagerEntity.userNo,
+//                        rentManagerEntity.currentRentNumber,
+//                        rentManagerEntity.overdueFlg,
+//                        rentHistoryEntity.returnDt.max()))
+//                .from(rentManagerEntity)
+//                .join(rentHistoryEntity)
+//                .on(rentManagerEntity.managerNo.eq(rentHistoryEntity.managerNo))
+//                .where(
+//                        rentManagerEntity.overdueFlg.eq(true)
+//                        .and(
+//                                JPAExpressions
+//                                        .select(subRentHistory).from(subRentHistory)
+//                                        .where(subRentHistory.rentState.eq(RentState.ON_OVERDUE),subRentHistory.managerNo.eq(rentManagerEntity.managerNo))
+//                                        .notExists()
+//                        )
+//                        .and(rentHistoryEntity.rentState.eq(RentState.OVERDUE_RETURN))
+//                )
+//                .groupBy(rentManagerEntity.managerNo)
+//                .orderBy(rentManagerEntity.managerNo.desc())
+//                .offset(0)
+//                .limit(pageSize)
+//                .fetch()
+//                ;
+//    }
 
-        return jpaQueryFactory.select(rentManagerEntity,rentHistoryEntity.returnDt.max())
-                .from(rentManagerEntity)
-                .join(rentHistoryEntity)
-                .on(rentManagerEntity.managerNo.eq(rentHistoryEntity.managerNo))
-                .where(
-                        rentManagerEntity.overdueFlg.eq(true)
-                        .and(
-                                JPAExpressions
-                                        .select(subRentHistory).from(subRentHistory)
-                                        .where(subRentHistory.rentState.eq(RentState.ON_OVERDUE),subRentHistory.managerNo.eq(rentManagerEntity.managerNo))
-                                        .notExists()
-                        )
-                        .and(rentHistoryEntity.rentState.eq(RentState.OVERDUE_RETURN))
-                )
-                .groupBy(rentManagerEntity.managerNo)
-                .orderBy(rentManagerEntity.managerNo.desc())
-                .offset(0)
-                .limit(pageSize)
-                .fetch()
-                ;
-    }
-
-    @Override
-    public List<RentHistoryEntity> getRentHistoryEntityByRentState(RentState rentState, Long lastHistoryNo,String nowDt,int pageSize) {
-        return jpaQueryFactory.selectFrom(rentHistoryEntity)
-                .join(rentManagerEntity)
-                .on(rentHistoryEntity.managerNo.eq(rentManagerEntity.managerNo))
-                .where(
-                        rentManagerEntity.overdueFlg.eq(false),
-                        rentHistoryEntity.haveToReturnDt.lt(nowDt),
-                        rentHistoryEntity.returnDt.isNull(),
-                        rentHistoryEntity.rentState.eq(rentState),
-                        ltHistoryNo(lastHistoryNo)
-                )
-                .limit(pageSize)
-                .orderBy(rentHistoryEntity.historyNo.desc())
-                .fetch();
-    }
+//    @Override
+//    public List<RentHistoryEntity> getRentHistoryEntityByRentState(RentState rentState, Long lastHistoryNo,String nowDt,int pageSize) {
+//        return jpaQueryFactory.selectFrom(rentHistoryEntity)
+//                .join(rentManagerEntity)
+//                .on(rentHistoryEntity.managerNo.eq(rentManagerEntity.managerNo))
+//                .where(
+//                        rentManagerEntity.overdueFlg.eq(false),
+//                        rentHistoryEntity.haveToReturnDt.lt(nowDt),
+//                        rentHistoryEntity.returnDt.isNull(),
+//                        rentHistoryEntity.rentState.eq(rentState),
+//                        ltHistoryNo(lastHistoryNo)
+//                )
+//                .limit(pageSize)
+//                .orderBy(rentHistoryEntity.historyNo.desc())
+//                .fetch();
+//    }
 
     private BooleanExpression ltHistoryNo(Long historyNo){
         if(historyNo==null){

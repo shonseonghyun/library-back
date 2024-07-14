@@ -1,46 +1,90 @@
 package com.example.library.config.batch.custom.reader;
 
-import com.example.library.config.batch.custom.dto.OverdueClearUserDto;
-import com.example.library.domain.rent.domain.RentRepository;
-import com.example.library.domain.rent.infrastructure.entity.RentManagerEntity;
-import com.querydsl.core.Tuple;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityManagerFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.database.AbstractPagingItemReader;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.util.CollectionUtils;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CopyOnWriteArrayList;
-
-import static com.example.library.domain.rent.infrastructure.entity.QRentHistoryEntity.rentHistoryEntity;
-import static com.example.library.domain.rent.infrastructure.entity.QRentManagerEntity.rentManagerEntity;
+import java.util.function.Function;
 
 @RequiredArgsConstructor
-public class CustomQuerydslPagingItemReader extends AbstractPagingItemReader<OverdueClearUserDto> {
+public class CustomQuerydslPagingItemReader<T> extends AbstractPagingItemReader<T> {
 
-    private final RentRepository rentRepository;
+    protected Function<JPAQueryFactory, JPAQuery<T>> queryFunction;
+    protected EntityManagerFactory entityManagerFactory;
+    protected EntityManager entityManager;
+    protected final Map<String, Object> jpaPropertyMap = new HashMap<>();
+    protected boolean transacted = true;// default value
 
-    public CustomQuerydslPagingItemReader(RentRepository rentRepository, int pageSize){
-        this.rentRepository = rentRepository;
+    public CustomQuerydslPagingItemReader(EntityManagerFactory entityManagerFactory, int pageSize, Function<JPAQueryFactory, JPAQuery<T>> queryFunction){
+        this.entityManagerFactory = entityManagerFactory;
+        this.queryFunction = queryFunction;
         setPageSize(pageSize);
+    }
+
+    public void setTransacted(boolean transacted) {
+        this.transacted = transacted;
+    }
+
+    @Override
+    protected void doOpen() throws Exception {
+        super.doOpen();
+
+        entityManager = entityManagerFactory.createEntityManager(jpaPropertyMap);
+        if (entityManager == null) {
+            throw new DataAccessResourceFailureException("Unable to obtain an EntityManager");
+        }
     }
 
     @Override
     protected void doReadPage() {
-        //overdueList get
-        List<Tuple> overdueUserList = rentRepository.getOverdueClearList(getPageSize());
+        //커스터마이징
+        JPAQuery<T> query = createQuery()
+                .offset(getPage() * getPageSize())
+                .limit(getPageSize());
 
-        if (results == null) {
-            results = new CopyOnWriteArrayList<>();
+        initResults();
+
+        fetchQuery(query);
+    }
+
+    protected void fetchQuery(JPAQuery<T> query) {
+        if (!transacted) { //?
+            List<T> queryResult = query.fetch();
+            for (T entity : queryResult) {
+                entityManager.detach(entity);
+                results.add(entity);
+            } // end if
         }
         else {
+            results.addAll(query.fetch());
+        } // end if
+    }
+
+    protected void initResults() {
+        if (CollectionUtils.isEmpty(results)) {
+            results = new CopyOnWriteArrayList<>();
+        } else {
             results.clear();
         }
+    }
 
-        for(Tuple tuple: overdueUserList){
-            if(!overdueUserList.isEmpty()){ //조회 대상이 존재한다면
-                RentManagerEntity savedRentManagerEntity= tuple.get(rentManagerEntity);
-                String returnDt= tuple.get(rentHistoryEntity.returnDt.max());
-                results.add(new OverdueClearUserDto(savedRentManagerEntity,returnDt));
-            }
-        }
+    protected JPAQuery<T> createQuery() {
+        JPAQueryFactory jpaQueryFactory = new JPAQueryFactory(entityManager);
+        return queryFunction.apply(jpaQueryFactory);
+    }
+
+    @Override
+    protected void doClose() throws Exception {
+        entityManager.close();
+        super.doClose();
     }
 }
